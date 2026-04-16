@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>U1 | Profundizo — Ejemplos por fuente</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,sans-serif;background:#0b3d91;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;max-width:960px;width:100%}
+  h1{grid-column:1/-1;color:#fff;text-align:center;font-size:22pt;margin-bottom:8px}
+  .sub{grid-column:1/-1;color:#b3c7e8;text-align:center;font-size:11pt;margin-bottom:16px}
+  a.card{
+    background:#fff;border-radius:12px;padding:28px 24px;text-decoration:none;color:#222;
+    box-shadow:0 6px 20px rgba(0,0,0,.25);transition:transform .15s,box-shadow .15s;
+    display:flex;flex-direction:column;gap:10px
+  }
+  a.card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .badge{display:inline-block;font-size:9pt;font-weight:700;letter-spacing:.5px;padding:3px 10px;border-radius:12px;color:#fff;width:fit-content}
+  .b1{background:#0b3d91}.b2{background:#1d5fc4}.b3{background:#00754A}.b4{background:#c0392b}
+  .card h2{font-size:14pt;color:#0b3d91;margin:0}
+  .card p{font-size:10.5pt;color:#555;line-height:1.4}
+  .card .eq{font-family:"Cambria Math",serif;font-size:11pt;color:#0b3d91;background:#f0f4ff;padding:6px 10px;border-radius:6px;text-align:center}
+</style>
+</head>
+<body>
+<div class="card-grid">
+  <h1>U1 | Profundizo — Ejemplos para estudiantes</h1>
+  <div class="sub">ESJIM — Escuela de Policía "Gonzalo Jiménez de Quesada"<br>Electiva I: Razonamiento Cuantitativo I</div>
+
+  <a class="card" href="profundizo_paa.html">
+    <span class="badge b1">FUENTE 1 · PAA</span>
+    <h2>Plan Anual de Adquisiciones</h2>
+    <p>Gasto trimestral en equipamiento: vehículos, armamento, tecnología y dotación.</p>
+    <div class="eq">y = 21,73·x + 424,17 &nbsp;·&nbsp; R² = 0,9986</div>
+  </a>
+
+  <a class="card" href="profundizo_presupuesto.html">
+    <span class="badge b2">FUENTE 2 · PRESUPUESTO</span>
+    <h2>Presupuesto General Asignado</h2>
+    <p>Presupuesto total trimestral: funcionamiento, inversión y servicios personales.</p>
+    <div class="eq">y = 86,29·x + 2.999,12 &nbsp;·&nbsp; R² = 0,9989</div>
+  </a>
+
+  <a class="card" href="profundizo_dane.html">
+    <span class="badge b3">FUENTE 3 · DANE-CSPC</span>
+    <h2>Servicios de Policía (DANE)</h2>
+    <p>Demanda trimestral de servicios: denuncias, emergencias 123 y otros.</p>
+    <div class="eq">y = 34,60·x + 1.208,00 &nbsp;·&nbsp; R² = 0,9988</div>
+  </a>
+
+  <a class="card" href="profundizo_ejemplo.html">
+    <span class="badge b4">CONSOLIDADO</span>
+    <h2>Informe de referencia</h2>
+    <p>Ejemplo integrado con costos operativos y de equipamiento (3 rubros combinados).</p>
+    <div class="eq">y = 71,33·x + 2.776,36 &nbsp;·&nbsp; R² = 0,9991</div>
+  </a>
+</div>
+</body>
+</html>
