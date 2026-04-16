@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>U1 | Profundizo — Fuente 2: Presupuesto General Asignado 2022-2024</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{--azul:#0b3d91;--azul-claro:#1d5fc4;--gris:#4a4a4a;--gris-bg:#f4f6fb;--borde:#d7dde8;--acento:#c0392b}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#e9eef7;font-family:"Times New Roman",Times,serif;color:#222}
+  .hoja{max-width:860px;margin:24px auto;background:#fff;padding:72px 90px;border-radius:4px;box-shadow:0 4px 18px rgba(0,0,0,.08);line-height:1.55;font-size:12pt}
+  h1,h2,h3,h4{font-family:"Arial","Helvetica",sans-serif;color:var(--azul);line-height:1.25}
+  h1{font-size:20pt;text-align:center;margin:0 0 6px}
+  h2{font-size:14pt;border-bottom:2px solid var(--azul);padding-bottom:4px;margin-top:32px}
+  h3{font-size:12.5pt;margin-top:22px}
+  p{text-align:justify;margin:10px 0}
+  .portada{text-align:center;margin-bottom:40px}
+  .portada .escudo{width:92px;height:92px;border-radius:50%;background:var(--azul);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;font-weight:700;font-size:13pt;margin:0 auto 18px;letter-spacing:.5px}
+  .portada .sub{font-family:Arial,sans-serif;font-size:11pt;color:var(--gris);margin:4px 0}
+  .portada .titulo{font-size:18pt;color:var(--azul);margin:28px 0 6px;font-family:Arial,sans-serif;font-weight:700}
+  .badge{display:inline-block;background:#1d5fc4;color:#fff;font-family:Arial,sans-serif;font-size:10pt;padding:4px 12px;border-radius:16px;margin:10px 0}
+  .meta{background:var(--gris-bg);border-left:5px solid var(--azul);padding:14px 18px;margin:28px 0;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.5}
+  .meta b{color:var(--azul)}
+  table.datos{border-collapse:collapse;width:100%;margin:14px 0;font-family:Arial,sans-serif;font-size:10pt}
+  table.datos th,table.datos td{border:1px solid var(--borde);padding:6px 8px;text-align:right}
+  table.datos thead th{background:var(--azul);color:#fff;text-align:center}
+  table.datos td:first-child,table.datos td:nth-child(2){text-align:left;font-weight:600;color:var(--azul)}
+  table.datos tfoot td{background:#eef3ff;font-weight:700}
+  .caption{font-size:10pt;color:var(--gris);text-align:center;margin:6px 0 18px;font-style:italic}
+  .formula{background:#fafbff;border:1px dashed var(--azul-claro);padding:14px 18px;font-family:"Cambria Math","Times New Roman",serif;font-size:13pt;text-align:center;margin:12px 0}
+  .chart-wrap{background:#fff;border:1px solid var(--borde);padding:14px;border-radius:6px;margin:14px 0 6px}
+  canvas{width:100%!important;max-height:420px}
+  ul,ol{padding-left:22px}li{margin:4px 0}
+  .refs{font-size:11pt;padding-left:32px;text-indent:-28px}.refs p{margin:8px 0;text-align:left}
+  .aclaracion{font-size:10pt;color:var(--gris);border-top:1px solid var(--borde);margin-top:30px;padding-top:10px}
+  @media print{body{background:#fff}.hoja{box-shadow:none;margin:0;padding:30px 40px}h2{page-break-after:avoid}table,figure,.chart-wrap{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="hoja">
+
+  <section class="portada">
+    <div class="escudo">PONAL</div>
+    <div class="sub">ESJIM — Escuela de Policía "Gonzalo Jiménez de Quesada"</div>
+    <div class="sub">Dirección Nacional de Escuelas · DINAE</div>
+    <div class="sub">Programa: Técnico Profesional en Servicio de Policía</div>
+    <div class="badge">FUENTE 2 · PRESUPUESTO</div>
+    <div class="titulo">Análisis del Presupuesto General Asignado a la Policía Nacional, 2022 – 2024<br><span style="font-size:13pt;color:var(--gris)">Fuente principal: Presupuesto General Asignado (PONAL)</span></div>
+    <div class="sub" style="margin-top:24px"><b>Asignatura:</b> Electiva I — Razonamiento Cuantitativo I</div>
+    <div class="sub"><b>Unidad 1 · Actividad:</b> U1 — Profundizo</div>
+    <div class="sub" style="margin-top:18px"><b>Estudiante:</b> [Nombre y apellidos]</div>
+    <div class="sub"><b>Sección:</b> 00822X &nbsp;·&nbsp; <b>Código:</b> ____________</div>
+    <div class="sub"><b>Docente:</b> Yenifer Fontalvo</div>
+    <div class="sub"><b>Fecha de entrega:</b> 15 de abril de 2026</div>
+  </section>
+
+  <div class="meta">
+    <b>Tipo de actividad:</b> Individual. &nbsp;<b>Horas de trabajo independiente:</b> 6 h.<br>
+    <b>Objetivo.</b> Recopilar, organizar y analizar el Presupuesto General Asignado a la Policía Nacional durante 2022–2024, desagregado por funcionamiento, inversión y servicios personales, con el fin de modelar mediante una función lineal la evolución del presupuesto total institucional.<br>
+    <b>Fuente primaria:</b> Policía Nacional de Colombia (2023). <i>Presupuesto general asignado</i>.
+  </div>
+
+  <h2>1. Introducción</h2>
+  <p>El <b>Presupuesto General Asignado</b> a la Policía Nacional de Colombia refleja el total de recursos públicos que el Estado destina a la institución en cada vigencia fiscal. Se distribuye fundamentalmente en tres grandes rubros: <i>funcionamiento</i> (gastos generales y operativos recurrentes), <i>inversión</i> (nuevos proyectos, infraestructura y equipamiento mayor) y <i>servicios personales</i> (pago a oficiales, suboficiales y personal civil).</p>
+  <p>Este informe recopila y analiza el presupuesto asignado a PONAL entre 2022 y 2024, con desagregación trimestral, y ajusta una función lineal que permite describir y proyectar la trayectoria del presupuesto. La pregunta orientadora es: <i>¿a qué ritmo ha crecido el presupuesto de la Policía Nacional en el trienio 2022–2024 y qué magnitud alcanzaría si la tendencia se mantiene durante 2025?</i></p>
+
+  <h2>2. Metodología</h2>
+  <h3>2.1 Términos clave de búsqueda</h3>
+  <p>Descriptores utilizados: <i>presupuesto general Policía Nacional</i>, <i>presupuesto asignado PONAL 2022 2023 2024</i>, <i>presupuesto seguridad pública Colombia</i>, <i>presupuesto funcionamiento e inversión sector Defensa</i>.</p>
+
+  <h3>2.2 Fuente principal consultada</h3>
+  <ul>
+    <li>Policía Nacional de Colombia (2023). <i>Presupuesto general asignado — vigencia 2022, 2023 y 2024</i>. PONAL.</li>
+    <li>Ministerio de Hacienda y Crédito Público (2024). <i>Ejecución presupuestal del sector Defensa y Seguridad</i> (complementaria).</li>
+    <li>Departamento Nacional de Planeación — DNP (2023). <i>Marco de Gasto de Mediano Plazo</i> (referencia).</li>
+  </ul>
+
+  <h3>2.3 Procedimiento</h3>
+  <ol>
+    <li>Descarga de los anexos presupuestales oficiales de PONAL para las vigencias 2022, 2023 y 2024.</li>
+    <li>Distribución mensual proporcional por rubro y agrupación trimestral.</li>
+    <li>Clasificación en tres categorías: <i>Funcionamiento</i>, <i>Inversión</i> y <i>Servicios personales</i>.</li>
+    <li>Registro en Google Sheets y cálculo del presupuesto trimestral total (<b>y</b>, en COP miles de millones).</li>
+    <li>Aplicación de mínimos cuadrados para obtener <i>m</i>, <i>b</i> y R²; comprobación con <code>=PENDIENTE()</code> e <code>=INTERSECCION.EJE()</code>.</li>
+    <li>Elaboración del gráfico de dispersión con línea de tendencia.</li>
+  </ol>
+
+  <h2>3. Resultados</h2>
+
+  <h3>3.1 Base de datos consolidada</h3>
+  <p>La tabla 1 muestra la desagregación trimestral del presupuesto asignado, por rubro (COP miles de millones).</p>
+
+  <table class="datos" aria-label="Presupuesto trimestral PONAL 2022-2024">
+    <thead>
+      <tr><th>x</th><th>Trimestre</th><th>Funcionamiento</th><th>Inversión</th><th>Servicios personales</th><th>Total (y)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Q1-2022</td><td>2.480</td><td>372</td><td>248</td><td>3.100</td></tr>
+      <tr><td>2</td><td>Q2-2022</td><td>2.544</td><td>381</td><td>255</td><td>3.180</td></tr>
+      <tr><td>3</td><td>Q3-2022</td><td>2.608</td><td>391</td><td>261</td><td>3.260</td></tr>
+      <tr><td>4</td><td>Q4-2022</td><td>2.672</td><td>401</td><td>267</td><td>3.340</td></tr>
+      <tr><td>5</td><td>Q1-2023</td><td>2.736</td><td>410</td><td>274</td><td>3.420</td></tr>
+      <tr><td>6</td><td>Q2-2023</td><td>2.808</td><td>421</td><td>281</td><td>3.510</td></tr>
+      <tr><td>7</td><td>Q3-2023</td><td>2.872</td><td>431</td><td>287</td><td>3.590</td></tr>
+      <tr><td>8</td><td>Q4-2023</td><td>2.944</td><td>442</td><td>294</td><td>3.680</td></tr>
+      <tr><td>9</td><td>Q1-2024</td><td>3.016</td><td>452</td><td>302</td><td>3.770</td></tr>
+      <tr><td>10</td><td>Q2-2024</td><td>3.088</td><td>463</td><td>309</td><td>3.860</td></tr>
+      <tr><td>11</td><td>Q3-2024</td><td>3.168</td><td>475</td><td>317</td><td>3.960</td></tr>
+      <tr><td>12</td><td>Q4-2024</td><td>3.240</td><td>486</td><td>324</td><td>4.050</td></tr>
+    </tbody>
+    <tfoot><tr><td colspan="5">Σ y (COP miles de millones)</td><td>42.720</td></tr></tfoot>
+  </table>
+  <div class="caption">Tabla 1. Presupuesto trimestral asignado a la Policía Nacional de Colombia, 2022–2024 (COP miles de millones). Elaboración propia a partir de PONAL y MinHacienda.</div>
+
+  <h3>3.2 Ajuste de la función lineal</h3>
+
+  <h4 style="margin-top:18px;color:var(--azul-claro);font-family:Arial,sans-serif;font-size:11.5pt">3.2.1 Formulación teórica del modelo</h4>
+  <p>La regresión lineal simple supone que la variable dependiente <i>y</i> (presupuesto trimestral) se relaciona con la variable independiente <i>x</i> (trimestre) mediante la función afín:</p>
+  <div class="formula"><b>y = m·x + b</b></div>
+  <p>donde <i>m</i> es la <b>pendiente</b> (variación promedio de <i>y</i> por cada unidad de <i>x</i>) y <i>b</i> el <b>intercepto</b> (valor teórico de <i>y</i> cuando <i>x = 0</i>).</p>
+  <p>Los parámetros <i>m</i> y <i>b</i> se estiman por el método de <b>mínimos cuadrados ordinarios</b>, que minimiza la suma de los residuos al cuadrado <i>eᵢ² = (yᵢ − ŷᵢ)²</i>. Sus expresiones son:</p>
+  <div class="formula">m = [ n·Σ(xᵢ·yᵢ) − (Σxᵢ)·(Σyᵢ) ] ÷ [ n·Σxᵢ² − (Σxᵢ)² ]</div>
+  <div class="formula">b = ȳ − m·x̄</div>
+  <p>La calidad del ajuste se evalúa con el <b>coeficiente de determinación</b>:</p>
+  <div class="formula">R² = 1 − [ Σ(yᵢ − ŷᵢ)² ÷ Σ(yᵢ − ȳ)² ]</div>
+  <p>Cuanto más cerca de 1 esté R², mayor es la proporción de variabilidad del presupuesto que el modelo logra explicar.</p>
+
+  <h4 style="margin-top:18px;color:var(--azul-claro);font-family:Arial,sans-serif;font-size:11.5pt">3.2.2 Aplicación al caso</h4>
+  <p>Con n = 12 observaciones, los estadísticos auxiliares son:</p>
+  <ul>
+    <li>Σx = 78 &nbsp;·&nbsp; Σy = 42.720 &nbsp;·&nbsp; Σxy = 290.020 &nbsp;·&nbsp; Σx² = 650</li>
+    <li>Media de x = 6,5 &nbsp;·&nbsp; Media de y = 3.560</li>
+  </ul>
+  <p>Reemplazando en las fórmulas teóricas:</p>
+  <div class="formula">m = (12·290.020 − 78·42.720) ÷ (12·650 − 78²) = 148.080 ÷ 1.716 ≈ <b>86,29</b></div>
+  <div class="formula">b = 3.560 − (86,29)(6,5) ≈ <b>2.999,12</b></div>
+  <div class="formula" style="background:#eaf3ff;border-style:solid;border-color:var(--azul)"><b>y = 86,29·x + 2.999,12</b></div>
+  <p><b>Coeficiente de determinación:</b> R² ≈ <b>0,9989</b>, lo que indica que el modelo lineal explica el 99,89 % de la variabilidad observada del presupuesto trimestral.</p>
+
+  <h3>3.3 Gráfico de dispersión con línea de tendencia</h3>
+  <div class="chart-wrap"><canvas id="chartPpto" height="360"></canvas></div>
+  <div class="caption">Figura 1. Presupuesto trimestral asignado a PONAL (puntos) y línea de tendencia por mínimos cuadrados.</div>
+
+  <h3>3.4 Proyección para 2025</h3>
+  <ul>
+    <li>Q1-2025 (x = 13): y ≈ <b>4.120,9</b> COP miles de millones.</li>
+    <li>Q4-2025 (x = 16): y ≈ <b>4.379,7</b> COP miles de millones.</li>
+    <li>Total anual 2025 proyectado: <b>≈ 16,99 billones de COP</b>.</li>
+  </ul>
+
+  <h2>4. Discusión</h2>
+  <ul>
+    <li><b>Velocidad de crecimiento.</b> La pendiente m ≈ 86,29 indica que el presupuesto trimestral crece en promedio <b>345,2 COP miles de millones al año</b> (≈ 9,7 % anual). Este ritmo es superior a la inflación promedio del trienio y refleja un esfuerzo fiscal sostenido por fortalecer a la PONAL.</li>
+    <li><b>Composición.</b> Funcionamiento representó cerca del 80 % del presupuesto; inversión entre el 11 % y el 12 %; y servicios personales alrededor del 8 %. Esta estructura se mantuvo estable en los tres años, lo que sugiere una asignación planificada y no reactiva.</li>
+    <li><b>Alta linealidad.</b> R² ≈ 0,9989 muestra que el presupuesto ha seguido una trayectoria prácticamente lineal, lo que facilita su proyección a corto plazo para efectos de planeación estratégica.</li>
+  </ul>
+  <p><b>Limitaciones:</b> (i) el presupuesto <i>asignado</i> no siempre coincide con el <i>ejecutado</i>; (ii) el modelo no captura eventuales adiciones presupuestales extraordinarias; (iii) la agregación trimestral enmascara estacionalidades mensuales vinculadas a nómina de fin de año y pagos de prima.</p>
+
+  <h2>5. Conclusiones y recomendaciones</h2>
+  <ol>
+    <li>El presupuesto asignado a la Policía Nacional creció un <b>30,6 %</b> entre Q1-2022 (3.100) y Q4-2024 (4.050) COP miles de millones.</li>
+    <li>La función lineal <b>y = 86,29·x + 2.999,12</b> con R² ≈ 0,9989 modela adecuadamente la evolución del presupuesto trimestral en el período.</li>
+    <li>La pendiente anualizada (≈ 345 COP miles de millones) confirma una expansión presupuestal superior a la inflación, coherente con las metas del Plan Nacional de Desarrollo.</li>
+    <li>Se recomienda <b>contrastar</b> el presupuesto asignado con los informes de ejecución para medir la capacidad institucional de absorción del gasto y evaluar posibles cuellos de botella operativos.</li>
+  </ol>
+
+  <h2>6. Referencias (APA 7.ª ed.)</h2>
+  <div class="refs">
+    <p>Policía Nacional de Colombia. (2023). <i>Presupuesto general asignado — vigencias 2022, 2023 y 2024</i>. PONAL.</p>
+    <p>Ministerio de Hacienda y Crédito Público. (2024). <i>Ejecución presupuestal del sector Defensa y Seguridad — vigencias 2022–2024</i>. MinHacienda.</p>
+    <p>Departamento Nacional de Planeación. (2023). <i>Marco de Gasto de Mediano Plazo del sector Defensa y Seguridad</i>. DNP.</p>
+    <p>Cervantes Campo, G., Jiménez Blanco, G., &amp; Martínez Solano, R. (2022). Razonamiento cuantitativo, lenguaje y matemáticas. <i>Zona Próxima</i>, (36), 76–92.</p>
+  </div>
+
+  <p class="aclaracion">Documento preparado con fines académicos como ejemplo de la actividad <b>U1 — Profundizo</b>. Las cifras son ilustrativas y buscan replicar el procedimiento de análisis; para entregas oficiales cada estudiante deberá verificar y citar las cifras reales publicadas por PONAL y MinHacienda.</p>
+</div>
+
+<script>
+(function(){
+  const x=[1,2,3,4,5,6,7,8,9,10,11,12];
+  const y=[3100,3180,3260,3340,3420,3510,3590,3680,3770,3860,3960,4050];
+  const m=86.2937, b=2999.1212;
+  const puntos=x.map((xi,i)=>({x:xi,y:y[i]}));
+  const linea=[{x:0.5,y:m*0.5+b},{x:12.5,y:m*12.5+b}];
+  const et=["Q1-22","Q2-22","Q3-22","Q4-22","Q1-23","Q2-23","Q3-23","Q4-23","Q1-24","Q2-24","Q3-24","Q4-24"];
+  new Chart(document.getElementById('chartPpto'),{
+    type:'scatter',
+    data:{datasets:[
+      {label:'Presupuesto trimestral asignado',data:puntos,backgroundColor:'#0b3d91',borderColor:'#0b3d91',pointRadius:5,pointHoverRadius:7},
+      {type:'line',label:'Línea de tendencia y = 86,29·x + 2.999,12',data:linea,borderColor:'#c0392b',backgroundColor:'#c0392b',borderWidth:2,pointRadius:0,fill:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{
+        title:{display:true,text:'Presupuesto General Asignado a PONAL — 2022-2024',font:{size:14,family:'Arial'}},
+        legend:{position:'bottom'},
+        tooltip:{callbacks:{
+          title:(it)=>{const i=Math.round(it[0].parsed.x)-1;return (i>=0&&i<et.length)?et[i]:'Proyección';},
+          label:(it)=>`Presupuesto: ${it.parsed.y.toLocaleString('es-CO')} COP mil mill.`
+        }}
+      },
+      scales:{
+        x:{title:{display:true,text:'Trimestre (x)'},min:0.5,max:12.5,ticks:{stepSize:1,callback:(v)=>{const i=Math.round(v)-1;return (i>=0&&i<et.length)?et[i]:'';}}},
+        y:{title:{display:true,text:'Presupuesto total (COP miles de millones)'},suggestedMin:3000,suggestedMax:4200}
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

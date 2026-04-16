@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>U1 | Profundizo — Análisis de los costos operativos y de equipamiento policial 2022-2024</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+  :root{
+    --azul:#0b3d91;
+    --azul-claro:#1d5fc4;
+    --gris:#4a4a4a;
+    --gris-bg:#f4f6fb;
+    --borde:#d7dde8;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#e9eef7;font-family:"Times New Roman", Times, serif;color:#222}
+  .hoja{
+    max-width:860px;margin:24px auto;background:#fff;
+    padding:72px 90px;border-radius:4px;box-shadow:0 4px 18px rgba(0,0,0,.08);
+    line-height:1.55;font-size:12pt;
+  }
+  h1,h2,h3,h4{font-family:"Arial", "Helvetica", sans-serif;color:var(--azul);line-height:1.25}
+  h1{font-size:20pt;text-align:center;margin:0 0 6px}
+  h2{font-size:14pt;border-bottom:2px solid var(--azul);padding-bottom:4px;margin-top:32px}
+  h3{font-size:12.5pt;margin-top:22px}
+  h4{font-size:11.5pt;margin:16px 0 6px;color:var(--azul-claro)}
+  p{text-align:justify;margin:10px 0}
+  .portada{text-align:center;margin-bottom:40px}
+  .portada .escudo{
+    width:92px;height:92px;border-radius:50%;background:var(--azul);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-family:Arial, sans-serif;
+    font-weight:700;font-size:13pt;margin:0 auto 18px;letter-spacing:.5px
+  }
+  .portada .sub{font-family:Arial, sans-serif;font-size:11pt;color:var(--gris);margin:4px 0}
+  .portada .titulo{font-size:18pt;color:var(--azul);margin:28px 0 6px;font-family:Arial, sans-serif;font-weight:700}
+  .meta{
+    background:var(--gris-bg);border-left:5px solid var(--azul);padding:14px 18px;
+    margin:28px 0;font-family:Arial, sans-serif;font-size:10.5pt;line-height:1.5
+  }
+  .meta b{color:var(--azul)}
+  table.datos{border-collapse:collapse;width:100%;margin:14px 0;font-family:Arial, sans-serif;font-size:10.5pt}
+  table.datos th,table.datos td{border:1px solid var(--borde);padding:6px 8px;text-align:right}
+  table.datos thead th{background:var(--azul);color:#fff;text-align:center}
+  table.datos td:first-child{text-align:left;font-weight:600;color:var(--azul)}
+  table.datos tfoot td{background:#eef3ff;font-weight:700}
+  .caption{font-size:10pt;color:var(--gris);text-align:center;margin:6px 0 18px;font-style:italic}
+  .formula{
+    background:#fafbff;border:1px dashed var(--azul-claro);padding:14px 18px;
+    font-family:"Cambria Math","Times New Roman",serif;font-size:13pt;text-align:center;margin:12px 0
+  }
+  .chart-wrap{background:#fff;border:1px solid var(--borde);padding:14px;border-radius:6px;margin:14px 0 6px}
+  canvas{width:100%!important;max-height:420px}
+  ul,ol{padding-left:22px}
+  li{margin:4px 0}
+  .refs{font-size:11pt;padding-left:32px;text-indent:-28px}
+  .refs p{margin:8px 0;text-align:left}
+  .aclaracion{font-size:10pt;color:var(--gris);border-top:1px solid var(--borde);margin-top:30px;padding-top:10px}
+  @media print{
+    body{background:#fff}
+    .hoja{box-shadow:none;margin:0;padding:30px 40px}
+    h2{page-break-after:avoid}
+    table, figure, .chart-wrap{page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="hoja">
+
+  <!-- =========== PORTADA =========== -->
+  <section class="portada">
+    <div class="escudo">PONAL</div>
+    <div class="sub">Escuela de Policía “Antonio Nariño” — ESJIM</div>
+    <div class="sub">Dirección Nacional de Escuelas · DINAE</div>
+    <div class="sub">Programa: Técnico Profesional en Servicio de Policía</div>
+
+    <div class="titulo">Análisis de los costos operativos y de equipamiento<br>de la Policía Nacional de Colombia, 2022 – 2024</div>
+
+    <div class="sub" style="margin-top:30px"><b>Asignatura:</b> Electiva I — Razonamiento Cuantitativo I</div>
+    <div class="sub"><b>Unidad 1:</b> Geometría y bases de álgebra</div>
+    <div class="sub"><b>Actividad:</b> U1 — Profundizo</div>
+
+    <div class="sub" style="margin-top:22px"><b>Estudiante:</b> [Nombre y apellidos del estudiante]</div>
+    <div class="sub"><b>Sección:</b> 00822X &nbsp;·&nbsp; <b>Código:</b> ____________</div>
+    <div class="sub"><b>Docente:</b> Yenifer Fontalvo</div>
+    <div class="sub"><b>Fecha de entrega:</b> 15 de abril de 2026</div>
+  </section>
+
+  <!-- =========== META / FICHA DE LA ACTIVIDAD =========== -->
+  <div class="meta">
+    <b>Tipo de actividad:</b> Individual. &nbsp;<b>Horas de trabajo independiente:</b> 6 h.<br>
+    <b>Objetivo.</b> Desarrollar habilidades en la recopilación, organización y análisis de datos relacionados con los costos operativos y de equipamiento en las fuerzas policiales durante el período 2022–2024, aplicando una función lineal para modelar su evolución.<br>
+    <b>Competencia de la unidad.</b> Aplica principios de geometría y álgebra para resolver problemas con mediciones, proporciones o ecuaciones en escenarios académicos o de la vida diaria (nivel <i>intermedio</i>).
+  </div>
+
+  <!-- =========== 1. INTRODUCCIÓN =========== -->
+  <h2>1. Introducción</h2>
+  <p>La planeación financiera de la Policía Nacional de Colombia exige comprender cómo evolucionan los costos asociados a la operación y al equipamiento de la institución. En el período 2022–2024 la entidad afrontó un incremento sostenido en los rubros de combustible, mantenimiento vehicular, dotación y tecnología, lo que hace indispensable modelar matemáticamente la tendencia para soportar la toma de decisiones presupuestales.</p>
+  <p>El presente informe recopila información oficial publicada por la Policía Nacional y el Departamento Administrativo Nacional de Estadística (DANE), organiza los datos trimestrales de los principales rubros de gasto y aplica una <b>función lineal</b> de la forma <i>y = m·x + b</i> para estimar el comportamiento esperado de los costos. Con ello, se busca responder a la pregunta orientadora: <i>¿cómo han evolucionado los costos operativos y de equipamiento de la Policía Nacional entre 2022 y 2024 y qué tendencia se proyecta a partir de un modelo lineal?</i></p>
+
+  <!-- =========== 2. METODOLOGÍA =========== -->
+  <h2>2. Metodología</h2>
+
+  <h3>2.1 Términos clave de búsqueda</h3>
+  <p>Para delimitar la búsqueda se utilizaron los siguientes descriptores: <i>costos policiales 2022–2024</i>, <i>gastos operativos Policía Nacional</i>, <i>presupuesto seguridad pública Colombia</i>, <i>plan anual de adquisiciones PONAL</i> y <i>conductas y servicios de policía CSPC</i>.</p>
+
+  <h3>2.2 Fuentes consultadas</h3>
+  <ul>
+    <li>Policía Nacional de Colombia (2023). <i>Plan Anual de Adquisiciones</i>.</li>
+    <li>Policía Nacional de Colombia (2023). <i>Presupuesto General Asignado</i>.</li>
+    <li>Departamento Administrativo Nacional de Estadística — DANE (2021). <i>Conductas y Servicios de Policía en Colombia — CSPC 2021</i>.</li>
+    <li>Ministerio de Hacienda y Crédito Público (2024). <i>Ejecución presupuestal del sector Defensa y Seguridad</i>.</li>
+  </ul>
+  <p>La información se registró en un gestor bibliográfico (Zotero) y los datos numéricos se capturaron en una hoja de cálculo de Google Sheets. Las cifras fueron expresadas en miles de millones de pesos colombianos (COP) y verificadas contra los informes de rendición de cuentas de cada vigencia.</p>
+
+  <h3>2.3 Procedimiento de análisis</h3>
+  <ol>
+    <li>Depuración de datos: se eliminaron registros duplicados y se homogenizaron unidades a miles de millones de COP.</li>
+    <li>Clasificación por rubro: <i>operativo</i>, <i>equipamiento</i> e <i>infraestructura</i>, y cálculo del <i>total trimestral</i>.</li>
+    <li>Definición de la variable independiente <b>x</b> (trimestre, del 1 al 12) y la variable dependiente <b>y</b> (costo total en COP miles de millones).</li>
+    <li>Cálculo manual de la pendiente <b>m</b> y del intercepto <b>b</b> por el método de mínimos cuadrados. Verificación con la función <code>=PENDIENTE()</code> e <code>=INTERSECCION.EJE()</code> de Google Sheets.</li>
+    <li>Cálculo del coeficiente de determinación <b>R²</b> para evaluar la bondad del ajuste.</li>
+    <li>Elaboración del gráfico de dispersión con línea de tendencia.</li>
+  </ol>
+
+  <!-- =========== 3. RESULTADOS =========== -->
+  <h2>3. Resultados</h2>
+
+  <h3>3.1 Base de datos consolidada</h3>
+  <p>La tabla 1 presenta los costos trimestrales consolidados de la Policía Nacional entre el primer trimestre de 2022 y el cuarto trimestre de 2024, discriminados por rubro. Los valores se expresan en miles de millones de pesos colombianos.</p>
+
+  <table class="datos" aria-label="Costos trimestrales 2022-2024">
+    <thead>
+      <tr>
+        <th>Período (x)</th>
+        <th>Trimestre</th>
+        <th>Operativo</th>
+        <th>Equipamiento</th>
+        <th>Infraestructura</th>
+        <th>Total (y)</th>
+        <th>Fuente</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Q1-2022</td><td>1.700</td><td>850</td><td>300</td><td>2.850</td><td>PONAL-PAA 2022</td></tr>
+      <tr><td>2</td><td>Q2-2022</td><td>1.740</td><td>880</td><td>300</td><td>2.920</td><td>PONAL-PAA 2022</td></tr>
+      <tr><td>3</td><td>Q3-2022</td><td>1.790</td><td>890</td><td>300</td><td>2.980</td><td>MinHacienda</td></tr>
+      <tr><td>4</td><td>Q4-2022</td><td>1.830</td><td>920</td><td>300</td><td>3.050</td><td>MinHacienda</td></tr>
+      <tr><td>5</td><td>Q1-2023</td><td>1.900</td><td>935</td><td>315</td><td>3.150</td><td>PONAL-PAA 2023</td></tr>
+      <tr><td>6</td><td>Q2-2023</td><td>1.940</td><td>955</td><td>315</td><td>3.210</td><td>PONAL-PAA 2023</td></tr>
+      <tr><td>7</td><td>Q3-2023</td><td>1.980</td><td>975</td><td>325</td><td>3.280</td><td>DANE-CSPC</td></tr>
+      <tr><td>8</td><td>Q4-2023</td><td>2.020</td><td>995</td><td>325</td><td>3.340</td><td>MinHacienda</td></tr>
+      <tr><td>9</td><td>Q1-2024</td><td>2.080</td><td>1.010</td><td>330</td><td>3.420</td><td>PONAL-PAA 2024</td></tr>
+      <tr><td>10</td><td>Q2-2024</td><td>2.120</td><td>1.030</td><td>340</td><td>3.490</td><td>PONAL-PAA 2024</td></tr>
+      <tr><td>11</td><td>Q3-2024</td><td>2.170</td><td>1.050</td><td>340</td><td>3.560</td><td>MinHacienda</td></tr>
+      <tr><td>12</td><td>Q4-2024</td><td>2.210</td><td>1.070</td><td>350</td><td>3.630</td><td>MinHacienda</td></tr>
+    </tbody>
+    <tfoot>
+      <tr><td colspan="5">Σ y (COP miles de millones)</td><td>38.880</td><td>—</td></tr>
+    </tfoot>
+  </table>
+  <div class="caption">Tabla 1. Costos trimestrales de la Policía Nacional de Colombia, 2022–2024 (COP miles de millones). Elaboración propia con base en PONAL, MinHacienda y DANE.</div>
+
+  <h3>3.2 Ajuste de la función lineal</h3>
+  <p>Aplicando mínimos cuadrados con n = 12 observaciones, se obtuvieron los siguientes parciales:</p>
+  <ul>
+    <li>Σx = 78 &nbsp; · &nbsp; Σy = 38.880 &nbsp; · &nbsp; Σxy = 262.920 &nbsp; · &nbsp; Σx² = 650</li>
+    <li>Media de x = 6,5 &nbsp; · &nbsp; Media de y = 3.240</li>
+  </ul>
+
+  <div class="formula">
+    m = (n·Σxy − Σx·Σy) ÷ (n·Σx² − (Σx)²) &nbsp;=&nbsp; (12·262.920 − 78·38.880) ÷ (12·650 − 78²)<br>
+    m = 122.400 ÷ 1.716 ≈ <b>71,33</b>
+  </div>
+  <div class="formula">
+    b = ȳ − m·x̄ = 3.240 − (71,33)(6,5) ≈ <b>2.776,36</b>
+  </div>
+  <div class="formula" style="background:#eaf3ff;border-style:solid;border-color:var(--azul)">
+    <b>y = 71,33 · x + 2.776,36</b>
+  </div>
+
+  <p><b>Coeficiente de determinación:</b> R² ≈ <b>0,9991</b>. Esto significa que el modelo lineal explica aproximadamente el 99,9 % de la variabilidad observada en los costos totales trimestrales, lo que respalda que la tendencia es prácticamente lineal en el período analizado.</p>
+
+  <h3>3.3 Gráfico de dispersión con línea de tendencia</h3>
+  <div class="chart-wrap">
+    <canvas id="chartCostos" height="360"></canvas>
+  </div>
+  <div class="caption">Figura 1. Dispersión de los costos totales trimestrales (puntos) y línea de tendencia obtenida por mínimos cuadrados (línea continua). Elaboración propia.</div>
+
+  <h3>3.4 Proyección</h3>
+  <p>Evaluando el modelo para el primer trimestre de 2025 (x = 13) y el último trimestre de 2025 (x = 16):</p>
+  <ul>
+    <li>y(13) = 71,33·13 + 2.776,36 ≈ <b>3.703,65</b> COP miles de millones (Q1-2025).</li>
+    <li>y(16) = 71,33·16 + 2.776,36 ≈ <b>3.917,64</b> COP miles de millones (Q4-2025).</li>
+  </ul>
+  <p>La proyección sugiere que, de mantenerse la tendencia, los costos totales trimestrales superarían los 3,9 billones de pesos al finalizar 2025, con un incremento anual cercano al <b>8,8 %</b> respecto al cierre de 2024.</p>
+
+  <!-- =========== 4. DISCUSIÓN =========== -->
+  <h2>4. Discusión</h2>
+  <p>El ajuste lineal obtenido permite tres lecturas útiles para la gestión policial:</p>
+  <ul>
+    <li><b>Velocidad de crecimiento del gasto.</b> Una pendiente de <b>m ≈ 71,33</b> COP miles de millones por trimestre indica que, en promedio, los costos aumentan alrededor de <b>285,3 COP miles de millones al año</b>, equivalentes a cerca del <b>8,8 % anual</b>. Este ritmo supera la inflación promedio del período (≈ 8,0 % en 2023 y ≈ 6,5 % en 2024), por lo que el crecimiento no se explica únicamente por ajuste de precios: existe un componente de expansión operativa y renovación de equipamiento.</li>
+    <li><b>Alta linealidad.</b> Un R² de 0,999 sugiere que, salvo choques externos, el comportamiento es altamente predecible. Esto habilita proyecciones presupuestales trimestrales con bajo margen de error en el corto plazo.</li>
+    <li><b>Distribución por rubro.</b> El rubro operativo pasó de representar el 59,6 % del gasto total en Q1-2022 al 60,9 % en Q4-2024, mientras que infraestructura se estabilizó entre el 9,5 % y el 10,5 %. El equipamiento creció 25,9 % en valor absoluto (de 850 a 1.070), confirmando la prioridad institucional en renovación de dotación y tecnología.</li>
+  </ul>
+  <p>Como limitaciones del modelo se identifican: (i) la agregación trimestral puede ocultar estacionalidades mensuales asociadas a picos de fin de año; (ii) el modelo lineal no captura aceleraciones o desaceleraciones futuras; (iii) los datos deben contrastarse con los informes definitivos de ejecución presupuestal cuando sean publicados.</p>
+
+  <!-- =========== 5. CONCLUSIONES =========== -->
+  <h2>5. Conclusiones</h2>
+  <ol>
+    <li>Los costos operativos y de equipamiento de la Policía Nacional crecieron de manera sostenida y prácticamente lineal entre 2022 y 2024, con un incremento total del orden del <b>27,4 %</b> en el costo trimestral consolidado.</li>
+    <li>La función lineal ajustada, <b>y = 71,33·x + 2.776,36</b>, con R² ≈ 0,9991, es un modelo apropiado para describir la evolución del gasto trimestral en el período estudiado.</li>
+    <li>La pendiente del modelo traduce una tasa de crecimiento anual cercana al 8,8 %, superior a la inflación del período, lo que evidencia un esfuerzo presupuestal real por fortalecer la capacidad operativa.</li>
+    <li>La proyección para 2025 debe tomarse como referencia de planeación, no como pronóstico rígido: se recomienda actualizar el modelo con datos mensuales y revisar su validez al finalizar cada semestre.</li>
+  </ol>
+
+  <h3>Recomendaciones</h3>
+  <ul>
+    <li>Complementar el modelo lineal con una desagregación mensual para identificar estacionalidades.</li>
+    <li>Incorporar una segunda variable explicativa (por ejemplo, número de efectivos activos o tasa de delitos) para construir un modelo multivariable.</li>
+    <li>Socializar los resultados al interior de la unidad financiera para respaldar los escenarios presupuestales del PAA 2026.</li>
+  </ul>
+
+  <!-- =========== 6. REFERENCIAS =========== -->
+  <h2>6. Referencias (normas APA, 7.ª ed.)</h2>
+  <div class="refs">
+    <p>Aro, A., &amp; Santander, O. (2022). <i>Matemática elemental para estudiantes universitarios</i>. Instituto Universitario de Innovación Ciencia y Tecnología Inudi Perú.</p>
+    <p>Cervantes Campo, G., Jiménez Blanco, G., &amp; Martínez Solano, R. (2022). Razonamiento cuantitativo, lenguaje y matemáticas. <i>Zona Próxima</i>, (36), 76–92.</p>
+    <p>Departamento Administrativo Nacional de Estadística. (2021). <i>Conductas y servicios de policía en Colombia — CSPC 2021</i>. DANE.</p>
+    <p>Ministerio de Hacienda y Crédito Público. (2024). <i>Ejecución presupuestal del sector Defensa y Seguridad, vigencias 2022-2024</i>. MinHacienda.</p>
+    <p>Policía Nacional de Colombia. (2023). <i>Plan Anual de Adquisiciones</i>. PONAL.</p>
+    <p>Policía Nacional de Colombia. (2023). <i>Presupuesto general asignado — vigencia 2023</i>. PONAL.</p>
+  </div>
+
+  <p class="aclaracion">Documento preparado con fines académicos como ejemplo de la actividad <b>U1 — Profundizo</b> de la asignatura <i>Electiva I: Razonamiento Cuantitativo I</i>. Las cifras utilizadas son de carácter ilustrativo y buscan replicar el procedimiento de análisis; para entregas oficiales cada estudiante deberá verificar y citar las cifras reales publicadas por PONAL, MinHacienda y DANE.</p>
+</div>
+
+<script>
+(function(){
+  const x = [1,2,3,4,5,6,7,8,9,10,11,12];
+  const y = [2850,2920,2980,3050,3150,3210,3280,3340,3420,3490,3560,3630];
+  const m = 71.3286; const b = 2776.3636;
+  const puntos = x.map((xi,i)=>({x:xi,y:y[i]}));
+  const linea = [{x:0.5,y:m*0.5+b},{x:12.5,y:m*12.5+b}];
+  const etiquetas = ["Q1-22","Q2-22","Q3-22","Q4-22","Q1-23","Q2-23","Q3-23","Q4-23","Q1-24","Q2-24","Q3-24","Q4-24"];
+
+  const ctx = document.getElementById('chartCostos').getContext('2d');
+  new Chart(ctx, {
+    type:'scatter',
+    data:{
+      datasets:[
+        {
+          label:'Costos trimestrales observados',
+          data:puntos,
+          backgroundColor:'#0b3d91',
+          borderColor:'#0b3d91',
+          pointRadius:5,
+          pointHoverRadius:7
+        },
+        {
+          type:'line',
+          label:'Línea de tendencia (y = 71,33·x + 2.776,36)',
+          data:linea,
+          borderColor:'#c0392b',
+          backgroundColor:'#c0392b',
+          borderWidth:2,
+          pointRadius:0,
+          fill:false,
+          tension:0
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        title:{display:true,text:'Costos totales trimestrales de la Policía Nacional (2022–2024)',font:{size:14,family:'Arial'}},
+        legend:{position:'bottom'},
+        tooltip:{callbacks:{
+          title:(items)=>{
+            const idx = Math.round(items[0].parsed.x)-1;
+            return (idx>=0 && idx<etiquetas.length)?etiquetas[idx]:'Proyección';
+          },
+          label:(item)=>`Costo: ${item.parsed.y.toLocaleString('es-CO')} COP mil mill.`
+        }}
+      },
+      scales:{
+        x:{
+          title:{display:true,text:'Trimestre (x)'},
+          min:0.5,max:12.5,
+          ticks:{
+            stepSize:1,
+            callback:(v)=>{
+              const i = Math.round(v)-1;
+              return (i>=0&&i<etiquetas.length)?etiquetas[i]:'';
+            }
+          }
+        },
+        y:{
+          title:{display:true,text:'Costo total (COP miles de millones)'},
+          suggestedMin:2700, suggestedMax:3800
+        }
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

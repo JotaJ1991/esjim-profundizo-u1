@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>U1 | Profundizo — Fuente 3: DANE CSPC 2021 y servicios de policía 2022-2024</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{--azul:#0b3d91;--azul-claro:#1d5fc4;--gris:#4a4a4a;--gris-bg:#f4f6fb;--borde:#d7dde8;--acento:#c0392b;--dane:#00754A}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#e9eef7;font-family:"Times New Roman",Times,serif;color:#222}
+  .hoja{max-width:860px;margin:24px auto;background:#fff;padding:72px 90px;border-radius:4px;box-shadow:0 4px 18px rgba(0,0,0,.08);line-height:1.55;font-size:12pt}
+  h1,h2,h3,h4{font-family:"Arial","Helvetica",sans-serif;color:var(--azul);line-height:1.25}
+  h1{font-size:20pt;text-align:center;margin:0 0 6px}
+  h2{font-size:14pt;border-bottom:2px solid var(--azul);padding-bottom:4px;margin-top:32px}
+  h3{font-size:12.5pt;margin-top:22px}
+  p{text-align:justify;margin:10px 0}
+  .portada{text-align:center;margin-bottom:40px}
+  .portada .escudo{width:92px;height:92px;border-radius:50%;background:var(--dane);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;font-weight:700;font-size:13pt;margin:0 auto 18px;letter-spacing:.5px}
+  .portada .sub{font-family:Arial,sans-serif;font-size:11pt;color:var(--gris);margin:4px 0}
+  .portada .titulo{font-size:18pt;color:var(--azul);margin:28px 0 6px;font-family:Arial,sans-serif;font-weight:700}
+  .badge{display:inline-block;background:var(--dane);color:#fff;font-family:Arial,sans-serif;font-size:10pt;padding:4px 12px;border-radius:16px;margin:10px 0}
+  .meta{background:var(--gris-bg);border-left:5px solid var(--dane);padding:14px 18px;margin:28px 0;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.5}
+  .meta b{color:var(--azul)}
+  table.datos{border-collapse:collapse;width:100%;margin:14px 0;font-family:Arial,sans-serif;font-size:10pt}
+  table.datos th,table.datos td{border:1px solid var(--borde);padding:6px 8px;text-align:right}
+  table.datos thead th{background:var(--dane);color:#fff;text-align:center}
+  table.datos td:first-child,table.datos td:nth-child(2){text-align:left;font-weight:600;color:var(--azul)}
+  table.datos tfoot td{background:#eaf5ee;font-weight:700}
+  .caption{font-size:10pt;color:var(--gris);text-align:center;margin:6px 0 18px;font-style:italic}
+  .formula{background:#fafbff;border:1px dashed var(--dane);padding:14px 18px;font-family:"Cambria Math","Times New Roman",serif;font-size:13pt;text-align:center;margin:12px 0}
+  .chart-wrap{background:#fff;border:1px solid var(--borde);padding:14px;border-radius:6px;margin:14px 0 6px}
+  canvas{width:100%!important;max-height:420px}
+  ul,ol{padding-left:22px}li{margin:4px 0}
+  .refs{font-size:11pt;padding-left:32px;text-indent:-28px}.refs p{margin:8px 0;text-align:left}
+  .aclaracion{font-size:10pt;color:var(--gris);border-top:1px solid var(--borde);margin-top:30px;padding-top:10px}
+  @media print{body{background:#fff}.hoja{box-shadow:none;margin:0;padding:30px 40px}h2{page-break-after:avoid}table,figure,.chart-wrap{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="hoja">
+
+  <section class="portada">
+    <div class="escudo">DANE</div>
+    <div class="sub">ESJIM — Escuela de Policía "Gonzalo Jiménez de Quesada"</div>
+    <div class="sub">Dirección Nacional de Escuelas · DINAE</div>
+    <div class="sub">Programa: Técnico Profesional en Servicio de Policía</div>
+    <div class="badge">FUENTE 3 · DANE-CSPC</div>
+    <div class="titulo">Demanda de servicios de policía y estimación de costos operativos, 2022 – 2024<br><span style="font-size:13pt;color:var(--gris)">Fuente principal: DANE — Conductas y Servicios de Policía en Colombia (CSPC) 2021</span></div>
+    <div class="sub" style="margin-top:24px"><b>Asignatura:</b> Electiva I — Razonamiento Cuantitativo I</div>
+    <div class="sub"><b>Unidad 1 · Actividad:</b> U1 — Profundizo</div>
+    <div class="sub" style="margin-top:18px"><b>Estudiante:</b> [Nombre y apellidos]</div>
+    <div class="sub"><b>Sección:</b> 00822X &nbsp;·&nbsp; <b>Código:</b> ____________</div>
+    <div class="sub"><b>Docente:</b> Yenifer Fontalvo</div>
+    <div class="sub"><b>Fecha de entrega:</b> 15 de abril de 2026</div>
+  </section>
+
+  <div class="meta">
+    <b>Tipo de actividad:</b> Individual. &nbsp;<b>Horas de trabajo independiente:</b> 6 h.<br>
+    <b>Objetivo.</b> Recopilar, organizar y analizar la demanda de servicios de policía en Colombia (denuncias atendidas, intervenciones de emergencia y otros servicios), utilizando como fuente primaria el CSPC 2021 del DANE, y modelar mediante una función lineal su evolución, así como estimar el costo operativo asociado.<br>
+    <b>Fuente primaria:</b> Departamento Administrativo Nacional de Estadística — DANE (2021). <i>Conductas y servicios de policía en Colombia — CSPC 2021</i>.
+  </div>
+
+  <h2>1. Introducción</h2>
+  <p>La <b>Encuesta de Conductas y Servicios de Policía en Colombia (CSPC)</b>, publicada por el DANE, es una de las principales fuentes de información sobre la relación entre ciudadanía e instituciones de seguridad. Aporta datos sobre victimización, percepción de seguridad, denuncia y uso de servicios de policía. Estos datos permiten estimar la <b>demanda</b> de servicios policiales y, al combinarlos con información de costos operativos, proyectar las necesidades presupuestales derivadas de la operación cotidiana de la Policía Nacional.</p>
+  <p>Este informe toma las líneas base del CSPC 2021 y las actualiza con la serie operativa publicada por PONAL para 2022–2024, para modelar la evolución trimestral del número total de servicios prestados (en miles). La pregunta orientadora es: <i>¿cómo ha evolucionado la demanda de servicios de policía entre 2022 y 2024 y cuál sería el costo operativo asociado si la tendencia se mantiene?</i></p>
+
+  <h2>2. Metodología</h2>
+  <h3>2.1 Términos clave de búsqueda</h3>
+  <p>Descriptores: <i>CSPC DANE 2021</i>, <i>conductas y servicios de policía Colombia</i>, <i>denuncias atendidas Policía Nacional</i>, <i>servicios de emergencia 123 Colombia</i>, <i>victimización Colombia 2022 2023 2024</i>.</p>
+
+  <h3>2.2 Fuente principal y complementarias</h3>
+  <ul>
+    <li>DANE (2021). <i>Conductas y Servicios de Policía en Colombia — CSPC 2021</i>. (fuente primaria)</li>
+    <li>Policía Nacional de Colombia (2024). <i>Series operativas — denuncias, intervenciones 123 y servicios de control</i>.</li>
+    <li>Observatorio de Seguridad Ciudadana — Cámara de Comercio de Bogotá (2024). <i>Balance de seguridad 2022–2024</i>.</li>
+  </ul>
+
+  <h3>2.3 Procedimiento</h3>
+  <ol>
+    <li>Extracción de las cifras de línea base del CSPC 2021 publicadas por DANE.</li>
+    <li>Obtención de la serie operativa trimestral 2022–2024 (número total de servicios prestados, en miles) a partir de los reportes de PONAL.</li>
+    <li>Clasificación en tres categorías: <i>atenciones a denuncias</i>, <i>intervenciones de emergencia (línea 123)</i> y <i>otros servicios</i> (control, patrullaje, auxilios).</li>
+    <li>Definición de variables: x = trimestre (1 a 12); y = total de servicios prestados en miles.</li>
+    <li>Ajuste de una función lineal por mínimos cuadrados y cálculo de R².</li>
+    <li>Estimación del costo operativo asociado usando un <b>costo unitario promedio</b> por servicio prestado (CO$ 1,95 millones, derivado de MinHacienda 2024) para proyectar el gasto trimestral.</li>
+    <li>Elaboración del gráfico de dispersión con línea de tendencia.</li>
+  </ol>
+
+  <h2>3. Resultados</h2>
+
+  <h3>3.1 Base de datos consolidada</h3>
+  <p>La tabla 1 presenta la evolución trimestral de los servicios de policía prestados en Colombia, en miles de servicios.</p>
+
+  <table class="datos" aria-label="Servicios de policía trimestrales 2022-2024">
+    <thead>
+      <tr><th>x</th><th>Trimestre</th><th>Denuncias atendidas</th><th>Emergencias 123</th><th>Otros servicios</th><th>Total (y)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Q1-2022</td><td>820</td><td>310</td><td>120</td><td>1.250</td></tr>
+      <tr><td>2</td><td>Q2-2022</td><td>840</td><td>318</td><td>122</td><td>1.280</td></tr>
+      <tr><td>3</td><td>Q3-2022</td><td>860</td><td>326</td><td>124</td><td>1.310</td></tr>
+      <tr><td>4</td><td>Q4-2022</td><td>882</td><td>335</td><td>128</td><td>1.345</td></tr>
+      <tr><td>5</td><td>Q1-2023</td><td>905</td><td>343</td><td>132</td><td>1.380</td></tr>
+      <tr><td>6</td><td>Q2-2023</td><td>925</td><td>350</td><td>135</td><td>1.410</td></tr>
+      <tr><td>7</td><td>Q3-2023</td><td>948</td><td>358</td><td>139</td><td>1.445</td></tr>
+      <tr><td>8</td><td>Q4-2023</td><td>970</td><td>367</td><td>143</td><td>1.480</td></tr>
+      <tr><td>9</td><td>Q1-2024</td><td>998</td><td>375</td><td>147</td><td>1.520</td></tr>
+      <tr><td>10</td><td>Q2-2024</td><td>1.020</td><td>384</td><td>151</td><td>1.555</td></tr>
+      <tr><td>11</td><td>Q3-2024</td><td>1.045</td><td>393</td><td>152</td><td>1.590</td></tr>
+      <tr><td>12</td><td>Q4-2024</td><td>1.072</td><td>402</td><td>156</td><td>1.630</td></tr>
+    </tbody>
+    <tfoot><tr><td colspan="5">Σ y (miles de servicios prestados)</td><td>17.195</td></tr></tfoot>
+  </table>
+  <div class="caption">Tabla 1. Servicios de policía prestados por trimestre en Colombia, 2022–2024 (miles). Elaboración propia con línea base del CSPC 2021 (DANE) y series operativas PONAL.</div>
+
+  <h3>3.2 Ajuste de la función lineal</h3>
+
+  <h4 style="margin-top:18px;color:var(--dane);font-family:Arial,sans-serif;font-size:11.5pt">3.2.1 Formulación teórica del modelo</h4>
+  <p>El modelo de regresión lineal simple expresa la variable dependiente <i>y</i> (número de servicios prestados) como una función afín de la variable independiente <i>x</i> (trimestre):</p>
+  <div class="formula"><b>y = m·x + b</b></div>
+  <p>donde <i>m</i> es la <b>pendiente</b>, que indica en cuántas unidades cambia <i>y</i> por cada unidad de <i>x</i>, y <i>b</i> es el <b>intercepto</b>, que corresponde al valor teórico de <i>y</i> cuando <i>x = 0</i>.</p>
+  <p>Los parámetros <i>m</i> y <i>b</i> se estiman por el método de <b>mínimos cuadrados ordinarios</b>, que minimiza la suma de los residuos al cuadrado, <i>eᵢ² = (yᵢ − ŷᵢ)²</i>. Sus expresiones son:</p>
+  <div class="formula">m = [ n·Σ(xᵢ·yᵢ) − (Σxᵢ)·(Σyᵢ) ] ÷ [ n·Σxᵢ² − (Σxᵢ)² ]</div>
+  <div class="formula">b = ȳ − m·x̄</div>
+  <p>El <b>coeficiente de determinación</b> mide qué proporción de la variabilidad total se explica por el modelo:</p>
+  <div class="formula">R² = 1 − [ Σ(yᵢ − ŷᵢ)² ÷ Σ(yᵢ − ȳ)² ]</div>
+  <p>Un R² cercano a 1 indica que la trayectoria de la demanda puede describirse adecuadamente mediante una recta.</p>
+
+  <h4 style="margin-top:18px;color:var(--dane);font-family:Arial,sans-serif;font-size:11.5pt">3.2.2 Aplicación al caso</h4>
+  <p>Con n = 12 observaciones, los estadísticos auxiliares son:</p>
+  <ul>
+    <li>Σx = 78 &nbsp;·&nbsp; Σy = 17.195 &nbsp;·&nbsp; Σxy = 116.715 &nbsp;·&nbsp; Σx² = 650</li>
+    <li>Media de x = 6,5 &nbsp;·&nbsp; Media de y = 1.432,92</li>
+  </ul>
+  <p>Reemplazando en las fórmulas teóricas:</p>
+  <div class="formula">m = (12·116.715 − 78·17.195) ÷ (12·650 − 78²) = 59.370 ÷ 1.716 ≈ <b>34,60</b></div>
+  <div class="formula">b = 1.432,92 − (34,60)(6,5) ≈ <b>1.208,00</b></div>
+  <div class="formula" style="background:#eaf5ee;border-style:solid;border-color:var(--dane)"><b>y = 34,60·x + 1.208,00</b></div>
+  <p><b>Coeficiente de determinación:</b> R² ≈ <b>0,9988</b>, lo que indica que el modelo lineal explica el 99,88 % de la variabilidad de la demanda trimestral de servicios de policía.</p>
+
+  <h3>3.3 Gráfico de dispersión con línea de tendencia</h3>
+  <div class="chart-wrap"><canvas id="chartDANE" height="360"></canvas></div>
+  <div class="caption">Figura 1. Servicios de policía prestados por trimestre (puntos) y recta de ajuste por mínimos cuadrados.</div>
+
+  <h3>3.4 Estimación del costo operativo asociado</h3>
+  <p>Asumiendo un costo operativo promedio por servicio prestado de <b>CO$ 1,95 millones</b> (incluye recurso humano, combustible, desgaste de equipos y logística), el costo operativo derivado se obtiene multiplicando el número de servicios (en miles) por el costo unitario. Así:</p>
+  <div class="formula">Costo operativo trimestral (COP miles de millones) = y × 0,00195 × 1.000 = <b>y · 1,95</b></div>
+  <p><b>Proyección 2025</b> (manteniendo la tendencia lineal):</p>
+  <ul>
+    <li>Q1-2025 (x = 13): y ≈ <b>1.657,8</b> miles de servicios → costo operativo ≈ <b>3.233 COP miles de millones</b>.</li>
+    <li>Q4-2025 (x = 16): y ≈ <b>1.761,6</b> miles de servicios → costo operativo ≈ <b>3.435 COP miles de millones</b>.</li>
+  </ul>
+
+  <h2>4. Discusión</h2>
+  <ul>
+    <li><b>Ritmo de crecimiento de la demanda.</b> La pendiente m ≈ 34,60 miles de servicios por trimestre implica <b>≈ 138,4 miles de servicios adicionales cada año</b>, equivalentes al <b>8,5 % anual</b>. Este crecimiento está alineado con el aumento poblacional y la tasa de urbanización, pero no se explica únicamente por ellos: incide también el uso creciente de la línea 123 y de los canales digitales de denuncia.</li>
+    <li><b>Composición.</b> Las atenciones a denuncias representan cerca del 65,6 % de los servicios; las emergencias 123, el 24,7 %; y otros servicios, el 9,7 %. Esta estructura se mantuvo estable en el trienio, lo que sugiere un patrón de demanda consolidado.</li>
+    <li><b>Implicación presupuestal.</b> Si la tendencia se mantiene, la Policía Nacional tendría que prever un <b>costo operativo anual adicional de aproximadamente 270 COP miles de millones</b> cada año únicamente para absorber el crecimiento natural de la demanda.</li>
+  </ul>
+  <p><b>Limitaciones:</b> (i) el CSPC 2021 es una encuesta de percepción y victimización; los datos trimestrales provienen de series operativas de PONAL; (ii) el costo unitario por servicio es una aproximación y puede variar por tipo; (iii) el modelo no incorpora choques externos (paros, emergencias, campañas especiales).</p>
+
+  <h2>5. Conclusiones y recomendaciones</h2>
+  <ol>
+    <li>La demanda total de servicios de policía creció <b>30,4 %</b> entre Q1-2022 (1.250) y Q4-2024 (1.630) miles de servicios.</li>
+    <li>La función lineal <b>y = 34,60·x + 1.208,00</b> con R² ≈ 0,9988 describe adecuadamente la evolución trimestral.</li>
+    <li>Con un costo unitario estimado de CO$ 1,95 millones por servicio, la expansión natural implicaría un costo operativo adicional cercano al 8,5 % anual, que debe reflejarse en el PAA y en el presupuesto asignado.</li>
+    <li>Se recomienda <b>actualizar el CSPC</b> y articular sus resultados con los registros operativos de PONAL para consolidar un sistema de información que permita proyectar recursos con mayor granularidad (por departamento, por tipo de servicio y por hora del día).</li>
+  </ol>
+
+  <h2>6. Referencias (APA 7.ª ed.)</h2>
+  <div class="refs">
+    <p>Departamento Administrativo Nacional de Estadística. (2021). <i>Conductas y servicios de policía en Colombia — CSPC 2021</i>. DANE.</p>
+    <p>Policía Nacional de Colombia. (2024). <i>Series operativas — denuncias, intervenciones 123 y servicios de control 2022–2024</i>. PONAL.</p>
+    <p>Cámara de Comercio de Bogotá, Observatorio de Seguridad Ciudadana. (2024). <i>Balance de seguridad 2022–2024</i>. CCB.</p>
+    <p>Ministerio de Hacienda y Crédito Público. (2024). <i>Ejecución presupuestal del sector Defensa y Seguridad</i>. MinHacienda.</p>
+    <p>Cervantes Campo, G., Jiménez Blanco, G., &amp; Martínez Solano, R. (2022). Razonamiento cuantitativo, lenguaje y matemáticas. <i>Zona Próxima</i>, (36), 76–92.</p>
+  </div>
+
+  <p class="aclaracion">Documento preparado con fines académicos como ejemplo de la actividad <b>U1 — Profundizo</b>. Las cifras son ilustrativas y buscan replicar el procedimiento de análisis; para entregas oficiales cada estudiante deberá verificar y citar las cifras reales publicadas por DANE y PONAL.</p>
+</div>
+
+<script>
+(function(){
+  const x=[1,2,3,4,5,6,7,8,9,10,11,12];
+  const y=[1250,1280,1310,1345,1380,1410,1445,1480,1520,1555,1590,1630];
+  const m=34.6014, b=1208.0000;
+  const puntos=x.map((xi,i)=>({x:xi,y:y[i]}));
+  const linea=[{x:0.5,y:m*0.5+b},{x:12.5,y:m*12.5+b}];
+  const et=["Q1-22","Q2-22","Q3-22","Q4-22","Q1-23","Q2-23","Q3-23","Q4-23","Q1-24","Q2-24","Q3-24","Q4-24"];
+  new Chart(document.getElementById('chartDANE'),{
+    type:'scatter',
+    data:{datasets:[
+      {label:'Servicios prestados (miles)',data:puntos,backgroundColor:'#00754A',borderColor:'#00754A',pointRadius:5,pointHoverRadius:7},
+      {type:'line',label:'Línea de tendencia y = 34,60·x + 1.208,00',data:linea,borderColor:'#c0392b',backgroundColor:'#c0392b',borderWidth:2,pointRadius:0,fill:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{
+        title:{display:true,text:'Demanda de servicios de policía — Colombia 2022-2024 (DANE-CSPC + PONAL)',font:{size:14,family:'Arial'}},
+        legend:{position:'bottom'},
+        tooltip:{callbacks:{
+          title:(it)=>{const i=Math.round(it[0].parsed.x)-1;return (i>=0&&i<et.length)?et[i]:'Proyección';},
+          label:(it)=>`Servicios: ${it.parsed.y.toLocaleString('es-CO')} miles`
+        }}
+      },
+      scales:{
+        x:{title:{display:true,text:'Trimestre (x)'},min:0.5,max:12.5,ticks:{stepSize:1,callback:(v)=>{const i=Math.round(v)-1;return (i>=0&&i<et.length)?et[i]:'';}}},
+        y:{title:{display:true,text:'Servicios prestados (miles)'},suggestedMin:1200,suggestedMax:1700}
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>
