@@ -71,7 +71,7 @@
   <!-- =========== PORTADA =========== -->
   <section class="portada">
     <div class="escudo">PONAL</div>
-    <div class="sub">Escuela de Policía “Antonio Nariño” — ESJIM</div>
+    <div class="sub">ESJIM — Escuela de Policía "Gonzalo Jiménez de Quesada"</div>
     <div class="sub">Dirección Nacional de Escuelas · DINAE</div>
     <div class="sub">Programa: Técnico Profesional en Servicio de Policía</div>
 
@@ -163,15 +163,28 @@
   <div class="caption">Tabla 1. Costos trimestrales de la Policía Nacional de Colombia, 2022–2024 (COP miles de millones). Elaboración propia con base en PONAL, MinHacienda y DANE.</div>
 
   <h3>3.2 Ajuste de la función lineal</h3>
-  <p>Aplicando mínimos cuadrados con n = 12 observaciones, se obtuvieron los siguientes parciales:</p>
+
+  <h4 style="margin-top:18px;color:var(--azul-claro);font-family:Arial,sans-serif;font-size:11.5pt">3.2.1 Formulación teórica del modelo</h4>
+  <p>El modelo de regresión lineal simple supone que la variable dependiente <i>y</i> (costo total trimestral) puede expresarse como una función afín de la variable independiente <i>x</i> (trimestre):</p>
+  <div class="formula"><b>y = m·x + b</b></div>
+  <p>donde <i>m</i> es la <b>pendiente</b> (variación promedio de <i>y</i> por cada unidad de <i>x</i>) y <i>b</i> es el <b>intercepto</b> con el eje <i>y</i> (valor teórico de <i>y</i> cuando <i>x = 0</i>).</p>
+  <p>Los parámetros <i>m</i> y <i>b</i> se estiman por el método de <b>mínimos cuadrados ordinarios</b>, que minimiza la suma de los residuos al cuadrado <i>eᵢ² = (yᵢ − ŷᵢ)²</i>. Sus expresiones son:</p>
+  <div class="formula">m = [ n·Σ(xᵢ·yᵢ) − (Σxᵢ)·(Σyᵢ) ] ÷ [ n·Σxᵢ² − (Σxᵢ)² ]</div>
+  <div class="formula">b = ȳ − m·x̄</div>
+  <p>La calidad del ajuste se mide con el <b>coeficiente de determinación</b>, que compara la varianza explicada por el modelo con la varianza total:</p>
+  <div class="formula">R² = 1 − [ Σ(yᵢ − ŷᵢ)² ÷ Σ(yᵢ − ȳ)² ]</div>
+  <p>Cuanto más cercano a 1 sea el R², mayor será la proporción de variabilidad de los costos que el modelo lineal logra explicar.</p>
+
+  <h4 style="margin-top:18px;color:var(--azul-claro);font-family:Arial,sans-serif;font-size:11.5pt">3.2.2 Aplicación al caso</h4>
+  <p>Con n = 12 observaciones, los estadísticos auxiliares son:</p>
   <ul>
     <li>Σx = 78 &nbsp; · &nbsp; Σy = 38.880 &nbsp; · &nbsp; Σxy = 262.920 &nbsp; · &nbsp; Σx² = 650</li>
     <li>Media de x = 6,5 &nbsp; · &nbsp; Media de y = 3.240</li>
   </ul>
+  <p>Reemplazando en las fórmulas teóricas:</p>
 
   <div class="formula">
-    m = (n·Σxy − Σx·Σy) ÷ (n·Σx² − (Σx)²) &nbsp;=&nbsp; (12·262.920 − 78·38.880) ÷ (12·650 − 78²)<br>
-    m = 122.400 ÷ 1.716 ≈ <b>71,33</b>
+    m = (12·262.920 − 78·38.880) ÷ (12·650 − 78²) = 122.400 ÷ 1.716 ≈ <b>71,33</b>
   </div>
   <div class="formula">
     b = ȳ − m·x̄ = 3.240 − (71,33)(6,5) ≈ <b>2.776,36</b>
