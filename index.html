@@ -2,59 +2,127 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>U1 | Profundizo — Ejemplos por fuente</title>
+<title>ESJIM · Razonamiento Cuantitativo I — Materiales por actividad</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:Arial,sans-serif;background:#0b3d91;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-  .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;max-width:960px;width:100%}
-  h1{grid-column:1/-1;color:#fff;text-align:center;font-size:22pt;margin-bottom:8px}
-  .sub{grid-column:1/-1;color:#b3c7e8;text-align:center;font-size:11pt;margin-bottom:16px}
-  a.card{
-    background:#fff;border-radius:12px;padding:28px 24px;text-decoration:none;color:#222;
-    box-shadow:0 6px 20px rgba(0,0,0,.25);transition:transform .15s,box-shadow .15s;
-    display:flex;flex-direction:column;gap:10px
-  }
-  a.card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.35)}
-  .badge{display:inline-block;font-size:9pt;font-weight:700;letter-spacing:.5px;padding:3px 10px;border-radius:12px;color:#fff;width:fit-content}
-  .b1{background:#0b3d91}.b2{background:#1d5fc4}.b3{background:#00754A}.b4{background:#c0392b}
-  .card h2{font-size:14pt;color:#0b3d91;margin:0}
-  .card p{font-size:10.5pt;color:#555;line-height:1.4}
-  .card .eq{font-family:"Cambria Math",serif;font-size:11pt;color:#0b3d91;background:#f0f4ff;padding:6px 10px;border-radius:6px;text-align:center}
+  body{font-family:'Segoe UI','Helvetica',Arial,sans-serif;background:linear-gradient(135deg,#0b3d91 0%,#1d5fc4 50%,#8b5cf6 100%);min-height:100vh;padding:24px 16px;color:#fff}
+  .wrap{max-width:1100px;margin:0 auto}
+  header{text-align:center;color:#fff;margin-bottom:30px}
+  header h1{font-size:30pt;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+  header .sub{font-size:13pt;opacity:.95}
+  header .docente{display:inline-block;background:rgba(255,255,255,.18);padding:6px 18px;border-radius:20px;font-size:11pt;margin-top:10px;backdrop-filter:blur(8px)}
+
+  .section{background:rgba(255,255,255,.06);border-radius:16px;padding:22px;margin-bottom:20px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.15)}
+  .section h2{font-size:18pt;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  .section h2 .ico{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:rgba(255,255,255,.2);border-radius:10px;font-size:18px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  a.card{background:#fff;border-radius:12px;padding:18px;text-decoration:none;color:#222;box-shadow:0 4px 16px rgba(0,0,0,.2);transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
+  a.card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+  a.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:#0b3d91}
+  a.card.b1::before{background:#0b3d91}
+  a.card.b2::before{background:#1d5fc4}
+  a.card.b3::before{background:#10b981}
+  a.card.b4::before{background:#c0392b}
+  a.card.b5::before{background:#f59e0b}
+  a.card.b6::before{background:#8b5cf6}
+  a.card.b7::before{background:#ec4899}
+
+  a.card .badge{display:inline-block;font-size:8.5pt;font-weight:700;letter-spacing:.5px;padding:3px 9px;border-radius:10px;color:#fff;width:fit-content}
+  a.card.b1 .badge{background:#0b3d91}
+  a.card.b2 .badge{background:#1d5fc4}
+  a.card.b3 .badge{background:#10b981}
+  a.card.b4 .badge{background:#c0392b}
+  a.card.b5 .badge{background:#f59e0b}
+  a.card.b6 .badge{background:#8b5cf6}
+  a.card.b7 .badge{background:#ec4899}
+  a.card h3{font-size:13pt;color:#0b3d91;margin:0}
+  a.card p{font-size:10.5pt;color:#555;line-height:1.4;margin:0}
+  a.card .meta{font-size:10pt;color:#0b3d91;background:#f0f4ff;padding:6px 10px;border-radius:6px;margin-top:auto;font-family:'Cambria Math',serif}
+
+  footer{text-align:center;color:rgba(255,255,255,.85);font-size:10pt;margin-top:30px;padding:14px}
+  footer a{color:#fff;text-decoration:underline}
 </style>
 </head>
 <body>
-<div class="card-grid">
-  <h1>U1 | Profundizo — Ejemplos para estudiantes</h1>
-  <div class="sub">ESJIM — Escuela de Policía "Gonzalo Jiménez de Quesada"<br>Electiva I: Razonamiento Cuantitativo I</div>
+<div class="wrap">
 
-  <a class="card" href="profundizo_paa.html">
-    <span class="badge b1">FUENTE 1 · PAA</span>
-    <h2>Plan Anual de Adquisiciones</h2>
-    <p>Gasto trimestral en equipamiento: vehículos, armamento, tecnología y dotación.</p>
-    <div class="eq">y = 21,73·x + 424,17 &nbsp;·&nbsp; R² = 0,9986</div>
-  </a>
+  <header>
+    <h1>ESJIM · Razonamiento Cuantitativo I</h1>
+    <div class="sub">Materiales de apoyo · Ejemplos de actividades y presentaciones</div>
+    <div class="docente">Docente: Yenifer Fontalvo Marriaga</div>
+  </header>
 
-  <a class="card" href="profundizo_presupuesto.html">
-    <span class="badge b2">FUENTE 2 · PRESUPUESTO</span>
-    <h2>Presupuesto General Asignado</h2>
-    <p>Presupuesto total trimestral: funcionamiento, inversión y servicios personales.</p>
-    <div class="eq">y = 86,29·x + 2.999,12 &nbsp;·&nbsp; R² = 0,9989</div>
-  </a>
+  <!-- Sección 1: Demuestro mi aprendizaje -->
+  <section class="section">
+    <h2><span class="ico">🧩</span>Demuestro mi aprendizaje · Caso Kennedy</h2>
+    <div class="grid">
+      <a class="card b1" href="demuestro_e1_ejemplo.html">
+        <span class="badge">ENTREGA 1</span>
+        <h3>Toma de decisiones · Parte 1</h3>
+        <p>Aplicación de los 5 temas de la Unidad 1 al caso Kennedy. Construcción de la estrategia operativa.</p>
+        <span class="meta">5 conceptos matemáticos · 7 figuras · KPIs</span>
+      </a>
+      <a class="card b3" href="demuestro_ef_ejemplo.html">
+        <span class="badge">ENTREGA FINAL</span>
+        <h3>Toma de decisiones · Parte 2</h3>
+        <p>Interpretación, evaluación de 3 escenarios, justificación y recomendaciones operativas.</p>
+        <span class="meta">3 escenarios · 4 gráficos · radar multicriterio</span>
+      </a>
+    </div>
+  </section>
 
-  <a class="card" href="profundizo_dane.html">
-    <span class="badge b3">FUENTE 3 · DANE-CSPC</span>
-    <h2>Servicios de Policía (DANE)</h2>
-    <p>Demanda trimestral de servicios: denuncias, emergencias 123 y otros.</p>
-    <div class="eq">y = 34,60·x + 1.208,00 &nbsp;·&nbsp; R² = 0,9988</div>
-  </a>
+  <!-- Sección 2: Profundizo -->
+  <section class="section">
+    <h2><span class="ico">📊</span>Profundizo · Costos operativos PONAL 2022–2024</h2>
+    <div class="grid">
+      <a class="card b1" href="profundizo_paa.html">
+        <span class="badge">FUENTE 1 · PAA</span>
+        <h3>Plan Anual de Adquisiciones</h3>
+        <p>Gasto trimestral en equipamiento (vehículos, armamento, tecnología, dotación).</p>
+        <span class="meta">y = 21,73·x + 424,17 · R² = 0,9986</span>
+      </a>
+      <a class="card b2" href="profundizo_presupuesto.html">
+        <span class="badge">FUENTE 2 · PRESUPUESTO</span>
+        <h3>Presupuesto General Asignado</h3>
+        <p>Presupuesto trimestral total: funcionamiento, inversión, servicios personales.</p>
+        <span class="meta">y = 86,29·x + 2.999,12 · R² = 0,9989</span>
+      </a>
+      <a class="card b3" href="profundizo_dane.html">
+        <span class="badge">FUENTE 3 · DANE-CSPC</span>
+        <h3>Servicios de Policía (DANE)</h3>
+        <p>Demanda trimestral: denuncias, emergencias 123 y otros servicios.</p>
+        <span class="meta">y = 34,60·x + 1.208,00 · R² = 0,9988</span>
+      </a>
+      <a class="card b4" href="profundizo_ejemplo.html">
+        <span class="badge">CONSOLIDADO</span>
+        <h3>Informe de referencia integrado</h3>
+        <p>Ejemplo combinando los 3 rubros (operativo, equipamiento, infraestructura).</p>
+        <span class="meta">y = 71,33·x + 2.776,36 · R² = 0,9991</span>
+      </a>
+    </div>
+  </section>
 
-  <a class="card" href="profundizo_ejemplo.html">
-    <span class="badge b4">CONSOLIDADO</span>
-    <h2>Informe de referencia</h2>
-    <p>Ejemplo integrado con costos operativos y de equipamiento (3 rubros combinados).</p>
-    <div class="eq">y = 71,33·x + 2.776,36 &nbsp;·&nbsp; R² = 0,9991</div>
-  </a>
+  <!-- Sección 3: Presentaciones -->
+  <section class="section">
+    <h2><span class="ico">🎬</span>Presentaciones interactivas</h2>
+    <div class="grid">
+      <a class="card b6" href="u2_presentacion.html">
+        <span class="badge">UNIDAD 2</span>
+        <h3>Fundamentos de Estadística</h3>
+        <p>Presentación de 12 slides con animaciones, gráficos y diagramas. Navegación con teclado (← →).</p>
+        <span class="meta">12 slides · 3 charts · diagrama de Venn SVG</span>
+      </a>
+    </div>
+  </section>
+
 </div>
+
+<footer>
+  ESJIM · Escuela de Suboficiales y Nivel Ejecutivo "Gonzalo Jiménez de Quesada" · 2026<br>
+  Repositorio: <a href="https://github.com/JotaJ1991/esjim-profundizo-u1">github.com/JotaJ1991/esjim-profundizo-u1</a>
+</footer>
+
 </body>
 </html>

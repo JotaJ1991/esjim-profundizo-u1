@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>U1 | Demuestro mi aprendizaje — Entrega final (Ejemplo visual)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --azul:#0b3d91;
+    --azul-claro:#1d5fc4;
+    --azul-suave:#e8eef9;
+    --gris:#4a4a4a;
+    --gris-suave:#6c7a8a;
+    --gris-bg:#f4f6fb;
+    --borde:#d7dde8;
+    --verde:#1d7c3c;
+    --verde-suave:#e6f4ea;
+    --rojo:#c0392b;
+    --rojo-suave:#fbeae7;
+    --ambar:#d97706;
+    --ambar-suave:#fef3c7;
+    --violeta:#6d28d9;
+    --violeta-suave:#ede9fe;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:linear-gradient(180deg,#e9eef7 0%,#dde5f2 100%);font-family:"Times New Roman",Times,serif;color:#1a1a1a;min-height:100vh}
+  .hoja{max-width:960px;margin:24px auto;background:#fff;padding:60px 72px;border-radius:8px;box-shadow:0 8px 30px rgba(11,61,145,.12);line-height:1.55;font-size:12pt}
+  h1,h2,h3,h4{font-family:"Arial","Helvetica",sans-serif;color:var(--azul);line-height:1.25;letter-spacing:-.01em}
+  h1{font-size:22pt;text-align:center;margin:0 0 6px;font-weight:700}
+  h2{font-size:15pt;padding:10px 0 6px;margin-top:36px;border-bottom:3px solid var(--azul);display:flex;align-items:center;gap:12px}
+  h2 .icon{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--azul);color:#fff;border-radius:8px;font-size:18px;flex-shrink:0}
+  h3{font-size:13pt;margin-top:24px;color:var(--azul-claro);padding-left:10px;border-left:4px solid var(--azul-claro)}
+  h4{font-size:10.5pt;margin:14px 0 6px;color:var(--gris-suave);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+  p{text-align:justify;margin:10px 0}
+
+  /* Portada */
+  .portada{text-align:center;margin-bottom:32px;padding:18px 24px;background:linear-gradient(135deg,var(--azul) 0%,var(--azul-claro) 100%);color:#fff;border-radius:10px}
+  .portada h1,.portada h2,.portada h3,.portada h4{color:#fff;border:none}
+  .portada .sub{font-family:Arial,sans-serif;font-size:11pt;color:rgba(255,255,255,.9);margin:4px 0}
+  .portada .titulo{font-size:19pt;color:#fff;margin:0;font-family:Arial,sans-serif;font-weight:700}
+
+  /* Meta */
+  .meta{background:var(--gris-bg);border-left:5px solid var(--azul);padding:14px 18px;margin:28px 0;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.5;border-radius:4px}
+  .meta b{color:var(--azul)}
+
+  /* KPIs */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}
+  .kpi{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:16px;text-align:center;position:relative;overflow:hidden;transition:transform .2s}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--azul)}
+  .kpi.amber::before{background:var(--ambar)}
+  .kpi.red::before{background:var(--rojo)}
+  .kpi.green::before{background:var(--verde)}
+  .kpi.violet::before{background:var(--violeta)}
+  .kpi .icon{font-size:24px;margin-bottom:4px;display:block}
+  .kpi .value{font-size:20pt;font-weight:700;color:var(--azul);font-family:Arial,sans-serif;line-height:1.1}
+  .kpi.amber .value{color:var(--ambar)}
+  .kpi.red .value{color:var(--rojo)}
+  .kpi.green .value{color:var(--verde)}
+  .kpi.violet .value{color:var(--violeta)}
+  .kpi .label{font-size:9.5pt;color:var(--gris-suave);font-family:Arial,sans-serif;margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+
+  /* Cards de criterios de decisión */
+  .concept-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:16px 0}
+  .concept-card{background:#fff;border:1px solid var(--borde);border-radius:8px;padding:12px 10px;text-align:center;font-family:Arial,sans-serif;font-size:10pt;position:relative}
+  .concept-card .ico{font-size:22px;display:block;margin-bottom:4px}
+  .concept-card .title{font-weight:700;color:var(--azul);font-size:9.5pt}
+  .concept-card .val{color:var(--gris-suave);font-size:8.5pt;margin-top:3px}
+
+  /* Tablas */
+  table.datos{border-collapse:collapse;width:100%;margin:14px 0;font-family:Arial,sans-serif;font-size:10.5pt;border-radius:6px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+  table.datos th,table.datos td{border:1px solid var(--borde);padding:8px 10px;text-align:right}
+  table.datos thead th{background:var(--azul);color:#fff;text-align:center;font-weight:600}
+  table.datos tbody tr:nth-child(even){background:#fafbff}
+  table.datos td:first-child{text-align:left;font-weight:600;color:var(--azul)}
+  table.datos tfoot td{background:#eef3ff;font-weight:700;color:var(--azul)}
+  .caption{font-size:10pt;color:var(--gris-suave);text-align:center;margin:6px 0 18px;font-style:italic}
+
+  /* Fórmulas */
+  .formula{background:linear-gradient(135deg,#f7fafe 0%,#eaf3ff 100%);border:1px dashed var(--azul-claro);padding:14px 18px;font-family:"Cambria Math","Times New Roman",serif;font-size:13pt;text-align:center;margin:12px 0;border-radius:6px}
+  .formula.main{background:var(--azul);color:#fff;border:none}
+  .formula.main b{color:#fff}
+
+  .highlight{background:linear-gradient(135deg,#fff8e6 0%,#ffefc0 100%);border-left:4px solid var(--ambar);padding:12px 16px;margin:14px 0;font-family:Arial,sans-serif;font-size:11pt;border-radius:6px}
+  .highlight b{color:var(--ambar)}
+
+  .chart-wrap{background:#fff;border:1px solid var(--borde);padding:16px;border-radius:10px;margin:18px 0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+  canvas{width:100%!important;max-height:380px}
+
+  ul,ol{padding-left:24px}li{margin:5px 0}
+
+  /* Refs */
+  .refs{font-size:11pt;padding-left:32px;text-indent:-28px}
+  .refs p{margin:8px 0;text-align:left}
+
+  /* Escenarios (3 en grid) */
+  .escenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+  .escenario{background:#fff;border:1px solid var(--borde);padding:16px;border-radius:10px;position:relative;overflow:hidden}
+  .escenario::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--rojo)}
+  .escenario.B::before{background:var(--ambar)}
+  .escenario.C::before{background:var(--verde)}
+  .escenario .badge{display:inline-block;background:var(--rojo);color:#fff;font-family:Arial,sans-serif;font-size:9pt;padding:3px 10px;border-radius:12px;margin-bottom:8px;font-weight:700}
+  .escenario.B .badge{background:var(--ambar)}
+  .escenario.C .badge{background:var(--verde)}
+  .escenario h4{margin-top:0;color:var(--azul);font-size:10.5pt;text-transform:none;letter-spacing:0;font-weight:700}
+  .escenario ul{padding-left:18px;font-size:10pt;line-height:1.5}
+  .escenario li.ventaja{color:var(--verde)}
+  .escenario li.desventaja{color:var(--rojo)}
+
+  /* Fase */
+  .fase{background:var(--azul-suave);border-radius:8px;padding:10px 14px;font-size:10.5pt;color:var(--azul);margin:8px 0;font-family:Arial,sans-serif;display:flex;align-items:center;gap:10px}
+  .fase .ph{background:var(--azul);color:#fff;padding:4px 10px;border-radius:4px;font-weight:700;font-size:9.5pt}
+  .fase b{color:var(--azul)}
+
+  /* Ruta fases (3) */
+  .ruta-fases{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}
+  .fase-card{background:#fff;border:2px solid var(--borde);border-radius:10px;padding:14px;text-align:center;position:relative;transition:all .2s}
+  .fase-card .num{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;background:var(--azul);color:#fff;border-radius:50%;font-family:Arial,sans-serif;font-size:16pt;font-weight:700;margin-bottom:8px}
+  .fase-card h4{margin:4px 0;color:var(--azul);font-size:11pt;text-transform:none;letter-spacing:0}
+  .fase-card p{font-size:10pt;color:var(--gris-suave);margin:4px 0 0}
+  .fase-card::after{content:'→';position:absolute;right:-14px;top:50%;transform:translateY(-50%);font-size:22pt;color:var(--azul-claro);z-index:1;font-family:Arial,sans-serif}
+  .fase-card:last-child::after{display:none}
+
+  /* Chips */
+  .criterios-chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+  .chip{background:#fff8e1;border:1px solid #f0d880;padding:6px 12px;border-radius:16px;font-family:Arial,sans-serif;font-size:10pt;color:#6b5500}
+  .chip b{color:#000}
+
+  .aclaracion{font-size:10pt;color:var(--gris-suave);border-top:1px solid var(--borde);margin-top:30px;padding-top:12px;font-style:italic}
+
+  /* Justificación cards */
+  .just-card{background:#fff;border:1px solid var(--borde);border-radius:8px;padding:14px 16px;margin:8px 0;display:flex;gap:14px;align-items:flex-start}
+  .just-card .num{flex-shrink:0;width:34px;height:34px;background:var(--verde);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:Arial,sans-serif;font-size:13pt}
+  .just-card .body{flex:1;font-size:10.5pt}
+  .just-card .body b{color:var(--verde)}
+
+  /* Decisión card */
+  .decision-card{background:linear-gradient(135deg,var(--verde-suave) 0%,#c6e8d1 100%);border:2px solid var(--verde);border-radius:12px;padding:18px 22px;margin:18px 0;text-align:center}
+  .decision-card .label{font-family:Arial,sans-serif;font-size:10pt;color:var(--verde);text-transform:uppercase;letter-spacing:1px;font-weight:700}
+  .decision-card .titulo{font-family:Arial,sans-serif;font-size:16pt;color:var(--verde);font-weight:700;margin:4px 0}
+  .decision-card .sub{font-size:11pt;color:#0f4a22;margin-top:4px}
+
+  /* Recomendaciones cards */
+  .reco-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0}
+  .reco-card{background:#fff;border:1px solid var(--borde);border-radius:8px;padding:14px;display:flex;gap:12px;align-items:flex-start}
+  .reco-card .ico{flex-shrink:0;width:36px;height:36px;background:var(--azul-suave);color:var(--azul);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16pt}
+  .reco-card .body{flex:1;font-size:10.5pt;font-family:Arial,sans-serif}
+  .reco-card .body b{color:var(--azul);display:block;margin-bottom:2px;font-size:10.5pt}
+  .reco-card .body span{color:var(--gris-suave);font-size:10pt}
+
+  /* Tabla comparativa con colores por escenario */
+  table.compare{border-collapse:collapse;width:100%;margin:14px 0;font-family:Arial,sans-serif;font-size:10pt;border-radius:6px;overflow:hidden}
+  table.compare th,table.compare td{padding:9px 10px;border:1px solid var(--borde);text-align:center}
+  table.compare thead th{background:var(--azul);color:#fff}
+  table.compare thead th:nth-child(2){background:var(--rojo)}
+  table.compare thead th:nth-child(3){background:var(--ambar)}
+  table.compare thead th:nth-child(4){background:var(--verde)}
+  table.compare td:first-child{font-weight:600;color:var(--azul);background:#fafbff;text-align:left}
+  table.compare tbody tr:nth-child(even) td:not(:first-child){background:#fafbff}
+  table.compare .winner{background:#e6f4ea !important;font-weight:700;color:var(--verde)}
+
+  /* Mapa de impacto */
+  .impact-legend{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:10px 0;font-family:Arial,sans-serif;font-size:10pt;color:var(--gris-suave)}
+  .impact-legend .item{display:flex;align-items:center;gap:6px}
+  .impact-legend .swatch{width:14px;height:14px;border-radius:3px}
+
+  @media print{
+    body{background:#fff}
+    .hoja{box-shadow:none;margin:0;padding:30px 40px;max-width:100%}
+    h2{page-break-after:avoid}
+    table,figure,.chart-wrap,.escenario-grid,.ruta-fases,.kpi-grid,.concept-grid,.reco-grid,.just-card{page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="hoja">
+
+  <!-- PORTADA MINIMIZADA -->
+  <section class="portada">
+    <div class="titulo">U1 — Demuestro mi aprendizaje · Entrega final</div>
+    <div class="sub" style="margin-top:10px"><b>Docente:</b> Yenifer Fontalvo Marriaga</div>
+  </section>
+
+  <!-- DASHBOARD DE KPIs DE DECISIÓN -->
+  <h2><span class="icon">📊</span>Panel de indicadores de la decisión</h2>
+  <div class="kpi-grid">
+    <div class="kpi green"><span class="icon">🎯</span><div class="value">B</div><div class="label">Estrategia seleccionada</div></div>
+    <div class="kpi"><span class="icon">🔎</span><div class="value">3</div><div class="label">Escenarios evaluados</div></div>
+    <div class="kpi amber"><span class="icon">⚠️</span><div class="value">420</div><div class="label">Delitos/día esperados</div></div>
+    <div class="kpi red"><span class="icon">🏙️</span><div class="value">48k</div><div class="label">Densidad hab/km²</div></div>
+    <div class="kpi"><span class="icon">👥</span><div class="value">12</div><div class="label">Agentes/km² crítico</div></div>
+    <div class="kpi amber"><span class="icon">💰</span><div class="value">46 %</div><div class="label">Ejecución presupuestal</div></div>
+    <div class="kpi green"><span class="icon">📉</span><div class="value">−15 %</div><div class="label">Reducción delito estimada</div></div>
+    <div class="kpi violet"><span class="icon">⚡</span><div class="value">≤4 min</div><div class="label">Tiempo de respuesta objetivo</div></div>
+  </div>
+
+  <!-- FICHA DE LA ACTIVIDAD -->
+  <div class="meta">
+    <b>Objetivo.</b> Interpretar y argumentar soluciones a partir del análisis matemático del caso policial de Kennedy, fortaleciendo la toma de decisiones estratégicas, la evaluación de alternativas y la formulación de recomendaciones en contextos operativos reales.<br>
+    <b>Ruta de aprendizaje.</b> Fase 1 — Análisis e interpretación contextual · Fase 2 — Evaluación de escenarios estratégicos · Fase 3 — Toma de decisiones y formulación de propuestas.<br>
+    <b>Entregable.</b> Informe de análisis estratégico: interpretación, evaluación, justificación, conclusiones y recomendaciones.
+  </div>
+
+  <!-- RUTA DE APRENDIZAJE VISUAL -->
+  <div class="ruta-fases">
+    <div class="fase-card">
+      <div class="num">1</div>
+      <h4>Interpretación contextual</h4>
+      <p>Lectura estratégica de los datos del operativo.</p>
+    </div>
+    <div class="fase-card">
+      <div class="num">2</div>
+      <h4>Evaluación de escenarios</h4>
+      <p>Construcción de ≥ 2 alternativas y análisis comparativo.</p>
+    </div>
+    <div class="fase-card">
+      <div class="num">3</div>
+      <h4>Decisión y recomendaciones</h4>
+      <p>Selección, justificación y mejoras para futuras intervenciones.</p>
+    </div>
+  </div>
+
+  <!-- CRITERIOS RÚBRICA -->
+  <h3 style="margin-top:20px;font-size:11pt;color:var(--gris-suave);border:none;padding-left:0">Correspondencia con la rúbrica (5 criterios)</h3>
+  <div class="criterios-chips">
+    <span class="chip"><b>C1</b> · Contextualización de datos → §2</span>
+    <span class="chip"><b>C2</b> · Evaluación de escenarios → §3</span>
+    <span class="chip"><b>C3</b> · Justificación de la estrategia → §4</span>
+    <span class="chip"><b>C4</b> · Conclusiones y recomendaciones → §5</span>
+    <span class="chip"><b>C5</b> · Presentación → portada, tablas, gráficos, APA, §6</span>
+  </div>
+
+  <!-- 1. INTRODUCCIÓN -->
+  <h2><span class="icon">📝</span>1. Introducción</h2>
+  <p>Esta segunda entrega cierra el ciclo analítico iniciado en la Parte 1. Si en esa primera fase se <b>construyó</b> la planeación técnica del operativo en la localidad de Kennedy mediante la aplicación de herramientas matemáticas, aquí se <b>interpreta</b> lo calculado, se <b>evalúan</b> tres escenarios estratégicos alternativos, se <b>justifica</b> la mejor opción con argumentos cuantitativos y se formulan <b>recomendaciones</b> para futuras intervenciones similares.</p>
+
+  <div class="highlight"><b>Pregunta orientadora.</b> Dado el contexto operativo de Kennedy (1,2×10⁶ hab · 420 delitos/día · presupuesto 250 M COP · 10 h) y los cálculos de la Parte 1, ¿qué estrategia maximiza el impacto sobre la criminalidad respetando los límites financieros y la percepción ciudadana de seguridad?</p></div>
+
+  <!-- 2. INTERPRETACIÓN CONTEXTUAL -->
+  <h2><span class="icon">🔍</span>2. Contextualización e interpretación de los datos</h2>
+  <div class="fase"><span class="ph">Fase 1</span><b>Fase 1 de la ruta.</b> Lectura estratégica de los resultados cuantitativos.</div>
+
+  <h3>2.1 Lectura de los indicadores clave</h3>
+
+  <div class="concept-grid">
+    <div class="concept-card"><span class="ico">🏙️</span><div class="title">Densidad</div><div class="val">48.000 hab/km²</div></div>
+    <div class="concept-card"><span class="ico">⚠️</span><div class="title">Criminalidad</div><div class="val">420 delitos/día</div></div>
+    <div class="concept-card"><span class="ico">👥</span><div class="title">Cobertura</div><div class="val">8 agentes/km²</div></div>
+    <div class="concept-card"><span class="ico">💰</span><div class="title">Ejecución</div><div class="val">46 % del presup.</div></div>
+    <div class="concept-card"><span class="ico">⏱️</span><div class="title">Duración</div><div class="val">10 horas</div></div>
+  </div>
+
+  <ul>
+    <li><b>Densidad poblacional (48.000 hab/km²):</b> Kennedy presenta una de las concentraciones urbanas más altas de Bogotá. No es un entorno que permita patrullajes ligeros; exige presencia sostenida, coordinación con comercio local y articulación con la comunidad.</li>
+    <li><b>Criminalidad (420 delitos/día):</b> la presión sobre el servicio policial es estructural, no coyuntural. Esto obliga a planear intervenciones repetibles y no a respuestas reactivas aisladas.</li>
+    <li><b>Cobertura (8 agentes/km²):</b> en promedio es suficiente, pero la criminalidad no se distribuye uniformemente — hay 2 sectores críticos donde el promedio se queda corto.</li>
+    <li><b>Ejecución del 46 %:</b> el operativo base utiliza solo 115 M COP de 250 M disponibles. El 54 % restante (135 M) abre margen para tecnología, refuerzos o extensión horaria.</li>
+    <li><b>10 horas:</b> tiempo ajustado. La decisión de conservar, ampliar o redistribuir las horas es un tema central de los escenarios.</li>
+  </ul>
+
+  <h3>2.2 Implicaciones estratégicas</h3>
+  <p>La lectura integrada de los datos sugiere tres líneas de trabajo: <b>(a)</b> focalización territorial en sectores críticos, <b>(b)</b> uso inteligente del excedente presupuestal para tecnología y refuerzos, y <b>(c)</b> combinación de cobertura visible con capacidad de reacción táctica. Estos tres ejes orientan la construcción de los escenarios que se evalúan a continuación.</p>
+
+  <!-- 3. EVALUACIÓN DE ESCENARIOS -->
+  <h2><span class="icon">⚖️</span>3. Evaluación de escenarios estratégicos</h2>
+  <div class="fase"><span class="ph">Fase 2</span><b>Fase 2 de la ruta.</b> Construcción y análisis comparativo de tres escenarios.</div>
+
+  <p>Se construyen <b>tres escenarios</b> que varían en distribución del personal, uso de recursos logísticos y duración del operativo. Los tres respetan el presupuesto asignado y las metas operativas generales.</p>
+
+  <div class="escenario-grid">
+    <div class="escenario A">
+      <span class="badge">ESCENARIO A</span>
+      <h4>Uniforme estándar</h4>
+      <ul>
+        <li>10 h · 40 agentes/sector · 3 patrullas + 2 motos/sector.</li>
+        <li>Cobertura homogénea: 8 agentes/km².</li>
+        <li>Costo: <b>115 M COP</b> (46 %).</li>
+        <li class="ventaja">Presencia visible en toda la localidad.</li>
+        <li class="desventaja">No prioriza zonas críticas.</li>
+        <li class="desventaja">Reducción esperada del delito: modesta.</li>
+      </ul>
+    </div>
+    <div class="escenario B">
+      <span class="badge">ESCENARIO B</span>
+      <h4>Focalizado ampliado</h4>
+      <ul>
+        <li>10 h · 120 agentes en 2 sectores críticos · 80 en los otros 3.</li>
+        <li>Patrullas y drones concentrados en críticos.</li>
+        <li>Costo: <b>115 M COP</b> (46 %) + margen para tecnología.</li>
+        <li class="ventaja">Alta densidad (12 agentes/km²) donde más se necesita.</li>
+        <li class="ventaja">Mayor impacto en reducción delictiva.</li>
+        <li class="desventaja">Menor presencia en zonas bajas (5,3 agentes/km²).</li>
+      </ul>
+    </div>
+    <div class="escenario C">
+      <span class="badge">ESCENARIO C</span>
+      <h4>Mixto por fases horarias</h4>
+      <ul>
+        <li>14 h (extensión) · rotación de personal por fases de 7 h cada una.</li>
+        <li>Cobertura focalizada de día, extensiva en la noche.</li>
+        <li>Costo: <b>161 M COP</b> (64 %) — usa excedente.</li>
+        <li class="ventaja">Máxima flexibilidad operativa.</li>
+        <li class="ventaja">Reducción esperada del delito más alta.</li>
+        <li class="desventaja">Requiere coordinación compleja y relevos.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>3.1 Comparación cuantitativa por indicador</h3>
+  <table class="compare">
+    <thead><tr><th>Indicador</th><th>A — Uniforme</th><th>B — Focalizado</th><th>C — Mixto por fases</th></tr></thead>
+    <tbody>
+      <tr><td>Horas de operativo</td><td>10</td><td>10</td><td class="winner">14</td></tr>
+      <tr><td>Agentes en zonas críticas</td><td>80 (40 %)</td><td class="winner">120 (60 %)</td><td>110 (55 %)</td></tr>
+      <tr><td>Agentes/km² en críticos</td><td>8</td><td class="winner">12</td><td>11</td></tr>
+      <tr><td>Agentes/km² en bajo riesgo</td><td class="winner">8</td><td>5,3</td><td>6,7</td></tr>
+      <tr><td>Costo total</td><td class="winner">115 M</td><td class="winner">115 M</td><td>161 M</td></tr>
+      <tr><td>% del presupuesto usado</td><td class="winner">46 %</td><td class="winner">46 %</td><td>64 %</td></tr>
+      <tr><td>Reducción estimada del delito</td><td>≈ 5–8 %</td><td>≈ 12–15 %</td><td class="winner">≈ 18–22 %</td></tr>
+      <tr><td>Complejidad logística</td><td class="winner">Baja</td><td>Media</td><td>Alta</td></tr>
+      <tr><td>Tiempo de respuesta táctica</td><td>~6 min</td><td class="winner">~4 min</td><td class="winner">~4 min</td></tr>
+    </tbody>
+  </table>
+  <div class="caption">Tabla 1. Comparación multicriterio entre los tres escenarios. Las celdas verdes destacan el mejor resultado por indicador.</div>
+
+  <h3>3.2 Gráfico comparativo de recursos por escenario</h3>
+  <div class="chart-wrap"><canvas id="chartEscenarios" height="340"></canvas></div>
+  <div class="caption">Figura 1. Asignación de agentes por sector en los tres escenarios (barras agrupadas).</div>
+
+  <h3>3.3 Relación costo–duración</h3>
+  <p>Aplicando la función lineal de costo desarrollada en la Parte 1:</p>
+  <div class="formula">C(t) = 11.500.000 · t &nbsp; (COP, con <i>t</i> en horas)</div>
+  <p>Se verifica el costo total de cada escenario:</p>
+  <div class="formula">C<sub>A</sub>=C<sub>B</sub>=11,5·10 = <b>115 M COP</b> &nbsp;·&nbsp; C<sub>C</sub>=11,5·14 = <b>161 M COP</b></div>
+
+  <div class="chart-wrap"><canvas id="chartCostoTiempo" height="340"></canvas></div>
+  <div class="caption">Figura 2. Costo acumulado C(t) y ubicación de cada escenario en la curva del presupuesto.</div>
+
+  <h3>3.4 Evaluación multicriterio (radar)</h3>
+  <div class="chart-wrap"><canvas id="chartRadar" height="340"></canvas></div>
+  <div class="caption">Figura 3. Evaluación multidimensional de los tres escenarios sobre 6 criterios clave (escala 0–10).</div>
+
+  <h3>3.5 Impacto esperado sobre el delito</h3>
+  <div class="chart-wrap"><canvas id="chartImpacto" height="320"></canvas></div>
+  <div class="caption">Figura 4. Reducción estimada de delitos diarios sobre la línea base de 420 delitos/día, por escenario.</div>
+
+  <!-- 4. JUSTIFICACIÓN -->
+  <h2><span class="icon">✅</span>4. Justificación de la estrategia seleccionada</h2>
+  <div class="fase"><span class="ph">Fase 3.1</span><b>Fase 3.1 de la ruta.</b> Se selecciona la alternativa óptima y se sustenta con argumentos cuantitativos.</div>
+
+  <div class="decision-card">
+    <div class="label">Decisión final</div>
+    <div class="titulo">✔ Escenario B — Focalizado ampliado</div>
+    <div class="sub">Mejor equilibrio entre impacto operativo, eficiencia presupuestal y complejidad logística.</div>
+  </div>
+
+  <p>El Escenario C ofrece el mayor impacto proyectado (reducción del 18–22 % del delito), pero su costo (161 M COP) consume el 64 % del presupuesto y exige coordinación compleja por relevos. El Escenario A es el más simple pero genera un impacto modesto (5–8 %). El <b>Escenario B</b> combina un impacto significativo (12–15 %) con el mismo costo del escenario simple (115 M COP, 46 %), dejando 135 M COP (54 %) como margen estratégico.</p>
+
+  <div class="just-card"><div class="num">1</div><div class="body"><b>Impacto/costo óptimo.</b> Por cada millón de COP invertido, el Escenario B reduce aproximadamente 1,2 delitos; el Escenario A, 0,3; el Escenario C, 1,1. La eficiencia de inversión es mayor en B.</div></div>
+
+  <div class="just-card"><div class="num">2</div><div class="body"><b>Densidad operativa estratégica.</b> 12 agentes/km² en sectores críticos (50 % superior al promedio uniforme) concentra el esfuerzo donde se genera la mayor parte de los 420 delitos/día esperados, con tiempo de respuesta ≤ 4 minutos.</div></div>
+
+  <div class="just-card"><div class="num">3</div><div class="body"><b>Reserva presupuestal.</b> Los 135 M COP no ejecutados quedan disponibles para refuerzos tácticos, alimentación, combustible, horas extra o compra puntual de tecnología si la situación operativa lo exige.</div></div>
+
+  <div class="just-card"><div class="num">4</div><div class="body"><b>Complejidad manejable.</b> A diferencia del Escenario C, no requiere relevos por fases ni coordinación multi-temporal; sigue un único esquema de 10 h sostenido, lo que facilita el mando y control.</div></div>
+
+  <div class="just-card"><div class="num">5</div><div class="body"><b>Escalabilidad.</b> Si la situación operativa cambia durante la ejecución, el Escenario B puede transitar hacia el Escenario C sumando las 4 horas adicionales con los recursos ya desplegados y el margen presupuestal disponible (46 M COP adicionales).</div></div>
+
+  <!-- 5. CONCLUSIONES Y RECOMENDACIONES -->
+  <h2><span class="icon">🎯</span>5. Conclusiones y recomendaciones</h2>
+  <div class="fase"><span class="ph">Fase 3.2</span><b>Fase 3.2 de la ruta.</b> Aprendizajes del caso y propuestas para futuras intervenciones.</div>
+
+  <h3>5.1 Conclusiones</h3>
+  <ol>
+    <li>La comparación de los tres escenarios evidencia que la estrategia focalizada (B) ofrece la mejor relación impacto/costo para el operativo de Kennedy, con una reducción esperada del delito del 12–15 % y el mismo costo base que la alternativa uniforme.</li>
+    <li>La función lineal C(t) = 11.500.000·t es una herramienta útil para proyectar costos y evaluar la factibilidad financiera de cada escenario, incluidas ampliaciones horarias.</li>
+    <li>El 54 % del presupuesto queda como reserva estratégica, lo que otorga flexibilidad operativa sin comprometer la disciplina fiscal institucional.</li>
+    <li>El razonamiento cuantitativo no sustituye al criterio operativo, pero lo enriquece: permite sustentar decisiones, trazarlas y replicarlas en operativos similares.</li>
+  </ol>
+
+  <h3>5.2 Recomendaciones para futuros operativos</h3>
+  <div class="reco-grid">
+    <div class="reco-card"><div class="ico">📍</div><div class="body"><b>Priorizar por mapa de calor delictivo</b><span>Usar datos reales de SIEDCO para identificar los 2 sectores críticos antes del operativo.</span></div></div>
+    <div class="reco-card"><div class="ico">🛰️</div><div class="body"><b>Optimizar drones y patrullas</b><span>Concentrar los 2 drones en los sectores críticos para maximizar la cobertura visual.</span></div></div>
+    <div class="reco-card"><div class="ico">⏱️</div><div class="body"><b>Contemplar extensión contingente</b><span>Definir umbrales operativos (p. ej., capturas > 20) que activen la transición al Escenario C.</span></div></div>
+    <div class="reco-card"><div class="ico">📉</div><div class="body"><b>Medir resultados post-operativo</b><span>Comparar los delitos post-operativo contra la línea base (420/día) para calibrar modelos futuros.</span></div></div>
+    <div class="reco-card"><div class="ico">🤝</div><div class="body"><b>Articulación con comunidad</b><span>Coordinar con Juntas de Acción Comunal para complementar la presencia policial con prevención social.</span></div></div>
+    <div class="reco-card"><div class="ico">📊</div><div class="body"><b>Documentar como plantilla</b><span>Convertir este análisis en un modelo replicable para otras localidades con condiciones similares.</span></div></div>
+  </div>
+
+  <!-- 6. REFERENCIAS -->
+  <h2><span class="icon">📚</span>6. Referencias (APA 7.ª ed.)</h2>
+  <div class="refs">
+    <p>Aro, A., &amp; Santander, O. (2022). <i>Matemática elemental para estudiantes universitarios</i>. Instituto Universitario de Innovación Ciencia y Tecnología Inudi Perú.</p>
+    <p>Cervantes Campo, G., Jiménez Blanco, G., &amp; Martínez Solano, R. (2022). Razonamiento cuantitativo, lenguaje y matemáticas. <i>Zona Próxima</i>, (36), 76–92.</p>
+    <p>Departamento Administrativo Nacional de Estadística. (2021). <i>Conductas y servicios de policía en Colombia — CSPC 2021</i>. DANE.</p>
+    <p>Policía Nacional de Colombia. (2023). <i>Plan Anual de Adquisiciones</i>. PONAL.</p>
+    <p>Policía Nacional de Colombia. (2023). <i>Presupuesto general asignado — vigencia 2023</i>. PONAL.</p>
+  </div>
+
+  <p class="aclaracion">Documento preparado con fines académicos como ejemplo de la actividad <b>U1 — Demuestro mi aprendizaje · Entrega final</b>. Los tres escenarios y sus proyecciones son ilustrativos y buscan demostrar la aplicación del razonamiento cuantitativo a la decisión estratégica operativa.</p>
+</div>
+
+<script>
+(function(){
+  const COLORS={azul:'#0b3d91',azulClaro:'#1d5fc4',verde:'#1d7c3c',rojo:'#c0392b',ambar:'#d97706',violeta:'#6d28d9'};
+
+  // Figura 1: escenarios por sector (3 datasets)
+  new Chart(document.getElementById('chartEscenarios').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['S1 (crítico)','S2 (crítico)','S3 (medio)','S4 (bajo)','S5 (bajo)'],
+      datasets:[
+        {label:'A — Uniforme (10 h)',data:[40,40,40,40,40],backgroundColor:COLORS.rojo,borderRadius:6},
+        {label:'B — Focalizado (10 h)',data:[60,60,27,27,26],backgroundColor:COLORS.ambar,borderRadius:6},
+        {label:'C — Mixto por fases (14 h)',data:[55,55,33,30,27],backgroundColor:COLORS.verde,borderRadius:6}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        title:{display:true,text:'Agentes por sector · comparación de 3 escenarios',font:{size:13,family:'Arial'}},
+        legend:{position:'bottom'}
+      },
+      scales:{y:{title:{display:true,text:'Número de agentes'},beginAtZero:true,max:80}}
+    }
+  });
+
+  // Figura 2: Costo vs tiempo con 3 puntos
+  const tVals=[0,2,4,6,8,10,12,14,16,18,20,22];
+  const cVals=tVals.map(t=>t*11500000);
+  new Chart(document.getElementById('chartCostoTiempo').getContext('2d'),{
+    type:'line',
+    data:{
+      labels:tVals,
+      datasets:[
+        {label:'C(t) = 11,5 M · t',data:cVals,borderColor:COLORS.azul,backgroundColor:COLORS.azul+'20',tension:0,pointRadius:3,fill:true,borderWidth:3},
+        {label:'Presupuesto (250 M)',data:tVals.map(()=>250000000),borderColor:COLORS.rojo,borderDash:[6,4],pointRadius:0,fill:false,borderWidth:2},
+        {label:'A / B — 10 h (115 M)',data:tVals.map(t=>t===10?115000000:null),borderColor:COLORS.ambar,backgroundColor:COLORS.ambar,pointRadius:9,pointStyle:'rect',showLine:false},
+        {label:'C — 14 h (161 M)',data:tVals.map(t=>t===14?161000000:null),borderColor:COLORS.verde,backgroundColor:COLORS.verde,pointRadius:9,pointStyle:'circle',showLine:false}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        title:{display:true,text:'Costo acumulado vs tiempo · posición de cada escenario',font:{size:13,family:'Arial'}},
+        legend:{position:'bottom'},
+        tooltip:{callbacks:{label:(it)=>`${it.dataset.label}: ${Number(it.parsed.y).toLocaleString('es-CO')} COP`}}
+      },
+      scales:{
+        x:{title:{display:true,text:'Tiempo (h)'}},
+        y:{title:{display:true,text:'Costo (COP)'},ticks:{callback:(v)=>(v/1e6)+' M'}}
+      }
+    }
+  });
+
+  // Figura 3: Radar 3 escenarios
+  new Chart(document.getElementById('chartRadar').getContext('2d'),{
+    type:'radar',
+    data:{
+      labels:['Cobertura\nterritorial','Impacto\ncriminalidad','Eficiencia\npresupuestal','Percepción\nseguridad','Tiempo\nrespuesta','Simplicidad\nlogística'],
+      datasets:[
+        {label:'A — Uniforme',data:[10,6,9,9,6,10],borderColor:COLORS.rojo,backgroundColor:COLORS.rojo+'25',borderWidth:2,pointBackgroundColor:COLORS.rojo},
+        {label:'B — Focalizado',data:[9,9,9,7,9,8],borderColor:COLORS.ambar,backgroundColor:COLORS.ambar+'25',borderWidth:2,pointBackgroundColor:COLORS.ambar},
+        {label:'C — Mixto por fases',data:[10,10,6,8,9,5],borderColor:COLORS.verde,backgroundColor:COLORS.verde+'25',borderWidth:2,pointBackgroundColor:COLORS.verde}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        title:{display:true,text:'Evaluación multicriterio · 3 escenarios (escala 0–10)',font:{size:13,family:'Arial'}},
+        legend:{position:'bottom'}
+      },
+      scales:{r:{beginAtZero:true,max:10,ticks:{stepSize:2}}}
+    }
+  });
+
+  // Figura 4: Impacto estimado
+  new Chart(document.getElementById('chartImpacto').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['Línea base\n(sin operativo)','A — Uniforme','B — Focalizado','C — Mixto'],
+      datasets:[
+        {label:'Delitos/día esperados',data:[420,394,357,331],backgroundColor:['#94a3b8',COLORS.rojo,COLORS.ambar,COLORS.verde],borderRadius:6}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        title:{display:true,text:'Delitos diarios esperados por escenario (línea base 420)',font:{size:13,family:'Arial'}},
+        legend:{display:false},
+        tooltip:{callbacks:{label:(it)=>{const base=420;const diff=base-it.parsed.y;const pct=((diff/base)*100).toFixed(1);return `${it.parsed.y} delitos/día · reducción ${diff} (${pct}%)`}}}
+      },
+      scales:{y:{title:{display:true,text:'Delitos/día'},beginAtZero:true,suggestedMax:450}}
+    }
+  });
+})();
+</script>
+</body>
+</html>

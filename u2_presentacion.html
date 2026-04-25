@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Unidad 2 · Fundamentos de Estadística — Razonamiento Cuantitativo I</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --azul:#0b3d91;
+    --azul-claro:#1d5fc4;
+    --azul-brillante:#3b82f6;
+    --verde:#10b981;
+    --rojo:#ef4444;
+    --ambar:#f59e0b;
+    --violeta:#8b5cf6;
+    --rosa:#ec4899;
+    --cielo:#0ea5e9;
+    --bg-dark:#0a1629;
+    --bg-slide:#ffffff;
+    --texto:#1e293b;
+    --texto-suave:#64748b;
+    --borde:#e2e8f0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100vw;height:100vh;overflow:hidden;font-family:'Segoe UI','Helvetica','Arial',sans-serif;background:var(--bg-dark);color:var(--texto)}
+
+  /* Progress bar */
+  .progress-bar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--azul-brillante),var(--violeta),var(--rosa));z-index:100;transition:width .5s ease}
+
+  /* Slide container */
+  .slides{position:relative;width:100vw;height:100vh}
+  .slide{position:absolute;top:0;left:0;width:100%;height:100%;background:var(--bg-slide);padding:40px 60px;display:none;flex-direction:column;overflow-y:auto;animation:slideIn .5s ease-out}
+  .slide.active{display:flex}
+  @keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes slideInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes popIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+
+  /* Header del slide */
+  .slide-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:2px solid var(--borde);margin-bottom:20px}
+  .slide-label{font-size:12pt;color:var(--azul-claro);font-weight:700;text-transform:uppercase;letter-spacing:2px}
+  .slide-nav-info{font-size:10pt;color:var(--texto-suave)}
+
+  /* Títulos */
+  h1{font-size:40pt;color:var(--azul);font-weight:800;line-height:1.1;margin-bottom:16px;letter-spacing:-.02em}
+  h2{font-size:30pt;color:var(--azul);font-weight:700;line-height:1.1;margin-bottom:14px;letter-spacing:-.01em}
+  h3{font-size:18pt;color:var(--azul-claro);font-weight:700;margin-bottom:10px}
+  h4{font-size:13pt;color:var(--texto-suave);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+  p{font-size:14pt;line-height:1.5;color:var(--texto);margin-bottom:10px}
+
+  /* Portada */
+  .portada{background:linear-gradient(135deg,#0b3d91 0%,#1d5fc4 50%,#8b5cf6 100%);color:#fff;justify-content:center;align-items:center;text-align:center;padding:40px}
+  .portada h1,.portada h2{color:#fff}
+  .portada .mega{font-size:72pt;font-weight:900;letter-spacing:-.04em;line-height:1;background:linear-gradient(90deg,#fff,#dbeafe);background-clip:text;-webkit-background-clip:text;color:transparent;margin-bottom:10px}
+  .portada .subtitle{font-size:22pt;font-weight:300;margin:12px 0;opacity:.95}
+  .portada .unit-badge{display:inline-block;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.3);padding:8px 22px;border-radius:30px;font-size:14pt;font-weight:700;letter-spacing:3px;margin-bottom:14px;backdrop-filter:blur(10px)}
+  .portada .docente{margin-top:30px;font-size:14pt;opacity:.9}
+
+  /* Splash icons */
+  .splash-icons{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .splash-icons span{position:absolute;font-size:60px;opacity:.08;animation:float 8s infinite ease-in-out}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-20px) rotate(10deg)}}
+
+  /* Secciones con fondo */
+  .slide-dark{background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);color:#fff}
+  .slide-dark h1,.slide-dark h2,.slide-dark h3{color:#fff}
+  .slide-dark p{color:rgba(255,255,255,.9)}
+  .slide-dark h4{color:#93c5fd}
+  .slide-gradient{background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%)}
+
+  /* Grid contenido */
+  .content-grid{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center;margin-top:10px}
+  .content-grid.one{grid-template-columns:1fr}
+  .content-grid.two-one{grid-template-columns:2fr 1fr}
+
+  /* Cards grandes */
+  .big-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:20px}
+  .big-card{background:#fff;border-radius:16px;padding:22px;border:2px solid var(--borde);position:relative;overflow:hidden;transition:all .3s;animation:popIn .5s ease both}
+  .big-card:nth-child(1){animation-delay:.1s}
+  .big-card:nth-child(2){animation-delay:.2s}
+  .big-card:nth-child(3){animation-delay:.3s}
+  .big-card:nth-child(4){animation-delay:.4s}
+  .big-card .emoji{font-size:44px;display:block;margin-bottom:8px}
+  .big-card h3{font-size:14pt;color:var(--azul);margin-bottom:6px}
+  .big-card p{font-size:11pt;color:var(--texto-suave);line-height:1.4}
+  .big-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px}
+  .big-card.c1::before{background:var(--azul-brillante)}
+  .big-card.c2::before{background:var(--violeta)}
+  .big-card.c3::before{background:var(--verde)}
+  .big-card.c4::before{background:var(--rosa)}
+
+  /* KPIs / badges */
+  .stat-row{display:flex;gap:20px;margin:20px 0;flex-wrap:wrap}
+  .stat{background:#fff;border-radius:14px;padding:18px 22px;flex:1;min-width:140px;border:2px solid var(--borde);text-align:center;animation:popIn .5s ease both}
+  .stat .num{font-size:32pt;font-weight:800;color:var(--azul);line-height:1;letter-spacing:-.02em}
+  .stat .lbl{font-size:11pt;color:var(--texto-suave);font-weight:600;margin-top:6px}
+  .stat.green .num{color:var(--verde)}
+  .stat.red .num{color:var(--rojo)}
+  .stat.amber .num{color:var(--ambar)}
+  .stat.violet .num{color:var(--violeta)}
+
+  /* Lista con iconos */
+  .feature-list{list-style:none;padding:0;margin:12px 0}
+  .feature-list li{padding:12px 0;border-bottom:1px solid var(--borde);display:flex;gap:14px;align-items:flex-start;font-size:13pt;animation:slideInUp .5s ease both}
+  .feature-list li:nth-child(1){animation-delay:.1s}
+  .feature-list li:nth-child(2){animation-delay:.2s}
+  .feature-list li:nth-child(3){animation-delay:.3s}
+  .feature-list li:nth-child(4){animation-delay:.4s}
+  .feature-list li:nth-child(5){animation-delay:.5s}
+  .feature-list li:last-child{border-bottom:none}
+  .feature-list .bullet{flex-shrink:0;width:36px;height:36px;border-radius:10px;background:var(--azul);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18pt;font-weight:700}
+  .feature-list .content b{color:var(--azul);font-size:13.5pt;display:block;margin-bottom:3px}
+  .feature-list .content span{color:var(--texto-suave);font-size:12pt}
+
+  /* Caja destacada */
+  .highlight-box{background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%);border-left:6px solid var(--ambar);padding:18px 22px;border-radius:12px;margin:16px 0;font-size:13pt}
+  .highlight-box b{color:#92400e}
+
+  /* Fórmula grande */
+  .formula-big{background:linear-gradient(135deg,var(--azul) 0%,var(--azul-claro) 100%);color:#fff;padding:24px 30px;border-radius:14px;text-align:center;font-size:22pt;font-family:'Cambria Math','Times New Roman',serif;margin:14px 0;letter-spacing:.5px;box-shadow:0 10px 30px rgba(11,61,145,.2)}
+  .formula-big b{color:#fbbf24}
+
+  /* Chart container */
+  .chart-box{background:#fff;border:1px solid var(--borde);border-radius:16px;padding:16px;box-shadow:0 4px 15px rgba(0,0,0,.05)}
+  canvas{max-height:360px}
+
+  /* Navigation */
+  .nav-btn{position:fixed;bottom:20px;background:rgba(11,61,145,.9);color:#fff;border:none;width:48px;height:48px;border-radius:50%;font-size:20pt;cursor:pointer;z-index:101;transition:all .2s;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+  .nav-btn:hover{background:var(--azul);transform:scale(1.1)}
+  .nav-prev{left:20px}
+  .nav-next{right:20px}
+
+  /* Dots indicator */
+  .dots{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:101}
+  .dot{width:10px;height:10px;border-radius:50%;background:rgba(11,61,145,.3);cursor:pointer;transition:all .2s}
+  .dot.active{background:var(--azul);width:28px;border-radius:5px}
+
+  /* Slide counter */
+  .counter{position:fixed;top:20px;right:30px;background:rgba(11,61,145,.9);color:#fff;padding:6px 14px;border-radius:20px;font-size:10pt;font-weight:600;z-index:101}
+
+  /* Tabla estilizada */
+  table.pretty{width:100%;border-collapse:collapse;font-size:12pt;margin:10px 0;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  table.pretty th,table.pretty td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--borde)}
+  table.pretty thead th{background:var(--azul);color:#fff;font-weight:700;font-size:11.5pt;text-transform:uppercase;letter-spacing:.5px}
+  table.pretty tbody tr:nth-child(even){background:#f8fafc}
+  table.pretty tbody tr:hover{background:#eff6ff}
+
+  /* Tags de tipos */
+  .tag-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:12px 0}
+  .tag{background:#fff;border:2px solid var(--borde);border-radius:12px;padding:14px;text-align:center;transition:all .2s;animation:popIn .4s both}
+  .tag:nth-child(1){animation-delay:.1s}
+  .tag:nth-child(2){animation-delay:.2s}
+  .tag:nth-child(3){animation-delay:.3s}
+  .tag:nth-child(4){animation-delay:.4s}
+  .tag .ico{font-size:30pt;display:block;margin-bottom:6px}
+  .tag .ttl{font-size:11.5pt;font-weight:700;color:var(--azul)}
+  .tag .sub{font-size:10pt;color:var(--texto-suave);margin-top:3px}
+
+  /* Venn diagram */
+  .venn-wrap{display:flex;justify-content:center;padding:12px}
+  .venn-legend{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:8px;font-size:11pt}
+  .venn-legend .sw{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:6px;vertical-align:middle}
+
+  /* Actividades boxes */
+  .act-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+  .act-card{background:#fff;border:1px solid var(--borde);border-radius:12px;padding:16px;position:relative;overflow:hidden}
+  .act-card .ribbon{position:absolute;top:0;right:0;background:var(--azul);color:#fff;padding:3px 12px;font-size:9pt;font-weight:700;letter-spacing:.5px}
+  .act-card.sum .ribbon{background:var(--verde)}
+  .act-card.form .ribbon{background:var(--ambar)}
+  .act-card h4{color:var(--azul);font-size:12pt;text-transform:none;letter-spacing:0;margin-bottom:6px;margin-top:6px}
+  .act-card p{font-size:11pt;color:var(--texto-suave);margin:0}
+
+  /* Ejemplos coloreados */
+  .example-box{background:#f0f9ff;border-left:4px solid var(--cielo);padding:14px 18px;border-radius:8px;margin:12px 0}
+  .example-box .label{font-size:10pt;color:var(--cielo);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+  .example-box p{font-size:13pt;line-height:1.5;margin:0}
+
+  /* Final CTA */
+  .cta{background:linear-gradient(135deg,var(--violeta) 0%,var(--rosa) 100%);color:#fff;padding:30px;border-radius:20px;text-align:center}
+  .cta h1,.cta h2{color:#fff}
+  .cta p{color:rgba(255,255,255,.95);font-size:15pt}
+
+  /* Hint teclado */
+  .kb-hint{position:fixed;top:20px;left:30px;background:rgba(11,61,145,.85);color:#fff;padding:6px 12px;border-radius:20px;font-size:9pt;z-index:101;backdrop-filter:blur(5px)}
+  .kb-hint kbd{background:rgba(255,255,255,.25);padding:1px 6px;border-radius:3px;font-family:monospace;font-size:9pt;margin:0 2px}
+
+  @media print{
+    .slide{display:flex;page-break-after:always;height:auto;min-height:100vh}
+    .nav-btn,.dots,.counter,.kb-hint,.progress-bar{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+<div class="kb-hint">Usa <kbd>←</kbd> <kbd>→</kbd> para navegar · <kbd>Esc</kbd> para índice</div>
+<div class="counter" id="counter">1 / 12</div>
+
+<div class="slides" id="slides">
+
+  <!-- SLIDE 1: PORTADA -->
+  <section class="slide portada active">
+    <div class="splash-icons">
+      <span style="top:10%;left:10%">📊</span>
+      <span style="top:20%;right:15%;animation-delay:1s">🎲</span>
+      <span style="bottom:15%;left:20%;animation-delay:2s">📈</span>
+      <span style="bottom:25%;right:10%;animation-delay:3s">🔢</span>
+      <span style="top:45%;left:5%;animation-delay:4s">🎯</span>
+      <span style="top:55%;right:5%;animation-delay:5s">📉</span>
+    </div>
+    <div class="unit-badge">UNIDAD 2</div>
+    <div class="mega">Fundamentos<br>de Estadística</div>
+    <div class="subtitle">Razonamiento Cuantitativo I · Electiva I</div>
+    <div class="docente">
+      <div style="opacity:.8;font-size:11pt;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">Docente</div>
+      <div style="font-weight:700">Yenifer Fontalvo Marriaga</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: BIENVENIDA / POR QUÉ ESTADÍSTICA -->
+  <section class="slide slide-gradient">
+    <div class="slide-header"><span class="slide-label">Bienvenida</span><span class="slide-nav-info">2 / 12</span></div>
+    <h1>¿Por qué estadística?</h1>
+    <div class="content-grid">
+      <div>
+        <p>La estadística convierte datos en <b>decisiones informadas</b>. En la administración policial permite interpretar cifras, medir tendencias delictivas, evaluar operativos y anticipar riesgos.</p>
+        <p>En esta unidad aprenderemos a <b>organizar</b>, <b>visualizar</b>, <b>analizar</b> y <b>concluir</b> a partir de datos reales del servicio policial.</p>
+        <div class="highlight-box"><b>De los datos a la decisión:</b> un oficial que domina la estadística puede proponer políticas y estrategias basadas en evidencia, no en intuiciones.</div>
+      </div>
+      <div class="stat-row" style="flex-direction:column;flex-wrap:nowrap">
+        <div class="stat violet"><div class="num">4</div><div class="lbl">Temas centrales</div></div>
+        <div class="stat green"><div class="num">9</div><div class="lbl">Actividades en la unidad</div></div>
+        <div class="stat amber"><div class="num">5,0</div><div class="lbl">Puntos por actividad</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: RESULTADO DE APRENDIZAJE -->
+  <section class="slide">
+    <div class="slide-header"><span class="slide-label">Resultado esperado</span><span class="slide-nav-info">3 / 12</span></div>
+    <h1>¿Qué sabrás hacer al terminar?</h1>
+    <div class="highlight-box" style="font-size:14pt">
+      <b>Al finalizar la Unidad 2,</b> interpretarás datos estadísticos básicos utilizando herramientas de análisis descriptivo y representaciones gráficas en contextos académicos y cotidianos, con la finalidad de desarrollar habilidades críticas y de razonamiento cuantitativo que permitan tomar decisiones informadas y resolver problemas prácticos.
+    </div>
+    <h3 style="margin-top:24px">Niveles de desempeño esperados</h3>
+    <ul class="feature-list">
+      <li><span class="bullet" style="background:var(--verde)">S</span><div class="content"><b>Superior</b><span>Analizas datos estadísticos y de probabilidad en contextos académicos y cotidianos para desarrollar habilidades de razonamiento cuantitativo.</span></div></li>
+      <li><span class="bullet" style="background:var(--ambar)">I</span><div class="content"><b>Intermedio</b><span>Aplicas conceptos básicos de estadística descriptiva y probabilidad para interpretar datos en situaciones cotidianas.</span></div></li>
+      <li><span class="bullet" style="background:var(--rojo)">B</span><div class="content"><b>Básico</b><span>Identificas propiedades básicas de estadística y probabilidad con el propósito de desarrollar una comprensión inicial.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- SLIDE 4: 4 PILARES -->
+  <section class="slide slide-dark">
+    <div class="slide-header"><span class="slide-label" style="color:#93c5fd">Mapa de la unidad</span><span class="slide-nav-info" style="color:#cbd5e1">4 / 12</span></div>
+    <h1>Los 4 pilares de la Unidad 2</h1>
+    <p style="color:rgba(255,255,255,.85);margin-bottom:18px">Cada pilar construye sobre el anterior hasta llegar a la toma de decisiones con base en muestras.</p>
+    <div class="big-cards">
+      <div class="big-card c1">
+        <span class="emoji">📊</span>
+        <h3>Representación de datos</h3>
+        <p>Tablas y gráficas: barras, circulares, histogramas, dispersión.</p>
+      </div>
+      <div class="big-card c2">
+        <span class="emoji">🔗</span>
+        <h3>Conjuntos</h3>
+        <p>Intersección, unión y contenencia aplicadas al análisis.</p>
+      </div>
+      <div class="big-card c3">
+        <span class="emoji">🎲</span>
+        <h3>Probabilidad</h3>
+        <p>Fundamentos y aplicaciones a la planeación policial.</p>
+      </div>
+      <div class="big-card c4">
+        <span class="emoji">🎯</span>
+        <h3>Muestreo e inferencia</h3>
+        <p>Población, muestra, inferencia muestral y error de estimación.</p>
+      </div>
+    </div>
+    <div class="highlight-box" style="margin-top:24px;background:rgba(251,191,36,.15);color:#fef3c7;border-left-color:#fbbf24">
+      <b style="color:#fbbf24">Integración final:</b> los cuatro pilares se aplican al caso de análisis de criminalidad en una localidad.
+    </div>
+  </section>
+
+  <!-- SLIDE 5: TEMA 1 - REPRESENTACIÓN DE DATOS -->
+  <section class="slide">
+    <div class="slide-header"><span class="slide-label" style="color:var(--azul-brillante)">Tema 1</span><span class="slide-nav-info">5 / 12</span></div>
+    <h1>📊 Representación de datos</h1>
+    <p>Los datos adquieren sentido cuando se organizan en tablas y se visualizan en gráficos.</p>
+
+    <div class="tag-grid">
+      <div class="tag"><span class="ico">📋</span><div class="ttl">Tablas</div><div class="sub">Frec. absoluta y relativa</div></div>
+      <div class="tag"><span class="ico">📊</span><div class="ttl">Barras</div><div class="sub">Comparar categorías</div></div>
+      <div class="tag"><span class="ico">🥧</span><div class="ttl">Circulares</div><div class="sub">Proporciones del total</div></div>
+      <div class="tag"><span class="ico">📈</span><div class="ttl">Dispersión</div><div class="sub">Relación entre variables</div></div>
+    </div>
+
+    <div class="content-grid">
+      <div>
+        <h3>Ejemplo: delitos por tipo · Kennedy</h3>
+        <table class="pretty">
+          <thead><tr><th>Tipo</th><th>Frec.</th><th>%</th></tr></thead>
+          <tbody>
+            <tr><td>Hurto a personas</td><td>180</td><td>43 %</td></tr>
+            <tr><td>Hurto a vehículos</td><td>95</td><td>23 %</td></tr>
+            <tr><td>Lesiones</td><td>70</td><td>17 %</td></tr>
+            <tr><td>Vandalismo</td><td>45</td><td>11 %</td></tr>
+            <tr><td>Otros</td><td>30</td><td>6 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="chart-box"><canvas id="chartDelitos" height="280"></canvas></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6: TEMA 2 - CONJUNTOS -->
+  <section class="slide slide-gradient">
+    <div class="slide-header"><span class="slide-label" style="color:var(--violeta)">Tema 2</span><span class="slide-nav-info">6 / 12</span></div>
+    <h1>🔗 Conjuntos: unión, intersección y contenencia</h1>
+
+    <div class="content-grid">
+      <div>
+        <p>Un <b>conjunto</b> agrupa elementos con características comunes. Operar con conjuntos ayuda a clasificar información policial.</p>
+        <ul class="feature-list">
+          <li><span class="bullet" style="background:var(--azul-brillante)">∪</span><div class="content"><b>Unión (A ∪ B)</b><span>Elementos que están en A, en B o en ambos.</span></div></li>
+          <li><span class="bullet" style="background:var(--violeta)">∩</span><div class="content"><b>Intersección (A ∩ B)</b><span>Elementos que pertenecen a ambos conjuntos.</span></div></li>
+          <li><span class="bullet" style="background:var(--verde)">⊂</span><div class="content"><b>Contenencia (A ⊂ B)</b><span>Todos los elementos de A están en B.</span></div></li>
+        </ul>
+      </div>
+      <div class="venn-wrap">
+        <svg viewBox="0 0 400 320" width="400">
+          <defs>
+            <filter id="shadow"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity=".2"/></filter>
+          </defs>
+          <circle cx="150" cy="160" r="110" fill="#3b82f6" fill-opacity=".5" stroke="#1d5fc4" stroke-width="3" filter="url(#shadow)"/>
+          <circle cx="250" cy="160" r="110" fill="#8b5cf6" fill-opacity=".5" stroke="#6d28d9" stroke-width="3" filter="url(#shadow)"/>
+          <text x="95" y="170" text-anchor="middle" font-size="32" font-weight="800" fill="#fff">A</text>
+          <text x="305" y="170" text-anchor="middle" font-size="32" font-weight="800" fill="#fff">B</text>
+          <text x="200" y="170" text-anchor="middle" font-size="22" font-weight="700" fill="#fff">A ∩ B</text>
+          <text x="200" y="50" text-anchor="middle" font-size="18" font-weight="700" fill="#0b3d91">Universo U</text>
+        </svg>
+        <div class="venn-legend" style="position:absolute"></div>
+      </div>
+    </div>
+
+    <div class="example-box">
+      <div class="label">Ejemplo policial</div>
+      <p>Sea <b>A</b> = delitos de hurto en Kennedy y <b>B</b> = delitos cometidos de noche. La <b>intersección A ∩ B</b> representa los hurtos ocurridos de noche — foco natural del patrullaje nocturno.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 7: TEMA 3 - PROBABILIDAD -->
+  <section class="slide">
+    <div class="slide-header"><span class="slide-label" style="color:var(--verde)">Tema 3</span><span class="slide-nav-info">7 / 12</span></div>
+    <h1>🎲 Probabilidad — medir la incertidumbre</h1>
+    <p>La probabilidad expresa qué tan posible es que ocurra un evento. Se mide entre <b>0</b> (imposible) y <b>1</b> (seguro).</p>
+
+    <div class="formula-big">P(A) = <b>casos favorables</b> / casos totales</div>
+
+    <div class="content-grid">
+      <div>
+        <h3>Conceptos clave</h3>
+        <ul class="feature-list">
+          <li><span class="bullet" style="background:var(--cielo)">Ω</span><div class="content"><b>Espacio muestral</b><span>Conjunto de todos los resultados posibles del experimento.</span></div></li>
+          <li><span class="bullet" style="background:var(--verde)">E</span><div class="content"><b>Evento</b><span>Subconjunto del espacio muestral cuyo "éxito" queremos medir.</span></div></li>
+          <li><span class="bullet" style="background:var(--ambar)">%</span><div class="content"><b>Probabilidad</b><span>Número entre 0 y 1 que mide la posibilidad del evento.</span></div></li>
+        </ul>
+      </div>
+      <div class="chart-box"><canvas id="chartProb" height="280"></canvas></div>
+    </div>
+
+    <div class="example-box">
+      <div class="label">Aplicación al servicio policial</div>
+      <p>De 420 delitos diarios en Kennedy, 180 son hurtos a personas. La probabilidad de que un delito reportado sea un hurto a personas es <b>P = 180/420 ≈ 0,43 (43 %)</b>.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 8: TEMA 4 - MUESTREO E INFERENCIA -->
+  <section class="slide slide-gradient">
+    <div class="slide-header"><span class="slide-label" style="color:var(--rosa)">Tema 4</span><span class="slide-nav-info">8 / 12</span></div>
+    <h1>🎯 Muestreo e inferencia</h1>
+
+    <div class="tag-grid">
+      <div class="tag"><span class="ico">🌐</span><div class="ttl">Población</div><div class="sub">Todos los elementos</div></div>
+      <div class="tag"><span class="ico">📌</span><div class="ttl">Muestra</div><div class="sub">Subconjunto representativo</div></div>
+      <div class="tag"><span class="ico">🔮</span><div class="ttl">Inferencia</div><div class="sub">Conclusión sobre la población</div></div>
+      <div class="tag"><span class="ico">⚠️</span><div class="ttl">Error</div><div class="sub">Margen de imprecisión</div></div>
+    </div>
+
+    <div class="content-grid">
+      <div>
+        <div class="formula-big" style="font-size:16pt;padding:16px">E = z · σ / √n</div>
+        <p style="font-size:12pt">El error de estimación (E) depende del nivel de confianza (z), la desviación estándar (σ) y el tamaño de la muestra (n).</p>
+        <div class="highlight-box">
+          <b>Regla práctica:</b> duplicar la muestra no reduce el error a la mitad; lo reduce en √2 (≈ 29 %). Por eso el muestreo debe ser estratégico.
+        </div>
+      </div>
+      <div class="chart-box"><canvas id="chartMuestra" height="280"></canvas></div>
+    </div>
+
+    <div class="example-box">
+      <div class="label">Ejemplo</div>
+      <p>Si encuestamos a 1.200 de los 1,2 × 10⁶ habitantes de Kennedy sobre percepción de seguridad con un nivel de confianza del 95 %, el error es ≈ <b>±2,8 %</b>. Una muestra mayor reduce el error, pero con rendimientos decrecientes.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 9: APLICACIÓN INTEGRADA -->
+  <section class="slide slide-dark">
+    <div class="slide-header"><span class="slide-label" style="color:#93c5fd">Aplicación integrada</span><span class="slide-nav-info">9 / 12</span></div>
+    <h1>Los 4 temas en un solo caso 🕵️</h1>
+    <p style="color:rgba(255,255,255,.85)">En un operativo de análisis criminal en Kennedy, los 4 pilares trabajan juntos:</p>
+
+    <ul class="feature-list" style="background:rgba(255,255,255,.05);border-radius:14px;padding:18px 22px;margin-top:12px">
+      <li style="border-color:rgba(255,255,255,.1)"><span class="bullet" style="background:var(--azul-brillante)">1</span><div class="content"><b style="color:#93c5fd">Representación</b><span style="color:rgba(255,255,255,.8)">Tabular y graficar los 420 delitos diarios por tipo, sector y franja horaria.</span></div></li>
+      <li style="border-color:rgba(255,255,255,.1)"><span class="bullet" style="background:var(--violeta)">2</span><div class="content"><b style="color:#c4b5fd">Conjuntos</b><span style="color:rgba(255,255,255,.8)">Identificar intersecciones: ¿qué delitos ocurren en zonas críticas y de noche?</span></div></li>
+      <li style="border-color:rgba(255,255,255,.1)"><span class="bullet" style="background:var(--verde)">3</span><div class="content"><b style="color:#6ee7b7">Probabilidad</b><span style="color:rgba(255,255,255,.8)">Calcular la probabilidad de que un delito nuevo ocurra en el sector S1 en horario nocturno.</span></div></li>
+      <li style="border-color:rgba(255,255,255,.1)"><span class="bullet" style="background:var(--rosa)">4</span><div class="content"><b style="color:#f9a8d4">Muestreo</b><span style="color:rgba(255,255,255,.8)">Encuestar a una muestra representativa para medir percepción y error de estimación.</span></div></li>
+    </ul>
+
+    <div class="highlight-box" style="background:rgba(59,130,246,.15);color:#dbeafe;border-left-color:#3b82f6">
+      <b style="color:#60a5fa">Resultado:</b> un diagnóstico cuantitativo completo que convierte datos dispersos en inteligencia operativa.
+    </div>
+  </section>
+
+  <!-- SLIDE 10: ACTIVIDADES -->
+  <section class="slide">
+    <div class="slide-header"><span class="slide-label">Actividades de la unidad</span><span class="slide-nav-info">10 / 12</span></div>
+    <h1>📝 ¿Qué vas a hacer?</h1>
+    <p>La unidad se evalúa con 9 actividades distribuidas en todo el ciclo de aprendizaje:</p>
+
+    <div class="act-grid">
+      <div class="act-card"><span class="ribbon">FORMATIVA</span><h4>U2 · Conozco los fundamentos</h4><p>Lección interactiva con conceptos base y preguntas guía.</p></div>
+      <div class="act-card form"><span class="ribbon">FORMATIVA</span><h4>U2 · Ejemplificación</h4><p>Cuestionario con 2 intentos, 5 preguntas aleatorias.</p></div>
+      <div class="act-card form"><span class="ribbon">FORMATIVA</span><h4>U2 · Aprendo haciendo</h4><p>Tarea individual con rúbrica binaria, 5,00 pts.</p></div>
+      <div class="act-card form"><span class="ribbon">FORMATIVA</span><h4>U2 · Profundizo</h4><p>Ensayo individual de análisis de datos y probabilidad.</p></div>
+      <div class="act-card sum"><span class="ribbon">SUMATIVA</span><h4>U2 · Demuestro mi aprendizaje</h4><p>Trabajo colaborativo (rúbrica de 5 niveles) aplicado al caso.</p></div>
+      <div class="act-card form"><span class="ribbon">FORMATIVA</span><h4>U2 · Pongo en práctica</h4><p>Enlace externo + actividades H5P.</p></div>
+      <div class="act-card sum"><span class="ribbon">SUMATIVA</span><h4>U2 · Evalúo mi aprendizaje</h4><p>Cuestionario final con 10 preguntas (básico / intermedio / superior).</p></div>
+      <div class="act-card form"><span class="ribbon">FORMATIVA</span><h4>Foro de dudas</h4><p>Espacio abierto de consulta al docente.</p></div>
+      <div class="act-card form"><span class="ribbon">FORMATIVA</span><h4>Recursos bibliográficos</h4><p>Lecturas clave en el marco APA para profundizar.</p></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 11: CRONOGRAMA -->
+  <section class="slide slide-gradient">
+    <div class="slide-header"><span class="slide-label">Ruta sugerida</span><span class="slide-nav-info">11 / 12</span></div>
+    <h1>🗓️ Cómo avanzar semana a semana</h1>
+
+    <table class="pretty">
+      <thead><tr><th>Semana</th><th>Foco</th><th>Entregable</th></tr></thead>
+      <tbody>
+        <tr><td><b>1</b></td><td>Presentación + Lección "Conozco los fundamentos"</td><td>Completar lección</td></tr>
+        <tr><td><b>2</b></td><td>Tablas y gráficos + Ejemplificación</td><td>Cuestionario (intento 1)</td></tr>
+        <tr><td><b>3</b></td><td>Conjuntos y probabilidad</td><td>Aprendo haciendo</td></tr>
+        <tr><td><b>4</b></td><td>Muestreo e inferencia + Profundizo</td><td>Profundizo</td></tr>
+        <tr><td><b>5</b></td><td>Trabajo colaborativo</td><td>Demuestro mi aprendizaje</td></tr>
+        <tr><td><b>6</b></td><td>Repaso integral + H5P</td><td>Pongo en práctica</td></tr>
+        <tr><td><b>7</b></td><td>Evaluación final</td><td>Evalúo mi aprendizaje</td></tr>
+      </tbody>
+    </table>
+
+    <div class="highlight-box" style="margin-top:16px">
+      <b>💡 Consejo:</b> dedica 30 minutos diarios a los ejercicios prácticos. La estadística se domina con repetición, no solo con lectura.
+    </div>
+  </section>
+
+  <!-- SLIDE 12: CIERRE -->
+  <section class="slide portada" style="background:linear-gradient(135deg,#8b5cf6 0%,#ec4899 50%,#f59e0b 100%)">
+    <div class="splash-icons">
+      <span style="top:15%;left:15%">🎓</span>
+      <span style="top:30%;right:20%;animation-delay:1.5s">💡</span>
+      <span style="bottom:20%;left:10%;animation-delay:3s">🚀</span>
+      <span style="bottom:30%;right:15%;animation-delay:2s">⭐</span>
+    </div>
+    <div class="unit-badge">TE ESPERAMOS</div>
+    <div class="mega" style="font-size:60pt">¡Empecemos<br>esta unidad!</div>
+    <div class="subtitle" style="max-width:700px">La estadística es la brújula del oficial moderno. Con ella, tus decisiones no dependerán del azar sino de la evidencia.</div>
+    <div style="margin-top:30px;font-size:14pt;opacity:.9;font-weight:700">Docente: Yenifer Fontalvo Marriaga</div>
+    <div style="margin-top:6px;font-size:11pt;opacity:.8">Electiva I · Razonamiento Cuantitativo I · ESJIM 2026</div>
+  </section>
+
+</div>
+
+<!-- Navigation -->
+<button class="nav-btn nav-prev" id="prevBtn" aria-label="Anterior">‹</button>
+<button class="nav-btn nav-next" id="nextBtn" aria-label="Siguiente">›</button>
+<div class="dots" id="dots"></div>
+
+<script>
+(function(){
+  const slides=document.querySelectorAll('.slide');
+  const total=slides.length;
+  const dotsC=document.getElementById('dots');
+  const counter=document.getElementById('counter');
+  const progress=document.getElementById('progress');
+  let current=0;
+
+  // Create dots
+  slides.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot'+(i===0?' active':'');
+    d.onclick=()=>goTo(i);
+    dotsC.appendChild(d);
+  });
+
+  function goTo(n){
+    if(n<0||n>=total) return;
+    slides[current].classList.remove('active');
+    current=n;
+    slides[current].classList.add('active');
+    document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===current));
+    counter.textContent=`${current+1} / ${total}`;
+    progress.style.width=((current+1)/total*100)+'%';
+    // trigger charts on first visibility
+    initChartsForSlide(current);
+  }
+
+  document.getElementById('prevBtn').onclick=()=>goTo(current-1);
+  document.getElementById('nextBtn').onclick=()=>goTo(current+1);
+  document.addEventListener('keydown',(e)=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown') goTo(current+1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp') goTo(current-1);
+    if(e.key==='Home') goTo(0);
+    if(e.key==='End') goTo(total-1);
+  });
+
+  // init counter
+  counter.textContent=`1 / ${total}`;
+  progress.style.width=(1/total*100)+'%';
+
+  // Charts
+  const charts={};
+  function initChartsForSlide(idx){
+    if(idx===4 && !charts.delitos){
+      charts.delitos=new Chart(document.getElementById('chartDelitos').getContext('2d'),{
+        type:'doughnut',
+        data:{
+          labels:['Hurto personas','Hurto vehículos','Lesiones','Vandalismo','Otros'],
+          datasets:[{data:[180,95,70,45,30],backgroundColor:['#ef4444','#f59e0b','#8b5cf6','#10b981','#64748b'],borderWidth:2,borderColor:'#fff'}]
+        },
+        options:{responsive:true,maintainAspectRatio:false,plugins:{title:{display:true,text:'Distribución de delitos diarios (420)',font:{size:12}},legend:{position:'bottom'}}}
+      });
+    }
+    if(idx===6 && !charts.prob){
+      charts.prob=new Chart(document.getElementById('chartProb').getContext('2d'),{
+        type:'bar',
+        data:{
+          labels:['Hurto personas','Hurto vehículos','Lesiones','Vandalismo','Otros'],
+          datasets:[{label:'P(evento)',data:[0.43,0.23,0.17,0.11,0.06],backgroundColor:['#ef4444','#f59e0b','#8b5cf6','#10b981','#64748b'],borderRadius:8}]
+        },
+        options:{responsive:true,maintainAspectRatio:false,plugins:{title:{display:true,text:'Probabilidad de cada tipo de delito',font:{size:12}},legend:{display:false}},scales:{y:{beginAtZero:true,max:0.5,ticks:{callback:(v)=>v.toFixed(2)}}}}
+      });
+    }
+    if(idx===7 && !charts.muestra){
+      const n=[30,50,100,200,400,800,1200,2000,5000];
+      const e=n.map(x=>1.96*0.5/Math.sqrt(x)*100);
+      charts.muestra=new Chart(document.getElementById('chartMuestra').getContext('2d'),{
+        type:'line',
+        data:{
+          labels:n,
+          datasets:[{label:'Error de estimación (%)',data:e,borderColor:'#ec4899',backgroundColor:'rgba(236,72,153,.15)',fill:true,tension:.3,pointRadius:4,borderWidth:3}]
+        },
+        options:{responsive:true,maintainAspectRatio:false,plugins:{title:{display:true,text:'Error vs. tamaño de muestra (95 % confianza)',font:{size:12}},legend:{display:false}},scales:{x:{title:{display:true,text:'Tamaño de muestra (n)'}},y:{title:{display:true,text:'Error (%)'},beginAtZero:true}}}
+      });
+    }
+  }
+})();
+</script>
+</body>
+</html>
