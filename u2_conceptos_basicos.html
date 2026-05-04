@@ -157,14 +157,26 @@
   /* SVG VENN */
   .venn-mini{display:block;margin:10px auto;max-width:100%;height:200px}
 
-  /* SECTION DIVIDER */
-  .divider{justify-content:center;align-items:center;text-align:center;background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);color:#fff;position:relative;overflow:hidden}
-  .divider h1{color:#fff;font-size:48pt}
-  .divider .sec-num{font-size:140pt;font-weight:900;background:linear-gradient(90deg,#3b82f6,#8b5cf6,#ec4899);background-clip:text;-webkit-background-clip:text;color:transparent;line-height:1;animation:zoomIn .8s cubic-bezier(.22,.61,.36,1) both}
-  @keyframes zoomIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
-  .divider p{font-size:18pt;color:rgba(255,255,255,.85)}
+  /* SECTION DIVIDER — rediseñado */
+  .divider{justify-content:center;align-items:center;text-align:center;background:radial-gradient(ellipse at top,#1e3a8a 0%,#0f172a 70%);color:#fff;position:relative;overflow:hidden;padding:0}
+  .divider h1{color:#fff;font-size:54pt;margin-bottom:8px;letter-spacing:-.025em}
   .divider .splash-divider{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-  .divider .splash-divider span{position:absolute;font-size:80px;opacity:.06;color:#fff}
+  .divider .splash-divider span{position:absolute;font-size:120px;opacity:.04;color:#fff;font-family:'Cambria Math',serif;animation:driftSlow 14s ease-in-out infinite}
+  @keyframes driftSlow{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-30px) rotate(15deg)}}
+  .divider .div-content{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:5}
+  .divider .div-icon{font-size:90px;line-height:1;margin-bottom:4px;animation:bounceIn 1s cubic-bezier(.68,-.55,.27,1.55) both}
+  @keyframes bounceIn{0%{opacity:0;transform:scale(0)}60%{transform:scale(1.15)}100%{opacity:1;transform:scale(1)}}
+  .divider .sec-tag{display:inline-flex;align-items:center;gap:10px;padding:6px 18px;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);border-radius:30px;font-size:11pt;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#93c5fd;backdrop-filter:blur(10px);animation:revealUp .8s ease .3s both}
+  .divider .sec-tag .num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;border-radius:50%;font-size:12pt;font-weight:900}
+  .divider .sec-subtitle{font-size:18pt;color:rgba(255,255,255,.85);margin-top:6px;font-weight:300;animation:revealUp .8s ease .5s both;max-width:680px}
+  .divider .preview{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:30px;max-width:780px;animation:revealUp .9s ease .7s both}
+  .divider .preview-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:14px 18px;backdrop-filter:blur(12px);text-align:left;transition:transform .25s,background .25s}
+  .divider .preview-card:hover{transform:translateY(-4px);background:rgba(255,255,255,.14)}
+  .divider .preview-card .pico{font-size:24px;display:block;margin-bottom:4px}
+  .divider .preview-card .pname{font-size:11.5pt;color:#fff;font-weight:700;line-height:1.3}
+  .divider .preview-card .pdesc{font-size:9.5pt;color:rgba(255,255,255,.65);margin-top:3px;line-height:1.4}
+  .divider .slide-counter{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-size:10pt;color:rgba(255,255,255,.55);letter-spacing:1.5px;text-transform:uppercase;animation:revealUp 1s ease .9s both}
+  .divider .slide-counter b{color:#93c5fd;font-size:14pt;margin:0 4px}
 
   /* QUIZ */
   .quiz{display:flex;flex-direction:column;gap:14px;margin-top:14px}
@@ -281,15 +293,15 @@
   <div class="badge-u reveal">UNIDAD 2 · CONCEPTOS BÁSICOS</div>
   <div class="mega reveal">Fundamentos</div>
   <div class="reveal" style="font-size:32pt;font-weight:300;margin-top:-8px">de Estadística</div>
-  <div class="subtitle reveal">Lo que necesitás dominar para resolver Aprendo, Profundizo y Demuestro</div>
+  <div class="subtitle reveal">Lo que necesita dominar para resolver Aprendo, Profundizo y Demuestro</div>
   <div class="reveal" style="margin-top:24px;font-size:14pt;opacity:.85">Razonamiento Cuantitativo I &nbsp;·&nbsp; Docente Yenifer Fontalvo Marriaga &nbsp;·&nbsp; ESJIM</div>
-  <div class="reveal pulse" style="margin-top:32px;font-size:12pt;opacity:.7">▶ Pulsá <kbd style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:4px;font-family:'Courier New',monospace">→</kbd> o <kbd style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:4px;font-family:'Courier New',monospace">Espacio</kbd> para empezar</div>
+  <div class="reveal pulse" style="margin-top:32px;font-size:12pt;opacity:.7">▶ Pulse <kbd style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:4px;font-family:'Courier New',monospace">→</kbd> o <kbd style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:4px;font-family:'Courier New',monospace">Espacio</kbd> para empezar</div>
 </section>
 
 <!-- 2. ¿Por qué necesitas estos conceptos? -->
 <section class="slide" data-section="0">
   <div class="slide-header"><div class="slide-label"><span class="seccion-num">▸</span>Mapa de la unidad</div><div class="slide-nav"></div></div>
-  <h1 class="reveal">¿Por qué necesitás estos conceptos?</h1>
+  <h1 class="reveal">¿Por qué necesita estos conceptos?</h1>
   <p class="reveal">Cada actividad de la Unidad 2 requiere herramientas matemáticas específicas. Esta presentación te las muestra una a una:</p>
   <div class="body-row cols-3 reveal" style="margin-top:18px">
     <div class="card b-azul shadow"><div class="top-bar"></div><div class="ico">🔍</div>
@@ -332,10 +344,20 @@
 <section class="slide divider" data-section="1">
   <div class="splash-divider">
     <span style="top:18%;left:12%">📏</span><span style="bottom:16%;right:14%">📊</span>
+    <span style="top:60%;left:8%">𝑥</span><span style="top:25%;right:10%">∑</span>
   </div>
-  <div class="sec-num">01</div>
-  <h1>Variables y datos</h1>
-  <p>El primer paso: saber qué tipo de variable estás analizando</p>
+  <div class="div-content">
+    <div class="div-icon">📏</div>
+    <div class="sec-tag"><span class="num">1</span>Sección 01 · Variables y datos</div>
+    <h1>Variables y datos</h1>
+    <div class="sec-subtitle">El primer paso de todo análisis: identificar qué tipo de variable se está midiendo y cómo organizarla</div>
+    <div class="preview">
+      <div class="preview-card"><span class="pico">🔤</span><div class="pname">Tipos de variables</div><div class="pdesc">Cualitativas vs cuantitativas, discretas vs continuas</div></div>
+      <div class="preview-card"><span class="pico">📋</span><div class="pname">Tablas de frecuencia</div><div class="pdesc">Frecuencias absoluta, relativa y acumulada</div></div>
+      <div class="preview-card"><span class="pico">📈</span><div class="pname">Elección de gráfico</div><div class="pdesc">Línea, barras, dona — la pregunta manda</div></div>
+    </div>
+  </div>
+  <div class="slide-counter">slides <b>3</b> al <b>7</b> · 5 conceptos clave</div>
 </section>
 
 <!-- 4. Tipos de variables -->
@@ -370,7 +392,7 @@
 <section class="slide" data-section="1">
   <div class="slide-header"><div class="slide-label"><span class="seccion-num">1</span>Práctica · Clasificá tú mismo</div><div class="slide-nav"></div></div>
   <h2 class="reveal">🎯 Arrastrá cada variable al cajón correcto</h2>
-  <p class="reveal" style="font-size:12pt;color:var(--texto-suave)">Tomá cada concepto del lado izquierdo y soltalo en su categoría. Al completar los 6 te aviso si están todos bien.</p>
+  <p class="reveal" style="font-size:12pt;color:var(--texto-suave)">Arrastre cada concepto del lado izquierdo y suéltelo en su categoría. Al completar los 6 le indica si están todos correctos.</p>
 
   <div class="drag-zone reveal">
     <div class="drag-source" id="drag-source">
@@ -435,15 +457,28 @@
     <div style="text-align:center;font-size:11.5pt"><b style="color:var(--verde);font-size:13pt">📊 Barras</b><br><i>"¿cuánto comparado con qué?"</i></div>
     <div style="text-align:center;font-size:11.5pt"><b style="color:var(--violeta);font-size:13pt">🍩 Dona</b><br><i>"¿qué proporción del total?"</i></div>
   </div>
-  <div class="ejemplo reveal" style="margin-top:16px"><b class="label">Regla de oro</b>Si no podés enunciar la pregunta en una sola oración, no hagas el gráfico — estás sobre-graficando. Empezá por la pregunta, no por el gráfico.</div>
+  <div class="ejemplo reveal" style="margin-top:16px"><b class="label">Regla de oro</b>Si no puede enunciar la pregunta en una sola oración, no haga el gráfico — está sobre-graficando. Empiece por la pregunta, no por el gráfico.</div>
 </section>
 
 <!-- 8. Divisor sección 2 -->
 <section class="slide divider" data-section="2">
-  <div class="splash-divider"><span style="top:20%;left:14%">x̄</span><span style="bottom:14%;right:18%">𝑀</span></div>
-  <div class="sec-num">02</div>
-  <h1>Tendencia central</h1>
-  <p>Tres números que resumen "el centro" de tus datos</p>
+  <div class="splash-divider">
+    <span style="top:14%;left:10%">x̄</span><span style="bottom:12%;right:14%">𝑀</span>
+    <span style="top:55%;left:6%">∑</span><span style="top:25%;right:8%">𝑛</span>
+  </div>
+  <div class="div-content">
+    <div class="div-icon">🎯</div>
+    <div class="sec-tag"><span class="num">2</span>Sección 02 · Tendencia central</div>
+    <h1>Tendencia central</h1>
+    <div class="sec-subtitle">Tres números que resumen el centro de cualquier conjunto de datos: media, mediana y moda</div>
+    <div class="preview">
+      <div class="preview-card"><span class="pico">📊</span><div class="pname">Media aritmética</div><div class="pdesc">El promedio. Sensible a valores extremos</div></div>
+      <div class="preview-card"><span class="pico">📍</span><div class="pname">Mediana</div><div class="pdesc">El valor central. Robusta frente a outliers</div></div>
+      <div class="preview-card"><span class="pico">🏆</span><div class="pname">Moda</div><div class="pdesc">El valor más frecuente. Aplica a cualitativas</div></div>
+      <div class="preview-card"><span class="pico">⚖️</span><div class="pname">Asimetría</div><div class="pdesc">Cuál medida reportar según la forma</div></div>
+    </div>
+  </div>
+  <div class="slide-counter">slides <b>8</b> al <b>12</b> · 5 conceptos + calculadora interactiva</div>
 </section>
 
 <!-- 9. Media -->
@@ -474,8 +509,8 @@
 <!-- 10. Calculadora interactiva: Media -->
 <section class="slide" data-section="2">
   <div class="slide-header"><div class="slide-label"><span class="seccion-num">2</span>🧮 Calculadora en vivo</div><div class="slide-nav"></div></div>
-  <h2 class="reveal">Calculá tu propia media y mediana</h2>
-  <p class="reveal">Cambiá los valores y observá cómo cambian la media y la mediana en tiempo real:</p>
+  <h2 class="reveal">Calcule su propia media y mediana</h2>
+  <p class="reveal">Cambie los valores y observe cómo cambian la media y la mediana en tiempo real:</p>
 
   <div class="calc-widget reveal">
     <h3>Datos (separados por comas)</h3>
@@ -488,7 +523,7 @@
       <div class="calc-output"><b>Mediana ($\tilde{x}$)</b><div class="result" id="out-mediana">42,5</div></div>
       <div class="calc-output"><b>Tamaño ($n$)</b><div class="result" id="out-n">6</div></div>
     </div>
-    <div style="margin-top:16px;font-size:12pt;color:var(--texto-suave);font-style:italic">💡 Probá: ¿qué pasa con la media si agregás un dato atípico (p. ej. <code>25, 32, 40, 45, 50, 55, 200</code>)? Observá cómo la mediana casi no cambia.</div>
+    <div style="margin-top:16px;font-size:12pt;color:var(--texto-suave);font-style:italic">💡 Pruebe: ¿qué pasa con la media si agrega un dato atípico (p. ej. <code>25, 32, 40, 45, 50, 55, 200</code>)? Observe cómo la mediana casi no cambia.</div>
   </div>
 </section>
 
@@ -500,7 +535,7 @@
 
   <h3 class="reveal">Procedimiento paso a paso</h3>
   <ol class="reveal" style="font-size:13pt;line-height:1.8">
-    <li><b>Ordená</b> los datos de menor a mayor.</li>
+    <li><b>Ordene</b> los datos de menor a mayor.</li>
     <li>Si $n$ es <b>impar</b>: la mediana es el valor en la posición $(n+1)/2$.</li>
     <li>Si $n$ es <b>par</b>: la mediana es el promedio de los dos valores centrales.</li>
   </ol>
@@ -554,10 +589,22 @@
 
 <!-- 13. Divisor sección 3 -->
 <section class="slide divider" data-section="3">
-  <div class="splash-divider"><span style="top:20%;left:14%">σ</span><span style="bottom:14%;right:18%">CV</span></div>
-  <div class="sec-num">03</div>
-  <h1>Dispersión</h1>
-  <p>Qué tan parecidos o diferentes son tus datos entre sí</p>
+  <div class="splash-divider">
+    <span style="top:16%;left:10%">σ</span><span style="bottom:14%;right:14%">CV</span>
+    <span style="top:55%;left:8%">𝑠²</span><span style="top:30%;right:10%">𝑅</span>
+  </div>
+  <div class="div-content">
+    <div class="div-icon">📐</div>
+    <div class="sec-tag"><span class="num">3</span>Sección 03 · Dispersión</div>
+    <h1>Dispersión</h1>
+    <div class="sec-subtitle">Si la tendencia central dice dónde están los datos, la dispersión dice qué tan parecidos o diferentes son entre sí</div>
+    <div class="preview">
+      <div class="preview-card"><span class="pico">📏</span><div class="pname">Rango</div><div class="pdesc">La diferencia entre el máximo y el mínimo</div></div>
+      <div class="preview-card"><span class="pico">∑²</span><div class="pname">Varianza y σ</div><div class="pdesc">La dispersión típica respecto a la media</div></div>
+      <div class="preview-card"><span class="pico">⚖️</span><div class="pname">Coef. de variación</div><div class="pdesc">Comparar dispersiones entre escalas distintas</div></div>
+    </div>
+  </div>
+  <div class="slide-counter">slides <b>13</b> al <b>17</b> · 5 conceptos + calculadora σ/CV</div>
 </section>
 
 <!-- 14. Rango y varianza -->
@@ -605,7 +652,7 @@
 <!-- 16. Calculadora σ + CV -->
 <section class="slide" data-section="3">
   <div class="slide-header"><div class="slide-label"><span class="seccion-num">3</span>🧮 Calculadora en vivo</div><div class="slide-nav"></div></div>
-  <h2 class="reveal">Calculá σ y CV de tus propios datos</h2>
+  <h2 class="reveal">Calcule σ y CV de sus propios datos</h2>
 
   <div class="calc-widget reveal">
     <h3>Datos</h3>
@@ -649,10 +696,23 @@
 
 <!-- 18. Divisor sección 4 -->
 <section class="slide divider" data-section="4">
-  <div class="splash-divider"><span style="top:20%;left:14%">P(A)</span><span style="bottom:14%;right:18%">∪</span></div>
-  <div class="sec-num">04</div>
-  <h1>Probabilidad</h1>
-  <p>Cómo cuantificar la incertidumbre con números entre 0 y 1</p>
+  <div class="splash-divider">
+    <span style="top:16%;left:10%">P(A)</span><span style="bottom:14%;right:14%">∪</span>
+    <span style="top:55%;left:8%">Ω</span><span style="top:30%;right:10%">∩</span>
+  </div>
+  <div class="div-content">
+    <div class="div-icon">🎲</div>
+    <div class="sec-tag"><span class="num">4</span>Sección 04 · Probabilidad</div>
+    <h1>Probabilidad</h1>
+    <div class="sec-subtitle">Cómo cuantificar la incertidumbre con un número entre 0 (imposible) y 1 (seguro)</div>
+    <div class="preview">
+      <div class="preview-card"><span class="pico">🌐</span><div class="pname">Espacio muestral</div><div class="pdesc">El conjunto de todos los resultados posibles</div></div>
+      <div class="preview-card"><span class="pico">📊</span><div class="pname">Empírica vs teórica</div><div class="pdesc">A partir de datos vs equiprobabilidad</div></div>
+      <div class="preview-card"><span class="pico">∪</span><div class="pname">Regla de la unión</div><div class="pdesc">P(A∪B) = P(A) + P(B) − P(A∩B)</div></div>
+      <div class="preview-card"><span class="pico">⊥</span><div class="pname">Independencia</div><div class="pdesc">P(A∩B) = P(A) · P(B) cuando son indep.</div></div>
+    </div>
+  </div>
+  <div class="slide-counter">slides <b>18</b> al <b>22</b> · 5 conceptos + mini-quiz de 3 preguntas</div>
 </section>
 
 <!-- 19. Espacio muestral y eventos -->
@@ -692,7 +752,7 @@
   <div class="formula reveal" style="margin-top:14px"><b>Regla de la unión $P(A \cup B)$</b>
     $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
   </div>
-  <p class="reveal" style="font-size:12pt">El término $-P(A \cap B)$ es <b>esencial</b>: si simplemente sumas $P(A)+P(B)$ contás dos veces los casos comunes.</p>
+  <p class="reveal" style="font-size:12pt">El término $-P(A \cap B)$ es <b>esencial</b>: si simplemente suma $P(A)+P(B)$ cuenta dos veces los casos comunes.</p>
 
   <div class="ejemplo reveal"><b class="label">Ejemplo · Profundizo</b>$A$ = "año con hurto crítico" ($|A|=3$); $B$ = "año con homicidio crítico" ($|B|=3$); $A \cap B = \{2022, 2023\}$.
     <div class="formula" style="margin-top:6px">$$P(A \cup B) = \tfrac{3}{5} + \tfrac{3}{5} - \tfrac{2}{5} = \tfrac{4}{5} = \mathbf{0{,}80}$$</div>
@@ -735,16 +795,28 @@
 
   <div class="card b-ambar reveal" style="margin-top:10px"><div class="top-bar"></div>
     <h4>💡 Cuidado con el supuesto</h4>
-    <p style="font-size:12pt">En la realidad la independencia es <b>poco frecuente</b>: las zonas mal iluminadas suelen ser también las menos patrulladas. Siempre que asumas independencia, <b>declaralo</b> en el informe.</p>
+    <p style="font-size:12pt">En la realidad la independencia es <b>poco frecuente</b>: las zonas mal iluminadas suelen ser también las menos patrulladas. Siempre que asuma independencia, <b>decláralo</b> en el informe.</p>
   </div>
 </section>
 
 <!-- 23. Divisor sección 5 -->
 <section class="slide divider" data-section="5">
-  <div class="splash-divider"><span style="top:20%;left:14%">∪</span><span style="bottom:14%;right:18%">∩</span></div>
-  <div class="sec-num">05</div>
-  <h1>Teoría de conjuntos</h1>
-  <p>El lenguaje formal para clasificar y combinar grupos</p>
+  <div class="splash-divider">
+    <span style="top:14%;left:10%">∪</span><span style="bottom:12%;right:14%">∩</span>
+    <span style="top:55%;left:8%">⊆</span><span style="top:28%;right:10%">∅</span>
+  </div>
+  <div class="div-content">
+    <div class="div-icon">🔗</div>
+    <div class="sec-tag"><span class="num">5</span>Sección 05 · Teoría de conjuntos</div>
+    <h1>Teoría de conjuntos</h1>
+    <div class="sec-subtitle">El lenguaje formal para clasificar, combinar y comparar grupos de elementos</div>
+    <div class="preview">
+      <div class="preview-card"><span class="pico">📚</span><div class="pname">Definiciones</div><div class="pdesc">Conjunto, pertenencia, universo, cardinalidad</div></div>
+      <div class="preview-card"><span class="pico">⚙️</span><div class="pname">Operaciones</div><div class="pdesc">Unión, intersección, diferencia, complemento</div></div>
+      <div class="preview-card"><span class="pico">🎨</span><div class="pname">Diagramas de Venn</div><div class="pdesc">Visualización de 2 y 3 conjuntos</div></div>
+    </div>
+  </div>
+  <div class="slide-counter">slides <b>23</b> al <b>26</b> · 4 conceptos + Venn interactivo</div>
 </section>
 
 <!-- 24. Definiciones de conjuntos -->
@@ -771,7 +843,7 @@
 <!-- 25. VENN INTERACTIVO -->
 <section class="slide" data-section="5">
   <div class="slide-header"><div class="slide-label"><span class="seccion-num">5</span>🎨 Venn interactivo</div><div class="slide-nav"></div></div>
-  <h2 class="reveal">Hacé clic en una operación y observá la región</h2>
+  <h2 class="reveal">Haga clic en una operación y observe la región</h2>
 
   <div class="venn-controls reveal">
     <button data-op="A" class="active">A</button>
@@ -829,9 +901,9 @@
       <h4>Cómo construirlo</h4>
       <ol style="font-size:12pt;line-height:1.7">
         <li>Tres círculos en triángulo equilátero (lado &lt; radio).</li>
-        <li>Identificá las <b>7 regiones</b>: A, B, C, A∩B, A∩C, B∩C, A∩B∩C.</li>
+        <li>Identifique las <b>7 regiones</b>: A, B, C, A∩B, A∩C, B∩C, A∩B∩C.</li>
         <li>Ubicá cada elemento verificando pertenencia.</li>
-        <li>Verificá: $|A \cup B \cup C| + |\overline{A \cup B \cup C}| = |U|$.</li>
+        <li>Verifique: $|A \cup B \cup C| + |\overline{A \cup B \cup C}| = |U|$.</li>
       </ol>
       <div class="formula" style="margin-top:10px;font-size:11pt">
         <b>Inclusión-exclusión (3 conjuntos)</b>
@@ -857,10 +929,22 @@
 
 <!-- 27. Divisor sección 6 -->
 <section class="slide divider" data-section="6">
-  <div class="splash-divider"><span style="top:20%;left:14%">N</span><span style="bottom:14%;right:18%">n</span></div>
-  <div class="sec-num">06</div>
-  <h1>Población y muestra</h1>
-  <p>Cuándo lo que viste vale para todo lo que hay</p>
+  <div class="splash-divider">
+    <span style="top:14%;left:10%">𝑁</span><span style="bottom:12%;right:14%">𝑛</span>
+    <span style="top:55%;left:8%">SE</span><span style="top:28%;right:10%">μ</span>
+  </div>
+  <div class="div-content">
+    <div class="div-icon">🔬</div>
+    <div class="sec-tag"><span class="num">6</span>Sección 06 · Inferencia muestral</div>
+    <h1>Población y muestra</h1>
+    <div class="sec-subtitle">Cuándo lo que se observó en una muestra vale para toda la población — y cuándo no</div>
+    <div class="preview">
+      <div class="preview-card"><span class="pico">🌎</span><div class="pname">Población vs muestra</div><div class="pdesc">Parámetros (μ, π) vs estadísticos (x̄, p̂)</div></div>
+      <div class="preview-card"><span class="pico">📐</span><div class="pname">Error estándar</div><div class="pdesc">SE = √(p̂(1−p̂)/n) y margen de error</div></div>
+      <div class="preview-card"><span class="pico">⚠️</span><div class="pname">Sesgo de selección</div><div class="pdesc">Precisión ≠ validez externa</div></div>
+    </div>
+  </div>
+  <div class="slide-counter">slides <b>27</b> al <b>30</b> · 4 conceptos + calculadora SE/ME/IC</div>
 </section>
 
 <!-- 28. Población vs muestra -->
@@ -892,7 +976,7 @@
 <!-- 29. Calculadora SE / ME -->
 <section class="slide" data-section="6">
   <div class="slide-header"><div class="slide-label"><span class="seccion-num">6</span>🧮 Calculadora SE / ME</div><div class="slide-nav"></div></div>
-  <h2 class="reveal">Calculá el error estándar y el margen de error</h2>
+  <h2 class="reveal">Calcule el error estándar y el margen de error</h2>
 
   <div class="calc-widget reveal">
     <div class="calc-input">
@@ -916,7 +1000,7 @@
       <div class="calc-output"><b>Margen ME</b><div class="result" id="me-out">±0,36 pp</div></div>
       <div class="calc-output"><b>IC</b><div class="result" id="ic-out" style="font-size:14pt">(44,6%; 45,4%)</div></div>
     </div>
-    <div style="margin-top:14px;font-size:12pt;color:var(--texto-suave);font-style:italic">💡 Subí $n$ y observá cómo se reduce el SE. Subí la confianza y observá cómo crece el ME.</div>
+    <div style="margin-top:14px;font-size:12pt;color:var(--texto-suave);font-style:italic">💡 Aumente $n$ y observe cómo se reduce el SE. Aumente la confianza y observe cómo crece el ME.</div>
   </div>
 </section>
 
@@ -975,7 +1059,7 @@
   <div class="card b-azul shadow reveal" style="margin-top:18px"><div class="top-bar"></div>
     <h4>Recursos en el repositorio</h4>
     <p style="font-size:12.5pt">Los tres ejemplos resueltos están en
-      <b>github.com/JotaJ1991/esjim-profundizo-u1</b> — usalos como referencia para tu propio informe; adaptá la metodología a tu caso.</p>
+      <b>github.com/JotaJ1991/esjim-profundizo-u1</b> — úselos como referencia para su propio informe; adapte la metodología a su caso.</p>
   </div>
 </section>
 
@@ -987,7 +1071,7 @@
   </div>
   <div class="badge-u reveal">FIN DE LA PRESENTACIÓN</div>
   <div class="mega reveal" style="font-size:64pt">¡A practicar!</div>
-  <div class="subtitle reveal">Abrí los tres ejemplos y construí el tuyo</div>
+  <div class="subtitle reveal">Abra los tres ejemplos y construya el suyo</div>
   <div class="reveal" style="margin-top:30px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);padding:18px 28px;border-radius:14px;backdrop-filter:blur(10px)">
     <p style="font-size:13pt;color:#fff;line-height:1.7">
       🔍 <b>Aprendo haciendo</b> · análisis de robos en barrio histórico<br>
