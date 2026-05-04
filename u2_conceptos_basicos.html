@@ -7,8 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
-  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\\\[',right:'\\\\]',display:true},{left:'$',right:'$',display:false},{left:'\\\\(',right:'\\\\)',display:false}],throwOnError:false})"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 <style>
   :root{
     --azul:#0b3d91;--azul-claro:#1d5fc4;--azul-brillante:#3b82f6;
@@ -20,16 +19,36 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{width:100vw;height:100vh;overflow:hidden;font-family:'Segoe UI','Helvetica',Arial,sans-serif;background:var(--bg-dark);color:var(--texto)}
 
-  .progress-bar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--azul-brillante),var(--violeta),var(--rosa));z-index:100;transition:width .4s ease}
+  /* PROGRESS BAR + SECTION DOTS */
+  .progress-bar{position:fixed;top:0;left:0;height:5px;background:linear-gradient(90deg,#3b82f6,#8b5cf6,#ec4899);z-index:100;transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 10px rgba(59,130,246,.6)}
+  .section-dots{position:fixed;top:14px;right:24px;display:flex;gap:8px;z-index:90}
+  .section-dots .dot{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.4);cursor:pointer;transition:all .25s;position:relative}
+  .section-dots .dot.active{background:#3b82f6;border-color:#fff;transform:scale(1.25);box-shadow:0 0 0 4px rgba(59,130,246,.25)}
+  .section-dots .dot:hover::after{content:attr(data-label);position:absolute;top:22px;right:0;background:#1e293b;color:#fff;padding:4px 10px;border-radius:6px;font-size:10pt;white-space:nowrap;font-weight:700}
 
+  /* SLIDES */
   .slides{position:relative;width:100vw;height:100vh}
-  .slide{position:absolute;inset:0;background:var(--bg-slide);padding:36px 56px;display:none;flex-direction:column;overflow-y:auto;animation:fade .4s ease}
-  .slide.active{display:flex}
-  @keyframes fade{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+  .slide{position:absolute;inset:0;background:var(--bg-slide);padding:36px 56px;display:none;flex-direction:column;overflow-y:auto}
+  .slide.active{display:flex;animation:slideIn .55s cubic-bezier(.22,.61,.36,1) both}
+  .slide.active.from-prev{animation:slideInLeft .55s cubic-bezier(.22,.61,.36,1) both}
+  @keyframes slideIn{from{opacity:0;transform:translateX(40px) scale(.97)}to{opacity:1;transform:translateX(0) scale(1)}}
+  @keyframes slideInLeft{from{opacity:0;transform:translateX(-40px) scale(.97)}to{opacity:1;transform:translateX(0) scale(1)}}
+
+  /* Animaciones de elementos al entrar */
+  .slide.active .reveal{animation:revealUp .6s cubic-bezier(.22,.61,.36,1) both}
+  .slide.active .reveal:nth-child(1){animation-delay:.1s}
+  .slide.active .reveal:nth-child(2){animation-delay:.2s}
+  .slide.active .reveal:nth-child(3){animation-delay:.3s}
+  .slide.active .reveal:nth-child(4){animation-delay:.4s}
+  .slide.active .reveal:nth-child(5){animation-delay:.5s}
+  .slide.active .reveal:nth-child(6){animation-delay:.6s}
+  @keyframes revealUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes popIn{from{opacity:0;transform:scale(.85)}60%{transform:scale(1.05)}to{opacity:1;transform:scale(1)}}
 
   .slide-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:2px solid var(--borde);margin-bottom:18px;flex-shrink:0}
-  .slide-label{font-size:11pt;color:var(--azul-claro);font-weight:700;text-transform:uppercase;letter-spacing:2px}
-  .slide-nav{font-size:9.5pt;color:var(--texto-suave)}
+  .slide-label{font-size:11pt;color:var(--azul-claro);font-weight:700;text-transform:uppercase;letter-spacing:2px;display:flex;align-items:center;gap:8px}
+  .slide-label .seccion-num{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--azul-claro);color:#fff;border-radius:50%;font-size:11pt;font-weight:800}
+  .slide-nav{font-size:9.5pt;color:var(--texto-suave);font-variant-numeric:tabular-nums}
 
   h1{font-size:36pt;color:var(--azul);font-weight:800;line-height:1.05;margin-bottom:12px;letter-spacing:-.02em}
   h2{font-size:26pt;color:var(--azul);font-weight:700;line-height:1.1;margin-bottom:10px;letter-spacing:-.01em}
@@ -40,23 +59,27 @@
   li{margin:4px 0}
 
   /* PORTADA */
-  .portada{background:linear-gradient(135deg,#0b3d91 0%,#1d5fc4 50%,#8b5cf6 100%);color:#fff;justify-content:center;align-items:center;text-align:center}
+  .portada{background:linear-gradient(135deg,#0b3d91 0%,#1d5fc4 50%,#8b5cf6 100%);color:#fff;justify-content:center;align-items:center;text-align:center;position:relative;overflow:hidden}
   .portada h1,.portada h2{color:#fff}
-  .portada .mega{font-size:64pt;font-weight:900;letter-spacing:-.04em;line-height:1;margin-bottom:6px;background:linear-gradient(90deg,#fff,#dbeafe);background-clip:text;-webkit-background-clip:text;color:transparent}
-  .portada .subtitle{font-size:20pt;font-weight:300;margin:10px 0;opacity:.95}
-  .portada .badge-u{display:inline-block;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.3);padding:6px 20px;border-radius:30px;font-size:13pt;font-weight:700;letter-spacing:3px;margin-bottom:10px;backdrop-filter:blur(10px)}
-  .portada .docente{margin-top:24px;font-size:13pt;opacity:.9}
+  .portada .mega{font-size:80pt;font-weight:900;letter-spacing:-.04em;line-height:1;margin-bottom:6px;background:linear-gradient(90deg,#fff,#dbeafe,#c4b5fd);background-clip:text;-webkit-background-clip:text;color:transparent;animation:shimmer 3s ease-in-out infinite alternate}
+  @keyframes shimmer{from{filter:brightness(1)}to{filter:brightness(1.2)}}
+  .portada .subtitle{font-size:22pt;font-weight:300;margin:10px 0;opacity:.95}
+  .portada .badge-u{display:inline-block;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.35);padding:8px 24px;border-radius:30px;font-size:13pt;font-weight:700;letter-spacing:3px;margin-bottom:14px;backdrop-filter:blur(10px)}
+  .portada .docente{margin-top:30px;font-size:13pt;opacity:.9}
   .portada .splash{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-  .portada .splash span{position:absolute;font-size:60px;opacity:.08;animation:float 8s infinite ease-in-out}
-  @keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-18px) rotate(8deg)}}
+  .portada .splash span{position:absolute;font-size:60px;opacity:.10;animation:float 8s infinite ease-in-out;font-family:'Cambria Math',serif}
+  @keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-22px) rotate(10deg)}}
+  .portada .pulse{display:inline-block;animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 
   /* LAYOUT */
   .body-row{flex:1;display:grid;gap:24px;align-items:start}
   .body-row.cols-2{grid-template-columns:1fr 1fr}
   .body-row.cols-3{grid-template-columns:1fr 1fr 1fr}
 
-  /* CARDS */
-  .card{background:#fff;border:2px solid var(--borde);border-radius:14px;padding:18px 22px;position:relative;overflow:hidden}
+  /* CARDS interactivas */
+  .card{background:#fff;border:2px solid var(--borde);border-radius:14px;padding:18px 22px;position:relative;overflow:hidden;transition:transform .25s ease,box-shadow .25s ease}
+  .card:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(11,61,145,.15)}
   .card.shadow{box-shadow:0 6px 16px rgba(11,61,145,.08)}
   .card .top-bar{position:absolute;top:0;left:0;right:0;height:5px}
   .card.b-azul .top-bar{background:var(--azul-brillante)}
@@ -65,9 +88,10 @@
   .card.b-ambar .top-bar{background:var(--ambar)}
   .card.b-violeta .top-bar{background:var(--violeta)}
   .card.b-rosa .top-bar{background:var(--rosa)}
-  .card .ico{font-size:36px;line-height:1;margin-bottom:6px}
+  .card .ico{font-size:36px;line-height:1;margin-bottom:6px;display:inline-block;transition:transform .3s}
+  .card:hover .ico{transform:scale(1.15) rotate(-5deg)}
 
-  /* DEFINICIÓN — bloque ámbar suave */
+  /* DEFINICIÓN */
   .definicion{background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border:2px solid #fcd34d;border-left:6px solid var(--ambar);border-radius:10px;padding:16px 22px;margin:10px 0;font-size:13pt;line-height:1.6}
   .definicion b.term{color:#7c2d12;font-weight:700;font-size:14pt;display:block;margin-bottom:6px}
 
@@ -86,9 +110,11 @@
   td{padding:7px 12px;border-bottom:1px solid var(--borde)}
   tr:nth-child(even) td{background:#f8fafc}
   td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  table.compact td,table.compact th{padding:5px 9px;font-size:11pt}
 
   /* CHART */
-  .chart-wrap{background:#fff;border:1px solid var(--borde);border-radius:12px;padding:14px;height:280px;position:relative}
+  .chart-wrap{background:#fff;border:1px solid var(--borde);border-radius:12px;padding:14px;height:280px;position:relative;transition:box-shadow .3s}
+  .chart-wrap:hover{box-shadow:0 8px 20px rgba(11,61,145,.1)}
   .chart-wrap.h-260{height:260px}
 
   /* PILDORAS */
@@ -101,53 +127,171 @@
 
   /* COMPARATIVA */
   .compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px}
-  .compare > div{background:#fff;border:2px solid var(--borde);border-radius:10px;padding:14px 18px}
+  .compare > div{background:#fff;border:2px solid var(--borde);border-radius:10px;padding:14px 18px;transition:transform .25s,box-shadow .25s}
+  .compare > div:hover{transform:translateY(-3px);box-shadow:0 8px 18px rgba(0,0,0,.08)}
   .compare h4{color:var(--azul);font-size:11.5pt;letter-spacing:1px}
   .compare ul{font-size:12pt;line-height:1.55;padding-left:20px}
 
   /* NAV */
   .nav-buttons{position:fixed;bottom:18px;right:24px;display:flex;gap:8px;z-index:50}
-  .nav-buttons button{background:rgba(11,61,145,.85);color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:13pt;cursor:pointer;font-weight:700;transition:background .15s}
-  .nav-buttons button:hover{background:var(--azul)}
-  .nav-buttons button:disabled{opacity:.35;cursor:not-allowed}
+  .nav-buttons button{background:rgba(11,61,145,.85);color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:13pt;cursor:pointer;font-weight:700;transition:all .2s;box-shadow:0 4px 12px rgba(11,61,145,.25)}
+  .nav-buttons button:hover{background:var(--azul);transform:translateY(-2px);box-shadow:0 6px 16px rgba(11,61,145,.4)}
+  .nav-buttons button:disabled{opacity:.35;cursor:not-allowed;transform:none}
+  .keyboard-hints{position:fixed;bottom:24px;left:24px;font-size:10pt;color:rgba(255,255,255,.6);z-index:50;background:rgba(0,0,0,.4);padding:6px 12px;border-radius:8px;backdrop-filter:blur(8px);font-family:'Segoe UI Mono','Courier New',monospace}
+  .keyboard-hints kbd{background:rgba(255,255,255,.15);padding:1px 6px;border-radius:4px;font-family:inherit;border:1px solid rgba(255,255,255,.2)}
+
+  /* HERO STAT animado */
+  .hero-stats{display:flex;gap:20px;flex-wrap:wrap;margin:20px 0}
+  .hero-stat{flex:1;min-width:160px;background:#fff;border:2px solid var(--borde);border-radius:16px;padding:22px 18px;text-align:center;position:relative;overflow:hidden;transition:transform .3s}
+  .hero-stat:hover{transform:translateY(-6px) scale(1.03)}
+  .hero-stat .num{font-size:38pt;font-weight:900;color:var(--azul);line-height:1;letter-spacing:-.03em}
+  .hero-stat .lbl{font-size:11pt;color:var(--texto-suave);font-weight:600;margin-top:8px;text-transform:uppercase;letter-spacing:1px}
+  .hero-stat.azul .num{color:var(--azul-brillante)}
+  .hero-stat.verde .num{color:var(--verde)}
+  .hero-stat.violeta .num{color:var(--violeta)}
+  .hero-stat.rojo .num{color:var(--rojo)}
+  .hero-stat.ambar .num{color:var(--ambar)}
+  .hero-stat::before{content:'';position:absolute;inset:-50%;background:radial-gradient(circle,rgba(59,130,246,.06) 0%,transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none}
+  .hero-stat:hover::before{opacity:1}
 
   /* SVG VENN */
   .venn-mini{display:block;margin:10px auto;max-width:100%;height:200px}
 
   /* SECTION DIVIDER */
-  .divider{justify-content:center;align-items:center;text-align:center;background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);color:#fff}
+  .divider{justify-content:center;align-items:center;text-align:center;background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);color:#fff;position:relative;overflow:hidden}
   .divider h1{color:#fff;font-size:48pt}
-  .divider .sec-num{font-size:120pt;font-weight:900;background:linear-gradient(90deg,#3b82f6,#8b5cf6,#ec4899);background-clip:text;-webkit-background-clip:text;color:transparent;line-height:1}
+  .divider .sec-num{font-size:140pt;font-weight:900;background:linear-gradient(90deg,#3b82f6,#8b5cf6,#ec4899);background-clip:text;-webkit-background-clip:text;color:transparent;line-height:1;animation:zoomIn .8s cubic-bezier(.22,.61,.36,1) both}
+  @keyframes zoomIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
   .divider p{font-size:18pt;color:rgba(255,255,255,.85)}
+  .divider .splash-divider{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+  .divider .splash-divider span{position:absolute;font-size:80px;opacity:.06;color:#fff}
+
+  /* QUIZ */
+  .quiz{display:flex;flex-direction:column;gap:14px;margin-top:14px}
+  .quiz-question{font-size:16pt;font-weight:700;color:var(--azul);margin-bottom:10px;line-height:1.4}
+  .quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .quiz-option{background:#fff;border:2px solid var(--borde);border-radius:10px;padding:14px 18px;font-size:13pt;cursor:pointer;transition:all .25s;text-align:left;color:var(--texto);font-family:inherit;position:relative;overflow:hidden}
+  .quiz-option:hover{border-color:var(--azul-brillante);background:#f0f7ff;transform:translateY(-2px);box-shadow:0 6px 14px rgba(59,130,246,.15)}
+  .quiz-option.correct{background:#d1fae5;border-color:var(--verde);color:#065f46;animation:flashCorrect .4s ease}
+  .quiz-option.incorrect{background:#fee2e2;border-color:var(--rojo);color:#7f1d1d;animation:shake .4s ease}
+  @keyframes flashCorrect{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .quiz-feedback{margin-top:14px;padding:14px 18px;border-radius:10px;font-size:12.5pt;line-height:1.55;display:none}
+  .quiz-feedback.show{display:block;animation:revealUp .4s ease both}
+  .quiz-feedback.ok{background:#d1fae5;border-left:5px solid var(--verde);color:#065f46}
+  .quiz-feedback.bad{background:#fee2e2;border-left:5px solid var(--rojo);color:#7f1d1d}
+  .quiz-progress{display:flex;gap:6px;margin-bottom:8px}
+  .quiz-progress .dot{width:24px;height:6px;background:var(--borde);border-radius:3px;transition:background .3s}
+  .quiz-progress .dot.active{background:var(--azul-brillante)}
+  .quiz-progress .dot.correct{background:var(--verde)}
+  .quiz-progress .dot.incorrect{background:var(--rojo)}
+  .quiz-score{display:inline-block;padding:8px 18px;background:linear-gradient(135deg,var(--verde),#059669);color:#fff;border-radius:24px;font-weight:700;font-size:13pt;margin-top:10px;box-shadow:0 4px 12px rgba(16,185,129,.3)}
+
+  /* CALCULADORA */
+  .calc-widget{background:linear-gradient(135deg,#f8fafc 0%,#eff6ff 100%);border:2px solid var(--azul-brillante);border-radius:14px;padding:20px 24px;margin:14px 0}
+  .calc-widget h3{color:var(--azul);margin-bottom:12px;font-size:15pt}
+  .calc-input{display:flex;align-items:center;gap:12px;margin:8px 0;flex-wrap:wrap}
+  .calc-input label{font-size:12.5pt;font-weight:600;color:var(--azul);min-width:160px}
+  .calc-input input{padding:8px 14px;border:2px solid var(--borde);border-radius:8px;font-size:13pt;font-family:'Cambria Math',serif;width:100px;transition:border-color .2s}
+  .calc-input input:focus{outline:none;border-color:var(--azul-brillante);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+  .calc-output{margin-top:14px;padding:14px 18px;background:#fff;border:2px solid var(--borde);border-radius:10px;font-size:14pt;font-family:'Cambria Math',serif;color:var(--azul)}
+  .calc-output b{display:block;color:var(--texto-suave);font-family:Arial,sans-serif;font-size:11pt;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+  .calc-output .result{font-size:22pt;font-weight:800;color:var(--verde)}
+
+  /* DRAG-AND-DROP */
+  .drag-zone{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+  .drag-source{background:#fff;border:2px dashed var(--borde);border-radius:12px;padding:14px;min-height:200px}
+  .drag-source h4{color:var(--azul-claro);margin-bottom:10px}
+  .drag-item{background:linear-gradient(135deg,#fff,#f0f7ff);border:2px solid var(--azul-brillante);border-radius:8px;padding:8px 14px;margin:6px 0;font-size:12pt;cursor:grab;font-weight:600;color:var(--azul);transition:all .2s;display:flex;align-items:center;gap:8px}
+  .drag-item:hover{transform:translateX(4px);box-shadow:0 4px 12px rgba(59,130,246,.2)}
+  .drag-item.dragging{opacity:.4;transform:scale(.95)}
+  .drop-targets{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .drop-target{background:#fff;border:3px dashed #94a3b8;border-radius:10px;padding:12px;min-height:90px;transition:all .2s}
+  .drop-target.over{background:#dbeafe;border-color:var(--azul-brillante);transform:scale(1.02)}
+  .drop-target h5{color:var(--azul);font-size:11pt;text-align:center;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+  .drop-target .placed{background:#d1fae5;border-color:var(--verde)}
+
+  /* INTERACTIVE VENN */
+  .venn-interactive{position:relative;width:100%;max-width:480px;margin:0 auto;height:340px}
+  .venn-interactive svg{width:100%;height:100%;cursor:pointer}
+  .venn-interactive svg circle{transition:fill-opacity .3s,stroke-width .3s}
+  .venn-interactive svg circle:hover{fill-opacity:.55}
+  .venn-controls{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  .venn-controls button{background:#fff;border:2px solid var(--borde);padding:8px 16px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:11.5pt;font-weight:600;transition:all .2s}
+  .venn-controls button:hover{background:var(--azul-brillante);color:#fff;border-color:var(--azul-brillante);transform:translateY(-2px)}
+  .venn-controls button.active{background:var(--violeta);color:#fff;border-color:var(--violeta);box-shadow:0 4px 12px rgba(139,92,246,.35)}
+  .venn-result{margin-top:12px;padding:12px 18px;background:#f8fafc;border:1px solid var(--borde);border-radius:8px;font-size:13pt;text-align:center;min-height:50px;display:flex;align-items:center;justify-content:center}
+
+  /* FULLSCREEN button */
+  .fullscreen-btn{position:fixed;top:14px;left:24px;background:rgba(0,0,0,.4);color:#fff;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:11pt;z-index:90;backdrop-filter:blur(8px);transition:background .2s}
+  .fullscreen-btn:hover{background:rgba(0,0,0,.7)}
+
+  /* OVERVIEW MODE */
+  .overview{position:fixed;inset:0;background:rgba(15,23,42,.95);z-index:200;display:none;padding:40px;overflow-y:auto;backdrop-filter:blur(10px)}
+  .overview.show{display:block;animation:revealUp .3s ease}
+  .overview h2{color:#fff;margin-bottom:24px;text-align:center;font-size:24pt}
+  .overview .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;max-width:1400px;margin:0 auto}
+  .overview .thumb{background:#fff;border:3px solid transparent;border-radius:10px;padding:14px;cursor:pointer;transition:all .2s;color:var(--texto);min-height:140px;display:flex;flex-direction:column;justify-content:space-between;font-family:inherit;text-align:left;font-size:11pt}
+  .overview .thumb:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,.4);border-color:var(--azul-brillante)}
+  .overview .thumb .num{font-size:9pt;color:var(--texto-suave);font-weight:700;margin-bottom:4px}
+  .overview .thumb .title{font-weight:700;font-size:11pt;color:var(--azul);line-height:1.3}
+  .overview .thumb.divider-thumb{background:linear-gradient(135deg,#1e293b,#0f172a);color:#fff}
+  .overview .thumb.divider-thumb .title{color:#fff}
+  .overview .thumb.portada-thumb{background:linear-gradient(135deg,#0b3d91,#8b5cf6);color:#fff}
+  .overview .thumb.portada-thumb .title{color:#fff}
+  .overview .close-overview{position:fixed;top:14px;right:24px;background:#ef4444;color:#fff;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13pt;font-weight:700}
+
+  /* CONFETTI */
+  #confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:150}
+
+  /* STAGE BIG NUMBER (animated count) */
+  .big-num{font-size:60pt;font-weight:900;color:var(--azul);text-align:center;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+
+  /* GRID animado de iconos */
+  .icon-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin:16px 0}
+  .icon-cell{background:#fff;border:2px solid var(--borde);border-radius:10px;padding:14px 8px;text-align:center;transition:all .25s;cursor:default}
+  .icon-cell:hover{transform:translateY(-4px) rotate(-2deg);box-shadow:0 8px 16px rgba(11,61,145,.15);border-color:var(--azul-brillante)}
+  .icon-cell .em{font-size:30px;display:block;margin-bottom:4px}
+  .icon-cell .nm{font-size:10pt;color:var(--texto);font-weight:600}
+
+  @media (max-width:900px){
+    .body-row.cols-3{grid-template-columns:1fr}
+    .body-row.cols-2{grid-template-columns:1fr}
+    .compare{grid-template-columns:1fr}
+    h1{font-size:28pt}h2{font-size:20pt}
+  }
 </style>
 </head>
 <body>
 
 <div class="progress-bar" id="progress"></div>
+<button class="fullscreen-btn" id="fs-btn" title="Fullscreen (F)">⛶ Fullscreen</button>
+<div class="section-dots" id="section-dots"></div>
 
 <div class="slides" id="slides">
 
 <!-- 1. PORTADA -->
-<section class="slide portada active">
+<section class="slide portada active" data-section="0">
   <div class="splash">
     <span style="top:8%;left:8%">∑</span><span style="top:18%;right:10%">π</span>
     <span style="bottom:18%;left:14%">σ</span><span style="bottom:10%;right:18%">∪</span>
     <span style="top:50%;left:6%">∩</span><span style="top:55%;right:8%">x̄</span>
     <span style="top:30%;left:50%">P(A)</span>
   </div>
-  <div class="badge-u">UNIDAD 2 · CONCEPTOS BÁSICOS</div>
-  <div class="mega">Fundamentos</div>
-  <div style="font-size:32pt;font-weight:300;margin-top:-8px">de Estadística</div>
-  <div class="subtitle">Lo que necesitás dominar para resolver Aprendo, Profundizo y Demuestro</div>
-  <div class="docente">Razonamiento Cuantitativo I &nbsp;·&nbsp; Docente: Yenifer Fontalvo Marriaga &nbsp;·&nbsp; ESJIM</div>
+  <div class="badge-u reveal">UNIDAD 2 · CONCEPTOS BÁSICOS</div>
+  <div class="mega reveal">Fundamentos</div>
+  <div class="reveal" style="font-size:32pt;font-weight:300;margin-top:-8px">de Estadística</div>
+  <div class="subtitle reveal">Lo que necesitás dominar para resolver Aprendo, Profundizo y Demuestro</div>
+  <div class="reveal" style="margin-top:24px;font-size:14pt;opacity:.85">Razonamiento Cuantitativo I &nbsp;·&nbsp; Docente Yenifer Fontalvo Marriaga &nbsp;·&nbsp; ESJIM</div>
+  <div class="reveal pulse" style="margin-top:32px;font-size:12pt;opacity:.7">▶ Pulsá <kbd style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:4px;font-family:'Courier New',monospace">→</kbd> o <kbd style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:4px;font-family:'Courier New',monospace">Espacio</kbd> para empezar</div>
 </section>
 
 <!-- 2. ¿Por qué necesitas estos conceptos? -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Mapa de la unidad</div><div class="slide-nav"></div></div>
-  <h1>¿Por qué necesitas estos conceptos?</h1>
-  <p>Cada actividad de la Unidad 2 requiere aplicar herramientas matemáticas específicas. Esta presentación te muestra cuáles y cómo:</p>
-  <div class="body-row cols-3" style="margin-top:18px">
+<section class="slide" data-section="0">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">▸</span>Mapa de la unidad</div><div class="slide-nav"></div></div>
+  <h1 class="reveal">¿Por qué necesitás estos conceptos?</h1>
+  <p class="reveal">Cada actividad de la Unidad 2 requiere herramientas matemáticas específicas. Esta presentación te las muestra una a una:</p>
+  <div class="body-row cols-3 reveal" style="margin-top:18px">
     <div class="card b-azul shadow"><div class="top-bar"></div><div class="ico">🔍</div>
       <h3>Aprendo haciendo</h3>
       <p style="font-size:11.5pt;color:var(--texto-suave)">Caso barrio histórico</p>
@@ -161,9 +305,9 @@
       <h3>Profundizo</h3>
       <p style="font-size:11.5pt;color:var(--texto-suave)">SIEDCO 4 delitos × 5 años</p>
       <ul style="font-size:11pt;margin-top:6px">
-        <li>Tablas y representación gráfica</li>
+        <li>Tablas y gráficos</li>
         <li>Teoría de conjuntos (∪, ∩, ⊆)</li>
-        <li>Regla de la unión $P(A\cup B)$</li>
+        <li>Regla de la unión</li>
       </ul>
     </div>
     <div class="card b-violeta shadow"><div class="top-bar"></div><div class="ico">🍾</div>
@@ -172,265 +316,277 @@
       <ul style="font-size:11pt;margin-top:6px">
         <li>Estadística + conjuntos</li>
         <li>Probabilidad por categoría</li>
-        <li>Población, muestra y error</li>
+        <li>Población, muestra, error</li>
       </ul>
     </div>
   </div>
-  <div style="margin-top:18px;font-size:12pt;color:var(--texto-suave);text-align:center;font-style:italic">25 slides · ~30 min · Incluye fórmulas en LaTeX, ejemplos numéricos y mini-quizzes</div>
+  <div class="hero-stats reveal" style="margin-top:24px">
+    <div class="hero-stat azul"><div class="num" data-count="32">0</div><div class="lbl">Slides interactivos</div></div>
+    <div class="hero-stat verde"><div class="num" data-count="6">0</div><div class="lbl">Secciones temáticas</div></div>
+    <div class="hero-stat violeta"><div class="num" data-count="4">0</div><div class="lbl">Calculadoras en vivo</div></div>
+    <div class="hero-stat ambar"><div class="num" data-count="3">0</div><div class="lbl">Mini-quizzes</div></div>
+  </div>
 </section>
 
 <!-- 3. Divisor sección 1 -->
-<section class="slide divider">
+<section class="slide divider" data-section="1">
+  <div class="splash-divider">
+    <span style="top:18%;left:12%">📏</span><span style="bottom:16%;right:14%">📊</span>
+  </div>
   <div class="sec-num">01</div>
   <h1>Variables y datos</h1>
   <p>El primer paso: saber qué tipo de variable estás analizando</p>
 </section>
 
 <!-- 4. Tipos de variables -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 1 · Variables</div><div class="slide-nav"></div></div>
-  <h2>Tipos de variables estadísticas</h2>
-  <div class="definicion"><b class="term">Variable</b>Característica que se mide o se observa en cada elemento del estudio (un robo, una botella incautada, un delito).</div>
+<section class="slide" data-section="1">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">1</span>Variables</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Tipos de variables estadísticas</h2>
+  <div class="definicion reveal"><b class="term">Variable</b>Característica que se mide o se observa en cada elemento del estudio (un robo, una botella incautada, un delito).</div>
 
-  <div class="body-row cols-2" style="margin-top:6px">
+  <div class="body-row cols-2 reveal" style="margin-top:6px">
     <div class="card b-azul shadow"><div class="top-bar"></div>
       <h3>Cualitativas (categóricas)</h3>
       <p style="font-size:12pt">Describen una <b>cualidad</b>; no se pueden sumar.</p>
       <ul style="font-size:11.5pt">
-        <li><b>Nominales:</b> sin orden. <span class="pill azul">Ejemplo</span> tipo de licor (aguardiente, ron, ñeque).</li>
-        <li><b>Ordinales:</b> tienen orden. <span class="pill azul">Ejemplo</span> nivel de riesgo (bajo, medio, alto).</li>
+        <li><b>Nominales:</b> sin orden. <span class="pill azul">Ej.</span> tipo de licor (aguardiente, ron, ñeque).</li>
+        <li><b>Ordinales:</b> tienen orden. <span class="pill azul">Ej.</span> nivel de riesgo (bajo, medio, alto).</li>
       </ul>
     </div>
     <div class="card b-verde shadow"><div class="top-bar"></div>
       <h3>Cuantitativas (numéricas)</h3>
       <p style="font-size:12pt">Se expresan con <b>números</b>; sí se pueden sumar y promediar.</p>
       <ul style="font-size:11.5pt">
-        <li><b>Discretas:</b> valores enteros. <span class="pill verde">Ejemplo</span> nº de robos por mes.</li>
-        <li><b>Continuas:</b> cualquier valor en un intervalo. <span class="pill verde">Ejemplo</span> tiempo entre incidentes (minutos).</li>
+        <li><b>Discretas:</b> valores enteros. <span class="pill verde">Ej.</span> nº de robos por mes.</li>
+        <li><b>Continuas:</b> cualquier valor en intervalo. <span class="pill verde">Ej.</span> tiempo entre incidentes.</li>
       </ul>
     </div>
   </div>
 
-  <div class="ejemplo" style="margin-top:14px"><b class="label">Aplicalo</b>En la actividad <b>Aprendo haciendo</b> tienes 4 variables: <i>cantidad de robos</i> (cuantitativa discreta), <i>zona</i> (cualitativa nominal), <i>franja horaria</i> (cualitativa ordinal) y <i>factor de riesgo</i> (cualitativa nominal con %).</div>
+  <div class="ejemplo reveal" style="margin-top:14px"><b class="label">Aplicalo</b>En la actividad <b>Aprendo haciendo</b>: <i>cantidad de robos</i> (cuantitativa discreta), <i>zona</i> (cualitativa nominal), <i>franja horaria</i> (cualitativa ordinal), <i>factor de riesgo</i> (cualitativa nominal con %).</div>
 </section>
 
-<!-- 5. Tablas de frecuencia -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 1 · Tablas</div><div class="slide-nav"></div></div>
-  <h2>Tabla de frecuencias</h2>
-  <p>Es la organización mínima de los datos. Cada categoría con sus tres frecuencias clave:</p>
+<!-- 5. Drag & drop interactivo: clasificar variables -->
+<section class="slide" data-section="1">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">1</span>Práctica · Clasificá tú mismo</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">🎯 Arrastrá cada variable al cajón correcto</h2>
+  <p class="reveal" style="font-size:12pt;color:var(--texto-suave)">Tomá cada concepto del lado izquierdo y soltalo en su categoría. Al completar los 6 te aviso si están todos bien.</p>
 
-  <div class="definicion"><b class="term">Las 3 frecuencias</b>
+  <div class="drag-zone reveal">
+    <div class="drag-source" id="drag-source">
+      <h4>📦 Variables a clasificar</h4>
+      <div class="drag-item" draggable="true" data-cat="cuant-disc">📊 Cantidad de robos por mes</div>
+      <div class="drag-item" draggable="true" data-cat="cual-nom">🏘️ Zona del barrio (Plaza, Calle...)</div>
+      <div class="drag-item" draggable="true" data-cat="cual-ord">🚦 Nivel de riesgo (bajo, medio, alto)</div>
+      <div class="drag-item" draggable="true" data-cat="cuant-cont">⏱️ Tiempo entre dos incidentes</div>
+      <div class="drag-item" draggable="true" data-cat="cual-nom">🍾 Tipo de licor (aguardiente, ron...)</div>
+      <div class="drag-item" draggable="true" data-cat="cuant-disc">🚗 Nº de patrullas asignadas</div>
+    </div>
+    <div>
+      <div class="drop-targets">
+        <div class="drop-target" data-cat="cual-nom"><h5>Cualitativa nominal</h5></div>
+        <div class="drop-target" data-cat="cual-ord"><h5>Cualitativa ordinal</h5></div>
+        <div class="drop-target" data-cat="cuant-disc"><h5>Cuantitativa discreta</h5></div>
+        <div class="drop-target" data-cat="cuant-cont"><h5>Cuantitativa continua</h5></div>
+      </div>
+      <div id="drag-feedback" style="margin-top:14px;text-align:center;font-size:13pt;font-weight:700;color:var(--azul);min-height:40px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Tablas de frecuencia -->
+<section class="slide" data-section="1">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">1</span>Tablas de frecuencia</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Tabla de frecuencias</h2>
+  <p class="reveal">Es la organización mínima de los datos. Tres frecuencias clave:</p>
+
+  <div class="definicion reveal"><b class="term">Las 3 frecuencias</b>
     <b>Absoluta ($f_i$):</b> nº de veces que aparece la categoría.<br>
-    <b>Relativa ($h_i$):</b> proporción $h_i = f_i / n$ (se expresa en % multiplicando por 100).<br>
+    <b>Relativa ($h_i$):</b> proporción $h_i = f_i / n$ (en % multiplicando por 100).<br>
     <b>Acumulada ($F_i$):</b> suma progresiva — útil para responder "¿cuántos hasta...?".
   </div>
 
-  <h4>Ejemplo: zonas con mayor robo (caso AH, n=152)</h4>
-  <table>
-    <thead><tr><th>Zona</th><th class="num">Frec. absoluta $f_i$</th><th class="num">Frec. relativa $h_i$</th><th class="num">Frec. acumulada $F_i$</th></tr></thead>
+  <h4 class="reveal">Ejemplo: zonas con mayor robo (caso AH, n=152)</h4>
+  <table class="reveal">
+    <thead><tr><th>Zona</th><th class="num">$f_i$</th><th class="num">$h_i$</th><th class="num">$F_i$</th></tr></thead>
     <tbody>
       <tr><td>Plaza central</td><td class="num">45</td><td class="num">29,6 %</td><td class="num">45</td></tr>
       <tr><td>Calle comercial</td><td class="num">38</td><td class="num">25,0 %</td><td class="num">83</td></tr>
       <tr><td>Parque urbano</td><td class="num">35</td><td class="num">23,0 %</td><td class="num">118</td></tr>
       <tr><td>Estación de transporte</td><td class="num">22</td><td class="num">14,5 %</td><td class="num">140</td></tr>
       <tr><td>Zona residencial</td><td class="num">12</td><td class="num">7,9 %</td><td class="num">152</td></tr>
-      <tr style="background:#dbeafe;font-weight:700"><td>Total</td><td class="num">152</td><td class="num">100,0 %</td><td class="num">—</td></tr>
+      <tr style="background:#dbeafe;font-weight:700"><td>Total</td><td class="num">152</td><td class="num">100 %</td><td class="num">—</td></tr>
     </tbody>
   </table>
-  <p style="font-size:12pt;color:var(--texto-suave);margin-top:6px"><b>Lee la tabla:</b> el 77,6 % de los robos se concentra en las primeras tres zonas (acumulada 118/152).</p>
+  <p class="reveal" style="font-size:12pt;color:var(--texto-suave);margin-top:6px"><b>Lee la tabla:</b> el 77,6 % de los robos se concentra en las primeras tres zonas (acumulada 118/152).</p>
 </section>
 
-<!-- 6. Cómo elegir el gráfico -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 1 · Gráficas</div><div class="slide-nav"></div></div>
-  <h2>¿Cómo elegir la gráfica correcta?</h2>
-  <p>El tipo de gráfico depende de la <b>pregunta</b> que quieras responder y del <b>tipo de variable</b>:</p>
-
-  <table style="margin-top:10px">
-    <thead><tr><th>Pregunta</th><th>Tipo de variable</th><th>Gráfico recomendado</th></tr></thead>
-    <tbody>
-      <tr><td>¿Cómo cambia en el tiempo?</td><td>Cuantitativa con orden temporal</td><td><span class="pill azul">Línea</span></td></tr>
-      <tr><td>¿Cuánto comparado con qué?</td><td>Cualitativa nominal</td><td><span class="pill verde">Barras</span></td></tr>
-      <tr><td>¿Qué proporción del total?</td><td>Cualitativa con pocas categorías</td><td><span class="pill violeta">Pastel / dona</span></td></tr>
-      <tr><td>¿Hay relación entre dos variables?</td><td>Dos cuantitativas</td><td><span class="pill ambar">Dispersión</span></td></tr>
-      <tr><td>¿Cómo se distribuyen los valores?</td><td>Cuantitativa continua</td><td><span class="pill rojo">Histograma</span></td></tr>
-    </tbody>
-  </table>
-
-  <div class="ejemplo" style="margin-top:14px"><b class="label">Regla práctica</b>Si <i>no podés enunciar la pregunta en una sola oración</i>, no hagas el gráfico. Estás sobre-graficando.</div>
-</section>
-
-<!-- 7. Ejemplos visuales de gráficas -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 1 · Gráficas</div><div class="slide-nav"></div></div>
-  <h2>Tres gráficas con los mismos datos, tres lecturas distintas</h2>
-  <div class="body-row cols-3" style="margin-top:6px">
+<!-- 7. Cómo elegir la gráfica + chart visual -->
+<section class="slide" data-section="1">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">1</span>Gráficas</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Tres gráficas, tres preguntas distintas</h2>
+  <div class="body-row cols-3 reveal" style="margin-top:6px">
     <div class="chart-wrap"><canvas id="ch-line"></canvas></div>
     <div class="chart-wrap"><canvas id="ch-bar"></canvas></div>
     <div class="chart-wrap"><canvas id="ch-dona"></canvas></div>
   </div>
-  <div class="body-row cols-3" style="margin-top:10px">
-    <div style="font-size:11pt;text-align:center"><b style="color:var(--azul)">Línea</b> · responde <i>¿cómo cambia?</i></div>
-    <div style="font-size:11pt;text-align:center"><b style="color:var(--verde)">Barras</b> · responde <i>¿cuánto cada uno?</i></div>
-    <div style="font-size:11pt;text-align:center"><b style="color:var(--violeta)">Dona</b> · responde <i>¿qué proporción?</i></div>
+  <div class="body-row cols-3 reveal" style="margin-top:14px">
+    <div style="text-align:center;font-size:11.5pt"><b style="color:var(--azul-brillante);font-size:13pt">📈 Línea</b><br><i>"¿cómo cambia en el tiempo?"</i></div>
+    <div style="text-align:center;font-size:11.5pt"><b style="color:var(--verde);font-size:13pt">📊 Barras</b><br><i>"¿cuánto comparado con qué?"</i></div>
+    <div style="text-align:center;font-size:11.5pt"><b style="color:var(--violeta);font-size:13pt">🍩 Dona</b><br><i>"¿qué proporción del total?"</i></div>
   </div>
+  <div class="ejemplo reveal" style="margin-top:16px"><b class="label">Regla de oro</b>Si no podés enunciar la pregunta en una sola oración, no hagas el gráfico — estás sobre-graficando. Empezá por la pregunta, no por el gráfico.</div>
 </section>
 
 <!-- 8. Divisor sección 2 -->
-<section class="slide divider">
+<section class="slide divider" data-section="2">
+  <div class="splash-divider"><span style="top:20%;left:14%">x̄</span><span style="bottom:14%;right:18%">𝑀</span></div>
   <div class="sec-num">02</div>
   <h1>Tendencia central</h1>
   <p>Tres números que resumen "el centro" de tus datos</p>
 </section>
 
 <!-- 9. Media -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 2 · Tendencia central</div><div class="slide-nav"></div></div>
-  <h2>Media aritmética ($\bar{x}$)</h2>
-  <div class="definicion"><b class="term">Definición</b>El promedio aritmético: suma de todos los valores dividida entre la cantidad de valores.</div>
+<section class="slide" data-section="2">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">2</span>Tendencia central</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Media aritmética ($\bar{x}$)</h2>
+  <div class="definicion reveal"><b class="term">Definición</b>Promedio aritmético: suma de todos los valores dividida entre la cantidad de valores.</div>
 
-  <div class="formula"><b>Fórmula</b>$$\bar{x} \;=\; \frac{\displaystyle\sum_{i=1}^{n} x_i}{n}$$</div>
+  <div class="formula reveal"><b>Fórmula</b>$$\bar{x} \;=\; \frac{\displaystyle\sum_{i=1}^{n} x_i}{n}$$</div>
 
-  <div class="ejemplo"><b class="label">Ejemplo · robos por mes</b>
+  <div class="ejemplo reveal"><b class="label">Ejemplo · robos por mes</b>
     Datos: 25, 32, 40, 45, 50, 55 ($n=6$)
     <div class="calc-step">$\bar{x} = (25+32+40+45+50+55)/6 = 247/6 \approx \mathbf{41{,}17}$ robos por mes.</div>
   </div>
 
-  <div class="body-row cols-2" style="margin-top:10px">
+  <div class="body-row cols-2 reveal" style="margin-top:10px">
     <div class="card b-verde"><div class="top-bar"></div>
       <h4>✓ Cuándo usarla</h4>
-      <ul style="font-size:11.5pt">
-        <li>Datos sin valores extremos.</li>
-        <li>Distribución aproximadamente simétrica.</li>
-        <li>Variables cuantitativas.</li>
-      </ul>
+      <ul style="font-size:11.5pt"><li>Datos sin valores extremos.</li><li>Distribución aproximadamente simétrica.</li><li>Variables cuantitativas.</li></ul>
     </div>
     <div class="card b-rojo"><div class="top-bar"></div>
       <h4>✗ Cuándo no usarla sola</h4>
-      <ul style="font-size:11.5pt">
-        <li>Hay valores atípicos (la "tira" hacia ellos).</li>
-        <li>Datos cualitativos.</li>
-        <li>Distribución muy asimétrica.</li>
-      </ul>
+      <ul style="font-size:11.5pt"><li>Hay valores atípicos.</li><li>Datos cualitativos.</li><li>Distribución muy asimétrica.</li></ul>
     </div>
   </div>
 </section>
 
-<!-- 10. Mediana -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 2 · Tendencia central</div><div class="slide-nav"></div></div>
-  <h2>Mediana ($\tilde{x}$)</h2>
-  <div class="definicion"><b class="term">Definición</b>El valor que queda en el <b>centro</b> cuando los datos están ordenados de menor a mayor.</div>
+<!-- 10. Calculadora interactiva: Media -->
+<section class="slide" data-section="2">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">2</span>🧮 Calculadora en vivo</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Calculá tu propia media y mediana</h2>
+  <p class="reveal">Cambiá los valores y observá cómo cambian la media y la mediana en tiempo real:</p>
 
-  <h3>Procedimiento paso a paso</h3>
-  <ol style="font-size:13pt;line-height:1.8">
+  <div class="calc-widget reveal">
+    <h3>Datos (separados por comas)</h3>
+    <div class="calc-input">
+      <label for="calc-data">Tus números:</label>
+      <input type="text" id="calc-data" value="25, 32, 40, 45, 50, 55" style="width:300px;font-family:'Cambria Math',serif">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:18px">
+      <div class="calc-output"><b>Media ($\bar{x}$)</b><div class="result" id="out-media">41,17</div></div>
+      <div class="calc-output"><b>Mediana ($\tilde{x}$)</b><div class="result" id="out-mediana">42,5</div></div>
+      <div class="calc-output"><b>Tamaño ($n$)</b><div class="result" id="out-n">6</div></div>
+    </div>
+    <div style="margin-top:16px;font-size:12pt;color:var(--texto-suave);font-style:italic">💡 Probá: ¿qué pasa con la media si agregás un dato atípico (p. ej. <code>25, 32, 40, 45, 50, 55, 200</code>)? Observá cómo la mediana casi no cambia.</div>
+  </div>
+</section>
+
+<!-- 11. Mediana -->
+<section class="slide" data-section="2">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">2</span>Tendencia central</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Mediana ($\tilde{x}$)</h2>
+  <div class="definicion reveal"><b class="term">Definición</b>El valor que queda en el <b>centro</b> cuando los datos están ordenados de menor a mayor.</div>
+
+  <h3 class="reveal">Procedimiento paso a paso</h3>
+  <ol class="reveal" style="font-size:13pt;line-height:1.8">
     <li><b>Ordená</b> los datos de menor a mayor.</li>
     <li>Si $n$ es <b>impar</b>: la mediana es el valor en la posición $(n+1)/2$.</li>
     <li>Si $n$ es <b>par</b>: la mediana es el promedio de los dos valores centrales.</li>
   </ol>
 
-  <div class="ejemplo"><b class="label">Ejemplo</b>Datos ordenados: 25, 32, <b>40, 45</b>, 50, 55 ($n=6$ par).
-    <div class="formula" style="margin:8px 0">$$\tilde{x} \;=\; \frac{x_{(3)} + x_{(4)}}{2} \;=\; \frac{40 + 45}{2} \;=\; \mathbf{42{,}5}$$</div>
+  <div class="ejemplo reveal"><b class="label">Ejemplo</b>Datos ordenados: 25, 32, <b>40, 45</b>, 50, 55 ($n=6$ par).
+    <div class="formula" style="margin:8px 0">$$\tilde{x} = \frac{40 + 45}{2} = \mathbf{42{,}5}$$</div>
   </div>
 
-  <div class="card b-ambar" style="margin-top:10px"><div class="top-bar"></div>
+  <div class="card b-ambar reveal" style="margin-top:10px"><div class="top-bar"></div>
     <h4>💡 ¿Por qué es útil?</h4>
     <p style="font-size:12pt">La mediana <b>no se deja arrastrar</b> por valores extremos. En el caso del licor adulterado (Demuestro), la media (~93 450) está muy por encima de la mediana (~76 750) porque el dato de 2019 (180 000) la "infla". La mediana es más representativa del año típico.</p>
   </div>
 </section>
 
-<!-- 11. Moda -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 2 · Tendencia central</div><div class="slide-nav"></div></div>
-  <h2>Moda</h2>
-  <div class="definicion"><b class="term">Definición</b>El valor que aparece con <b>mayor frecuencia</b>. Es la única medida de tendencia central que se puede calcular para variables <b>cualitativas</b>.</div>
+<!-- 12. Moda + asimetría -->
+<section class="slide" data-section="2">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">2</span>Moda y asimetría</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Moda y cuándo usar cada medida</h2>
 
-  <div class="body-row cols-3" style="margin-top:10px">
-    <div class="card b-verde"><div class="top-bar"></div>
-      <h4>Unimodal</h4>
+  <div class="body-row cols-3 reveal" style="margin-top:8px">
+    <div class="card b-verde"><div class="top-bar"></div><h4>Unimodal</h4>
       <p style="font-size:12pt">Una sola moda.</p>
       <p style="font-size:11pt;color:var(--texto-suave)"><b>Ej.:</b> 2, 3, <b>5, 5</b>, 7 → moda = 5.</p>
     </div>
-    <div class="card b-violeta"><div class="top-bar"></div>
-      <h4>Bimodal</h4>
+    <div class="card b-violeta"><div class="top-bar"></div><h4>Bimodal</h4>
       <p style="font-size:12pt">Dos modas.</p>
-      <p style="font-size:11pt;color:var(--texto-suave)"><b>Ej.:</b> <b>2, 2</b>, 3, <b>5, 5</b>, 7 → modas 2 y 5.</p>
+      <p style="font-size:11pt;color:var(--texto-suave)"><b>Ej.:</b> <b>2, 2</b>, 3, <b>5, 5</b>, 7.</p>
     </div>
-    <div class="card b-rosa"><div class="top-bar"></div>
-      <h4>Amodal</h4>
+    <div class="card b-rosa"><div class="top-bar"></div><h4>Amodal</h4>
       <p style="font-size:12pt">Sin moda (todos diferentes).</p>
-      <p style="font-size:11pt;color:var(--texto-suave)"><b>Ej.:</b> 25, 32, 40, 45, 50, 55 → amodal.</p>
+      <p style="font-size:11pt;color:var(--texto-suave)"><b>Ej.:</b> 25, 32, 40, 45, 50, 55.</p>
     </div>
   </div>
 
-  <div class="ejemplo" style="margin-top:14px"><b class="label">Aplicalo</b>En la tabla de tipos de licor de Demuestro, la <b>moda</b> es "aguardiente" (45 % de las botellas) — la única medida útil para esa variable cualitativa.</div>
-</section>
-
-<!-- 12. ¿Cuándo usar cada una? -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 2 · Tendencia central</div><div class="slide-nav"></div></div>
-  <h2>¿Cuándo usar cada medida? — La asimetría manda</h2>
-
-  <div class="body-row cols-3" style="margin-top:10px">
-    <div class="card b-verde"><div class="top-bar"></div>
-      <h4>Distribución simétrica</h4>
-      <p style="font-size:12pt"><b>$\bar{x} \approx \tilde{x} \approx$ moda</b></p>
-      <p style="font-size:11.5pt;color:var(--texto-suave)">Las tres medidas coinciden. Reportá la <b>media</b>.</p>
+  <h3 class="reveal" style="margin-top:18px">Asimetría: cuál medida reportar</h3>
+  <div class="body-row cols-3 reveal">
+    <div class="card b-verde"><div class="top-bar"></div><h4>Simétrica</h4>
+      <p style="font-size:12.5pt;text-align:center"><b>$\bar{x} \approx \tilde{x} \approx $ moda</b></p>
+      <p style="font-size:11pt;color:var(--texto-suave);text-align:center">Reportá la <b>media</b>.</p>
     </div>
-    <div class="card b-ambar"><div class="top-bar"></div>
-      <h4>Asimetría positiva (cola der.)</h4>
-      <p style="font-size:12pt"><b>$\bar{x} > \tilde{x} >$ moda</b></p>
-      <p style="font-size:11.5pt;color:var(--texto-suave)">Hay outliers altos. Reportá <b>mediana</b> + media (no solo media).</p>
+    <div class="card b-ambar"><div class="top-bar"></div><h4>Asim. positiva</h4>
+      <p style="font-size:12.5pt;text-align:center"><b>$\bar{x} > \tilde{x} >$ moda</b></p>
+      <p style="font-size:11pt;color:var(--texto-suave);text-align:center">Reportá <b>mediana</b> + media.</p>
     </div>
-    <div class="card b-rojo"><div class="top-bar"></div>
-      <h4>Asimetría negativa (cola izq.)</h4>
-      <p style="font-size:12pt"><b>$\bar{x} < \tilde{x} <$ moda</b></p>
-      <p style="font-size:11.5pt;color:var(--texto-suave)">Outliers bajos. Reportá <b>mediana</b> + media.</p>
+    <div class="card b-rojo"><div class="top-bar"></div><h4>Asim. negativa</h4>
+      <p style="font-size:12.5pt;text-align:center"><b>$\bar{x} < \tilde{x} <$ moda</b></p>
+      <p style="font-size:11pt;color:var(--texto-suave);text-align:center">Reportá <b>mediana</b> + media.</p>
     </div>
-  </div>
-
-  <div class="card b-azul shadow" style="margin-top:18px"><div class="top-bar"></div>
-    <h4>Regla práctica para los informes ESJIM</h4>
-    <p style="font-size:13pt;line-height:1.6">Calculá siempre las <b>tres</b> y reportá la diferencia entre media y mediana. Si difieren más del 10 %, comentá la asimetría y proponé al lector observar ambos números.</p>
   </div>
 </section>
 
 <!-- 13. Divisor sección 3 -->
-<section class="slide divider">
+<section class="slide divider" data-section="3">
+  <div class="splash-divider"><span style="top:20%;left:14%">σ</span><span style="bottom:14%;right:18%">CV</span></div>
   <div class="sec-num">03</div>
   <h1>Dispersión</h1>
   <p>Qué tan parecidos o diferentes son tus datos entre sí</p>
 </section>
 
 <!-- 14. Rango y varianza -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 3 · Dispersión</div><div class="slide-nav"></div></div>
-  <h2>Rango y varianza</h2>
+<section class="slide" data-section="3">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">3</span>Dispersión</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Rango y varianza</h2>
 
-  <div class="definicion"><b class="term">Rango ($R$)</b>Diferencia entre el valor máximo y el mínimo. Es la medida más simple de dispersión.</div>
-  <div class="formula"><b>Fórmula</b>$$R \;=\; x_{\max} - x_{\min}$$</div>
-  <div class="ejemplo"><b class="label">Ejemplo</b>Robos por mes: $R = 55 - 25 = \mathbf{30}$ robos.</div>
+  <div class="definicion reveal"><b class="term">Rango ($R$)</b>Diferencia entre el valor máximo y el mínimo.</div>
+  <div class="formula reveal"><b>Fórmula</b>$$R = x_{\max} - x_{\min}$$</div>
+  <div class="ejemplo reveal"><b class="label">Ejemplo</b>Robos por mes: $R = 55 - 25 = \mathbf{30}$ robos.</div>
 
-  <div class="definicion" style="margin-top:14px"><b class="term">Varianza muestral ($s^2$)</b>Promedio de los cuadrados de las desviaciones respecto a la media. Mide la dispersión "típica" de los datos.</div>
-  <div class="formula"><b>Fórmula</b>$$s^2 \;=\; \frac{\displaystyle\sum_{i=1}^{n} (x_i - \bar{x})^2}{n-1}$$</div>
+  <div class="definicion reveal" style="margin-top:14px"><b class="term">Varianza muestral ($s^2$)</b>Promedio de los cuadrados de las desviaciones respecto a la media.</div>
+  <div class="formula reveal"><b>Fórmula</b>$$s^2 = \frac{\displaystyle\sum_{i=1}^{n} (x_i - \bar{x})^2}{n-1}$$</div>
 
-  <div class="card b-rojo" style="margin-top:10px"><div class="top-bar"></div>
+  <div class="card b-rojo reveal" style="margin-top:10px"><div class="top-bar"></div>
     <h4>⚠️ Ojo con el denominador</h4>
-    <p style="font-size:12.5pt">Para una <b>muestra</b> se divide entre $n-1$ (corrección de Bessel). Para la <b>población completa</b> se divide entre $n$. En estos informes trabajamos con muestras, así que <b>siempre $n-1$</b>.</p>
+    <p style="font-size:12.5pt">Para una <b>muestra</b> se divide entre $n-1$ (corrección de Bessel). Para la <b>población completa</b>, entre $n$. En estos informes trabajamos con muestras → <b>siempre $n-1$</b>.</p>
   </div>
 </section>
 
-<!-- 15. Desviación estándar -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 3 · Dispersión</div><div class="slide-nav"></div></div>
-  <h2>Desviación estándar ($s$)</h2>
-  <div class="definicion"><b class="term">Definición</b>Raíz cuadrada de la varianza. Está expresada en las <b>mismas unidades</b> que los datos, por eso es la medida de dispersión preferida en informes.</div>
+<!-- 15. Desviación + tabla -->
+<section class="slide" data-section="3">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">3</span>Desviación estándar</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Desviación estándar ($s$)</h2>
+  <div class="definicion reveal"><b class="term">Definición</b>Raíz cuadrada de la varianza. Está en las <b>mismas unidades</b> que los datos.</div>
+  <div class="formula reveal"><b>Fórmula</b>$$s = \sqrt{s^2} = \sqrt{\frac{\sum (x_i - \bar{x})^2}{n-1}}$$</div>
 
-  <div class="formula"><b>Fórmula</b>$$s \;=\; \sqrt{s^2} \;=\; \sqrt{\frac{\sum (x_i - \bar{x})^2}{n-1}}$$</div>
-
-  <h4>Cálculo paso a paso · robos por mes</h4>
-  <table>
+  <h4 class="reveal">Cálculo paso a paso · robos por mes</h4>
+  <table class="compact reveal">
     <thead><tr><th>$x_i$</th><th class="num">$x_i - \bar{x}$</th><th class="num">$(x_i - \bar{x})^2$</th></tr></thead>
     <tbody>
       <tr><td>25</td><td class="num">−16,17</td><td class="num">261,47</td></tr>
@@ -443,200 +599,241 @@
     </tbody>
   </table>
 
-  <div class="formula"><b>Resultado</b>$$s^2 = \frac{630{,}82}{5} = 126{,}16 \quad\Rightarrow\quad s = \sqrt{126{,}16} \approx \mathbf{11{,}23 \ \text{robos}}$$</div>
+  <div class="formula reveal"><b>Resultado</b>$$s^2 = \frac{630{,}82}{5} = 126{,}16 \quad\Rightarrow\quad s = \sqrt{126{,}16} \approx \mathbf{11{,}23 \ \text{robos}}$$</div>
 </section>
 
-<!-- 16. Coeficiente de variación -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 3 · Dispersión</div><div class="slide-nav"></div></div>
-  <h2>Coeficiente de variación ($CV$)</h2>
-  <div class="definicion"><b class="term">Definición</b>Cociente entre desviación estándar y media, expresado en porcentaje. Permite <b>comparar dispersiones entre series con escalas distintas</b>.</div>
+<!-- 16. Calculadora σ + CV -->
+<section class="slide" data-section="3">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">3</span>🧮 Calculadora en vivo</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Calculá σ y CV de tus propios datos</h2>
 
-  <div class="formula"><b>Fórmula</b>$$CV \;=\; \frac{s}{\bar{x}} \times 100\%$$</div>
+  <div class="calc-widget reveal">
+    <h3>Datos</h3>
+    <div class="calc-input">
+      <label for="sd-data">Valores (separados por coma):</label>
+      <input type="text" id="sd-data" value="25, 32, 40, 45, 50, 55" style="width:340px;font-family:'Cambria Math',serif">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-top:18px">
+      <div class="calc-output"><b>Media</b><div class="result" id="sd-media">41,17</div></div>
+      <div class="calc-output"><b>Varianza ($s^2$)</b><div class="result" id="sd-var">126,16</div></div>
+      <div class="calc-output"><b>Desv. ($s$)</b><div class="result" id="sd-sd">11,23</div></div>
+      <div class="calc-output"><b>CV</b><div class="result" id="sd-cv">27,3 %</div></div>
+    </div>
+    <div style="margin-top:14px;font-size:12pt;color:var(--texto-suave);font-style:italic">💡 La etiqueta debajo del CV te dice si la dispersión es <b>baja</b> (&lt;10 %), <b>moderada</b> (10–30 %) o <b>alta</b> (&gt;30 %).</div>
+    <div id="sd-label" style="margin-top:8px;text-align:center;font-size:14pt;font-weight:700;color:var(--ambar)"></div>
+  </div>
+</section>
 
-  <div class="body-row cols-2" style="margin-top:10px">
+<!-- 17. Coeficiente de variación -->
+<section class="slide" data-section="3">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">3</span>Coef. de variación</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Coeficiente de variación ($CV$)</h2>
+  <div class="definicion reveal"><b class="term">Definición</b>Cociente entre desviación estándar y media, en porcentaje. Permite <b>comparar dispersiones entre series con escalas distintas</b>.</div>
+  <div class="formula reveal"><b>Fórmula</b>$$CV = \frac{s}{\bar{x}} \times 100\%$$</div>
+
+  <div class="body-row cols-2 reveal" style="margin-top:10px">
     <div class="card b-verde"><div class="top-bar"></div>
       <h4>Lectura del CV</h4>
-      <ul style="font-size:12pt;line-height:1.7">
+      <ul style="font-size:12pt;line-height:1.8">
         <li><b>CV &lt; 10 %</b> · serie muy homogénea.</li>
-        <li><b>10 % – 30 %</b> · dispersión moderada.</li>
+        <li><b>10 – 30 %</b> · dispersión moderada.</li>
         <li><b>&gt; 30 %</b> · serie heterogénea, posibles outliers.</li>
       </ul>
     </div>
     <div class="card b-violeta"><div class="top-bar"></div>
-      <h4>Ejemplo aplicado</h4>
-      <p style="font-size:12pt">Robos por mes: $s = 11{,}23$, $\bar{x} = 41{,}17$.
-        $$CV = \frac{11{,}23}{41{,}17} \times 100 \approx \mathbf{27{,}3\%}$$
-        <small>Dispersión moderada — el crecimiento es real, no solo ruido.</small>
-      </p>
+      <h4>Por qué importa</h4>
+      <p style="font-size:12pt">En Profundizo, el homicidio tiene CV ≈ <b>6,5 %</b> (estable) y el hurto ≈ <b>27 %</b> (creciente). Sin el CV no podrías compararlos directamente porque están en escalas muy distintas (miles vs. cientos de miles).</p>
     </div>
   </div>
-
-  <div class="ejemplo" style="margin-top:12px"><b class="label">Por qué importa</b>En Profundizo, el homicidio tiene CV ≈ 6,5 % (estable) y el hurto ≈ 27 % (creciente). Sin el CV no podrías compararlos directamente porque están en escalas muy distintas (miles vs. cientos de miles).</div>
 </section>
 
-<!-- 17. Divisor sección 4 -->
-<section class="slide divider">
+<!-- 18. Divisor sección 4 -->
+<section class="slide divider" data-section="4">
+  <div class="splash-divider"><span style="top:20%;left:14%">P(A)</span><span style="bottom:14%;right:18%">∪</span></div>
   <div class="sec-num">04</div>
   <h1>Probabilidad</h1>
   <p>Cómo cuantificar la incertidumbre con números entre 0 y 1</p>
 </section>
 
-<!-- 18. Espacio muestral y eventos -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 4 · Probabilidad</div><div class="slide-nav"></div></div>
-  <h2>Espacio muestral y eventos</h2>
+<!-- 19. Espacio muestral y eventos -->
+<section class="slide" data-section="4">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">4</span>Espacio muestral</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Espacio muestral y eventos</h2>
 
-  <div class="definicion"><b class="term">Espacio muestral ($\Omega$)</b>Conjunto de <b>todos los resultados posibles</b> de un experimento.</div>
-  <div class="ejemplo"><b class="label">Ejemplo</b>Al elegir aleatoriamente una de las 152 botellas de licor, $\Omega$ tiene 152 elementos.</div>
+  <div class="definicion reveal"><b class="term">Espacio muestral ($\Omega$)</b>Conjunto de <b>todos los resultados posibles</b> de un experimento.</div>
+  <div class="ejemplo reveal"><b class="label">Ejemplo</b>Al elegir aleatoriamente una de las 152 botellas, $|\Omega| = 152$.</div>
 
-  <div class="definicion" style="margin-top:14px"><b class="term">Evento ($A$)</b>Subconjunto de $\Omega$ — los resultados que cumplen una condición.</div>
-  <div class="ejemplo"><b class="label">Ejemplo</b>$A$ = "la botella es aguardiente" → $A$ tiene los casos favorables (45 % del total).</div>
+  <div class="definicion reveal"><b class="term">Evento ($A$)</b>Subconjunto de $\Omega$ — los resultados que cumplen una condición.</div>
+  <div class="ejemplo reveal"><b class="label">Ejemplo</b>$A$ = "la botella es aguardiente" → $A$ contiene los casos favorables (45 % del total).</div>
 
-  <div class="formula" style="margin-top:14px"><b>Reglas básicas</b>
+  <div class="formula reveal" style="margin-top:14px"><b>Reglas básicas</b>
     $0 \leq P(A) \leq 1$ &nbsp;·&nbsp; $P(\Omega) = 1$ &nbsp;·&nbsp; $P(\emptyset) = 0$
   </div>
 </section>
 
-<!-- 19. Probabilidad empírica vs teórica -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 4 · Probabilidad</div><div class="slide-nav"></div></div>
-  <h2>Probabilidad empírica vs teórica</h2>
+<!-- 20. Probabilidad empírica vs teórica + regla unión -->
+<section class="slide" data-section="4">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">4</span>Cálculo de probabilidad</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Empírica vs. teórica · Regla de la unión</h2>
 
-  <div class="compare">
+  <div class="compare reveal">
     <div>
-      <h4>Probabilidad teórica (clásica)</h4>
+      <h4>Probabilidad teórica</h4>
       <p style="font-size:12pt">Cuando todos los resultados son <b>igualmente probables</b>:</p>
-      <div class="formula" style="font-size:13pt">$$P(A) = \frac{\#\text{casos favorables}}{\#\text{casos posibles}}$$</div>
-      <p style="font-size:11.5pt;color:var(--texto-suave)">Ejemplo: tirar un dado, sacar una carta.</p>
+      <div class="formula" style="font-size:13pt">$$P(A) = \frac{\#\text{favorables}}{\#\text{posibles}}$$</div>
     </div>
     <div>
-      <h4>Probabilidad empírica (frecuentista)</h4>
+      <h4>Probabilidad empírica</h4>
       <p style="font-size:12pt">A partir de datos observados:</p>
-      <div class="formula" style="font-size:13pt">$$\hat{P}(A) = \frac{\#\text{veces que ocurrió } A}{\#\text{observaciones totales}}$$</div>
-      <p style="font-size:11.5pt;color:var(--texto-suave)">Es la que usás en los informes ESJIM.</p>
+      <div class="formula" style="font-size:13pt">$$\hat{P}(A) = \frac{\#\text{ocurrencias de } A}{\#\text{observaciones}}$$</div>
     </div>
   </div>
 
-  <div class="ejemplo" style="margin-top:16px"><b class="label">Ejemplo · caso AH</b>De 152 robos con franja registrada, 60 ocurrieron de noche.
-    <div class="formula" style="margin-top:6px">$$\hat{P}(\text{noche}) = \frac{60}{152} \approx 0{,}395 \;\;(39{,}5\%)$$</div>
+  <div class="formula reveal" style="margin-top:14px"><b>Regla de la unión $P(A \cup B)$</b>
+    $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
+  </div>
+  <p class="reveal" style="font-size:12pt">El término $-P(A \cap B)$ es <b>esencial</b>: si simplemente sumas $P(A)+P(B)$ contás dos veces los casos comunes.</p>
+
+  <div class="ejemplo reveal"><b class="label">Ejemplo · Profundizo</b>$A$ = "año con hurto crítico" ($|A|=3$); $B$ = "año con homicidio crítico" ($|B|=3$); $A \cap B = \{2022, 2023\}$.
+    <div class="formula" style="margin-top:6px">$$P(A \cup B) = \tfrac{3}{5} + \tfrac{3}{5} - \tfrac{2}{5} = \tfrac{4}{5} = \mathbf{0{,}80}$$</div>
   </div>
 </section>
 
-<!-- 20. Regla de la unión -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 4 · Probabilidad</div><div class="slide-nav"></div></div>
-  <h2>Regla de la unión $P(A \cup B)$</h2>
-
-  <div class="definicion"><b class="term">Regla general</b>La probabilidad de que ocurra al menos uno de dos eventos:</div>
-  <div class="formula"><b>Fórmula</b>$$P(A \cup B) \;=\; P(A) + P(B) - P(A \cap B)$$</div>
-
-  <p>El término $-P(A \cap B)$ es <b>esencial</b>: si simplemente sumas $P(A)+P(B)$ contás dos veces los casos que pertenecen a ambos.</p>
-
-  <div class="ejemplo"><b class="label">Ejemplo · Profundizo</b>$A=$ "año con hurto crítico" ($|A|=3$), $B=$ "año con homicidio crítico" ($|B|=3$), $A \cap B =$ {2022, 2023} ($|A\cap B|=2$).
-    <div class="formula" style="margin-top:6px">$$P(A \cup B) = \tfrac{3}{5} + \tfrac{3}{5} - \tfrac{2}{5} = \tfrac{4}{5} = 0{,}80$$</div>
+<!-- 21. QUIZ probabilidad -->
+<section class="slide" data-section="4">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">4</span>📝 Mini-quiz · Probabilidad</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Pongámoslo a prueba — 3 preguntas</h2>
+  <div class="quiz-progress reveal" id="quiz-prog-1">
+    <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
   </div>
 
-  <div class="card b-rojo" style="margin-top:10px"><div class="top-bar"></div>
-    <h4>⚠️ Caso especial</h4>
-    <p style="font-size:12pt">Si los eventos son <b>mutuamente excluyentes</b> ($A \cap B = \emptyset$), la fórmula se reduce a $P(A \cup B) = P(A) + P(B)$.</p>
+  <div class="quiz reveal" id="quiz-1" data-quiz="prob">
+    <div class="quiz-question" data-q="0">P1. Si $P(A) = 0{,}4$ y $P(B) = 0{,}5$ y son <i>mutuamente excluyentes</i>, ¿cuánto vale $P(A \cup B)$?</div>
+    <div class="quiz-options" data-q="0">
+      <button class="quiz-option" data-correct="false">a) 0,20</button>
+      <button class="quiz-option" data-correct="true">b) 0,90</button>
+      <button class="quiz-option" data-correct="false">c) 1,10</button>
+      <button class="quiz-option" data-correct="false">d) 0,50</button>
+    </div>
+    <div class="quiz-feedback" id="qf-1"></div>
   </div>
+
+  <div id="quiz-1-final" style="display:none;text-align:center;margin-top:20px"></div>
 </section>
 
-<!-- 21. Probabilidad conjunta y eventos independientes -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 4 · Probabilidad</div><div class="slide-nav"></div></div>
-  <h2>Eventos independientes — $P(A \cap B)$</h2>
-  <div class="definicion"><b class="term">Independencia</b>Dos eventos $A$ y $B$ son independientes si saber que ocurrió uno <b>no cambia</b> la probabilidad del otro.</div>
-  <div class="formula"><b>Si A y B son independientes</b>$$P(A \cap B) \;=\; P(A) \cdot P(B)$$</div>
+<!-- 22. Independencia -->
+<section class="slide" data-section="4">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">4</span>Independencia</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Eventos independientes — $P(A \cap B)$</h2>
+  <div class="definicion reveal"><b class="term">Independencia</b>Dos eventos $A$ y $B$ son independientes si saber que ocurrió uno <b>no cambia</b> la probabilidad del otro.</div>
+  <div class="formula reveal"><b>Si A y B son independientes</b>$$P(A \cap B) = P(A) \cdot P(B)$$</div>
 
-  <div class="ejemplo"><b class="label">Ejemplo · caso AH</b>$A=$ "robo en zona poco iluminada" con $P(A)=0{,}60$. &nbsp; $B=$ "robo sin patrullaje frecuente" con $P(B)=0{,}75$. Asumiendo independencia:
+  <div class="ejemplo reveal"><b class="label">Ejemplo · caso AH</b>$A$: robo en zona poco iluminada $P(A)=0{,}60$. &nbsp; $B$: robo sin patrullaje frecuente $P(B)=0{,}75$.
     <div class="formula" style="margin-top:6px">$$P(A \cap B) = 0{,}60 \times 0{,}75 = \mathbf{0{,}45}$$</div>
     Hay un <b>45 %</b> de probabilidad de que el robo ocurra cuando coinciden ambos factores.
   </div>
 
-  <div class="card b-ambar" style="margin-top:10px"><div class="top-bar"></div>
+  <div class="card b-ambar reveal" style="margin-top:10px"><div class="top-bar"></div>
     <h4>💡 Cuidado con el supuesto</h4>
-    <p style="font-size:12pt">En la realidad la independencia es <b>poco frecuente</b>: las zonas mal iluminadas suelen ser también las menos patrulladas. Siempre que asumas independencia, <b>declaralo explícitamente</b> en el informe.</p>
+    <p style="font-size:12pt">En la realidad la independencia es <b>poco frecuente</b>: las zonas mal iluminadas suelen ser también las menos patrulladas. Siempre que asumas independencia, <b>declaralo</b> en el informe.</p>
   </div>
 </section>
 
-<!-- 22. Divisor sección 5 -->
-<section class="slide divider">
+<!-- 23. Divisor sección 5 -->
+<section class="slide divider" data-section="5">
+  <div class="splash-divider"><span style="top:20%;left:14%">∪</span><span style="bottom:14%;right:18%">∩</span></div>
   <div class="sec-num">05</div>
   <h1>Teoría de conjuntos</h1>
   <p>El lenguaje formal para clasificar y combinar grupos</p>
 </section>
 
-<!-- 23. Definiciones de conjuntos -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 5 · Conjuntos</div><div class="slide-nav"></div></div>
-  <h2>Conjuntos: definiciones esenciales</h2>
+<!-- 24. Definiciones de conjuntos -->
+<section class="slide" data-section="5">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">5</span>Conjuntos</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Conjuntos: definiciones esenciales</h2>
 
-  <div class="body-row cols-2">
+  <div class="body-row cols-2 reveal">
     <div>
       <div class="definicion"><b class="term">Conjunto</b>Colección bien definida de elementos. Se nombra con letras mayúsculas.</div>
       <div class="ejemplo"><b class="label">Ejemplo</b>$A = \{2022, 2023, 2024\}$.</div>
-
-      <div class="definicion"><b class="term">Pertenencia ($\in$, $\notin$)</b>$x \in A$: x es elemento de A. &nbsp; $x \notin A$: x no lo es.</div>
-
-      <div class="definicion"><b class="term">Universo ($U$)</b>Conjunto que contiene todos los elementos posibles del análisis.</div>
+      <div class="definicion"><b class="term">Pertenencia ($\in$, $\notin$)</b>$x \in A$: x es elemento de A.</div>
+      <div class="definicion"><b class="term">Universo ($U$)</b>Conjunto que contiene todos los elementos posibles.</div>
     </div>
     <div>
       <div class="definicion"><b class="term">Cardinalidad ($|A|$)</b>Número de elementos del conjunto.</div>
       <div class="ejemplo"><b class="label">Ejemplo</b>$|A| = |\{2022, 2023, 2024\}| = 3$.</div>
-
       <div class="definicion"><b class="term">Subconjunto ($\subseteq$)</b>$A \subseteq B$ si todo elemento de A está en B.</div>
-      <div class="ejemplo"><b class="label">Ejemplo</b>$\{2022, 2023\} \subseteq \{2022, 2023, 2024\}$.</div>
-
-      <div class="definicion"><b class="term">Conjunto vacío ($\emptyset$)</b>Conjunto sin elementos. $|\emptyset| = 0$.</div>
+      <div class="definicion"><b class="term">Conjunto vacío ($\emptyset$)</b>Sin elementos. $|\emptyset| = 0$.</div>
     </div>
   </div>
 </section>
 
-<!-- 24. Operaciones de conjuntos + Venn -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 5 · Conjuntos</div><div class="slide-nav"></div></div>
-  <h2>Operaciones de conjuntos</h2>
+<!-- 25. VENN INTERACTIVO -->
+<section class="slide" data-section="5">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">5</span>🎨 Venn interactivo</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Hacé clic en una operación y observá la región</h2>
 
-  <div class="body-row cols-2" style="margin-top:6px">
-    <div>
-      <div class="definicion"><b class="term">Unión ($\cup$)</b>$A \cup B$ = elementos en A, en B o en ambos.</div>
-      <div class="definicion"><b class="term">Intersección ($\cap$)</b>$A \cap B$ = elementos que están en A <b>y</b> en B.</div>
-      <div class="definicion"><b class="term">Diferencia ($\setminus$)</b>$A \setminus B$ = elementos en A pero no en B.</div>
-      <div class="definicion"><b class="term">Complemento ($\overline{A}$)</b>$\overline{A} = U \setminus A$ — todo lo que no es A.</div>
-    </div>
-    <div style="display:flex;flex-direction:column;justify-content:center">
-      <h4 style="text-align:center">Diagrama de Venn — 2 conjuntos</h4>
-      <svg class="venn-mini" viewBox="0 0 400 220">
-        <circle cx="150" cy="110" r="80" fill="rgba(59,130,246,0.35)" stroke="#1d5fc4" stroke-width="2"/>
-        <circle cx="250" cy="110" r="80" fill="rgba(239,68,68,0.35)" stroke="#c0392b" stroke-width="2"/>
-        <text x="100" y="115" text-anchor="middle" font-size="16" font-weight="700" fill="#1e3a8a">A</text>
-        <text x="200" y="115" text-anchor="middle" font-size="14" font-weight="700" fill="#581c87">A∩B</text>
-        <text x="300" y="115" text-anchor="middle" font-size="16" font-weight="700" fill="#7f1d1d">B</text>
-        <rect x="6" y="6" width="388" height="208" fill="none" stroke="#94a3b8" stroke-dasharray="6,4"/>
-        <text x="14" y="22" font-size="11" fill="#475569">U</text>
-        <text x="20" y="200" font-size="11" fill="#475569">$\overline{A \cup B}$ — fuera de los dos círculos</text>
-      </svg>
-    </div>
+  <div class="venn-controls reveal">
+    <button data-op="A" class="active">A</button>
+    <button data-op="B">B</button>
+    <button data-op="union">A ∪ B</button>
+    <button data-op="intersect">A ∩ B</button>
+    <button data-op="diff-ab">A \ B</button>
+    <button data-op="diff-ba">B \ A</button>
+    <button data-op="complement">$\overline{A \cup B}$</button>
+  </div>
+
+  <div class="venn-interactive reveal">
+    <svg viewBox="0 0 480 320" id="venn-svg">
+      <defs>
+        <clipPath id="clip-A"><circle cx="180" cy="160" r="100"/></clipPath>
+        <clipPath id="clip-B"><circle cx="300" cy="160" r="100"/></clipPath>
+      </defs>
+      <rect x="6" y="6" width="468" height="308" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6,4"/>
+      <text x="14" y="22" font-size="11" fill="#475569" font-family="Arial">U (universo)</text>
+
+      <!-- Highlights (los toggleamos con JS) -->
+      <rect id="hl-complement" x="6" y="6" width="468" height="308" fill="#ec4899" opacity="0"/>
+      <circle id="hl-A" cx="180" cy="160" r="100" fill="#3b82f6" opacity="0"/>
+      <circle id="hl-B" cx="300" cy="160" r="100" fill="#10b981" opacity="0"/>
+      <g id="hl-intersect" opacity="0"><circle cx="180" cy="160" r="100" fill="#8b5cf6" clip-path="url(#clip-B)"/></g>
+      <g id="hl-diff-ab" opacity="0">
+        <circle cx="180" cy="160" r="100" fill="#ef4444"/>
+        <circle cx="300" cy="160" r="100" fill="#f8fafc"/>
+      </g>
+      <g id="hl-diff-ba" opacity="0">
+        <circle cx="300" cy="160" r="100" fill="#f59e0b"/>
+        <circle cx="180" cy="160" r="100" fill="#f8fafc"/>
+      </g>
+
+      <!-- Outlines fijos -->
+      <circle cx="180" cy="160" r="100" fill="none" stroke="#0b3d91" stroke-width="3"/>
+      <circle cx="300" cy="160" r="100" fill="none" stroke="#0e8a4e" stroke-width="3"/>
+      <text x="120" y="80" text-anchor="middle" font-size="22" font-weight="700" fill="#0b3d91">A</text>
+      <text x="360" y="80" text-anchor="middle" font-size="22" font-weight="700" fill="#0e8a4e">B</text>
+    </svg>
+  </div>
+
+  <div class="venn-result reveal" id="venn-explain">
+    <span><b>A</b> · Conjunto A — todos los elementos del círculo izquierdo.</span>
   </div>
 </section>
 
-<!-- 25. Diagrama de Venn 3 conjuntos -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 5 · Conjuntos</div><div class="slide-nav"></div></div>
-  <h2>Diagrama de Venn — 3 conjuntos (7 regiones)</h2>
+<!-- 26. Venn 3 conjuntos -->
+<section class="slide" data-section="5">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">5</span>Venn 3 conjuntos</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Diagrama de Venn — 3 conjuntos (7 regiones)</h2>
 
-  <div class="body-row cols-2">
+  <div class="body-row cols-2 reveal">
     <div>
       <h4>Cómo construirlo</h4>
       <ol style="font-size:12pt;line-height:1.7">
-        <li>Dibujá tres círculos en triángulo equilátero (lado &lt; radio).</li>
-        <li>Identificá las <b>7 regiones</b>: A solo, B solo, C solo, A∩B (solo), A∩C (solo), B∩C (solo), A∩B∩C.</li>
-        <li>Ubicá cada elemento en la región correcta verificando pertenencia.</li>
-        <li>Verificá la cardinalidad: $|A \cup B \cup C| + |\overline{A \cup B \cup C}| = |U|$.</li>
+        <li>Tres círculos en triángulo equilátero (lado &lt; radio).</li>
+        <li>Identificá las <b>7 regiones</b>: A, B, C, A∩B, A∩C, B∩C, A∩B∩C.</li>
+        <li>Ubicá cada elemento verificando pertenencia.</li>
+        <li>Verificá: $|A \cup B \cup C| + |\overline{A \cup B \cup C}| = |U|$.</li>
       </ol>
-      <div class="formula" style="margin-top:10px;font-size:11.5pt">
+      <div class="formula" style="margin-top:10px;font-size:11pt">
         <b>Inclusión-exclusión (3 conjuntos)</b>
         $$|A \cup B \cup C| = |A|+|B|+|C| - |A\cap B| - |A\cap C| - |B\cap C| + |A\cap B\cap C|$$
       </div>
@@ -658,78 +855,91 @@
   </div>
 </section>
 
-<!-- 26. Divisor sección 6 -->
-<section class="slide divider">
+<!-- 27. Divisor sección 6 -->
+<section class="slide divider" data-section="6">
+  <div class="splash-divider"><span style="top:20%;left:14%">N</span><span style="bottom:14%;right:18%">n</span></div>
   <div class="sec-num">06</div>
   <h1>Población y muestra</h1>
   <p>Cuándo lo que viste vale para todo lo que hay</p>
 </section>
 
-<!-- 27. Población vs muestra -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 6 · Inferencia</div><div class="slide-nav"></div></div>
-  <h2>Población vs. muestra</h2>
+<!-- 28. Población vs muestra -->
+<section class="slide" data-section="6">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">6</span>Inferencia muestral</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Población vs. muestra</h2>
 
-  <div class="compare">
+  <div class="compare reveal">
     <div>
       <h4>Población ($N$)</h4>
-      <p style="font-size:12.5pt">Conjunto <b>completo</b> de elementos sobre los que se quiere concluir.</p>
-      <div class="ejemplo"><b class="label">Ejemplo</b>Todas las botellas de licor adulterado en circulación en Colombia (≈ 2,5 millones/año estimado FND).</div>
+      <p style="font-size:12.5pt">Conjunto <b>completo</b> de elementos.</p>
+      <div class="ejemplo"><b class="label">Ejemplo</b>Todas las botellas de licor adulterado en circulación en Colombia (≈ 2,5 millones/año, FND).</div>
     </div>
     <div>
       <h4>Muestra ($n$)</h4>
       <p style="font-size:12.5pt">Subconjunto al que <b>efectivamente accedés</b>.</p>
-      <div class="ejemplo"><b class="label">Ejemplo</b>Las 73 506 botellas incautadas en 2024 (lo que vió la PONAL).</div>
+      <div class="ejemplo"><b class="label">Ejemplo</b>Las 73 506 botellas incautadas en 2024.</div>
     </div>
   </div>
 
-  <div class="formula" style="margin-top:14px"><b>Fracción de muestreo</b>
-    $$f = \frac{n}{N} = \frac{73\,506}{2\,500\,000} \approx 0{,}0294 \;\; (2{,}94\%)$$
-  </div>
+  <div class="formula reveal" style="margin-top:14px"><b>Fracción de muestreo</b>$$f = \frac{n}{N} = \frac{73\,506}{2\,500\,000} \approx 0{,}0294 \;\;(2{,}94\%)$$</div>
 
-  <div class="card b-azul shadow" style="margin-top:14px"><div class="top-bar"></div>
+  <div class="card b-azul shadow reveal" style="margin-top:14px"><div class="top-bar"></div>
     <h4>El parámetro vs. el estadístico</h4>
     <p style="font-size:12.5pt">Un <b>parámetro</b> ($\mu$, $\pi$) describe la población — generalmente desconocido. Un <b>estadístico</b> ($\bar{x}$, $\hat{p}$) lo calculamos a partir de la muestra y lo usamos para <b>estimar</b> el parámetro.</p>
   </div>
 </section>
 
-<!-- 28. Error estándar y margen de error -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 6 · Inferencia</div><div class="slide-nav"></div></div>
-  <h2>Error estándar y margen de error</h2>
+<!-- 29. Calculadora SE / ME -->
+<section class="slide" data-section="6">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">6</span>🧮 Calculadora SE / ME</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Calculá el error estándar y el margen de error</h2>
 
-  <div class="definicion"><b class="term">Error estándar de una proporción ($SE$)</b>Variabilidad esperada de la proporción muestral si repitiéramos el muestreo muchas veces.</div>
-  <div class="formula"><b>Fórmula</b>$$SE(\hat{p}) \;=\; \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$$</div>
-
-  <div class="definicion"><b class="term">Margen de error al 95 % de confianza ($ME$)</b>$$ME = z_{0{,}975} \cdot SE = 1{,}96 \cdot SE$$</div>
-
-  <div class="ejemplo"><b class="label">Ejemplo · proporción de aguardiente</b>$\hat{p} = 0{,}45$, $n = 73\,506$.
-    <div class="calc-step">$SE = \sqrt{(0{,}45)(0{,}55)/73\,506} \approx 0{,}00184$</div>
-    <div class="calc-step">$ME = 1{,}96 \times 0{,}00184 \approx \mathbf{0{,}0036}$ → ±0,36 puntos porcentuales.</div>
-    <p style="font-size:12pt;margin-top:6px">Intervalo de confianza al 95 %: $\hat{p} \pm ME = (44{,}6\%; \ 45{,}4\%)$.</p>
+  <div class="calc-widget reveal">
+    <div class="calc-input">
+      <label for="se-p">Proporción $\hat{p}$ (entre 0 y 1):</label>
+      <input type="number" id="se-p" value="0.45" min="0" max="1" step="0.01">
+    </div>
+    <div class="calc-input">
+      <label for="se-n">Tamaño de muestra $n$:</label>
+      <input type="number" id="se-n" value="73506" min="1" step="1">
+    </div>
+    <div class="calc-input">
+      <label for="se-z">Confianza ($z$):</label>
+      <select id="se-z" style="padding:8px 14px;border:2px solid var(--borde);border-radius:8px;font-size:13pt;font-family:'Cambria Math',serif">
+        <option value="1.645">90 % ($z = 1{,}645$)</option>
+        <option value="1.96" selected>95 % ($z = 1{,}96$)</option>
+        <option value="2.576">99 % ($z = 2{,}576$)</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:18px">
+      <div class="calc-output"><b>Error estándar SE</b><div class="result" id="se-out">0,00184</div></div>
+      <div class="calc-output"><b>Margen ME</b><div class="result" id="me-out">±0,36 pp</div></div>
+      <div class="calc-output"><b>IC</b><div class="result" id="ic-out" style="font-size:14pt">(44,6%; 45,4%)</div></div>
+    </div>
+    <div style="margin-top:14px;font-size:12pt;color:var(--texto-suave);font-style:italic">💡 Subí $n$ y observá cómo se reduce el SE. Subí la confianza y observá cómo crece el ME.</div>
   </div>
 </section>
 
-<!-- 29. Sesgo de selección -->
-<section class="slide">
-  <div class="slide-header"><div class="slide-label">Sección 6 · Inferencia</div><div class="slide-nav"></div></div>
-  <h2>El gran riesgo: sesgo de selección</h2>
+<!-- 30. Sesgo de selección -->
+<section class="slide" data-section="6">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">6</span>Sesgo de selección</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">El gran riesgo: sesgo de selección</h2>
 
-  <div class="card b-rojo shadow" style="margin-top:6px"><div class="top-bar"></div>
+  <div class="card b-rojo shadow reveal" style="margin-top:6px"><div class="top-bar"></div>
     <h3 style="color:var(--rojo)">Precisión ≠ Validez</h3>
     <p style="font-size:13pt;line-height:1.6">
       Tener una muestra <b>grande</b> ($n=73\,506$) hace que el cálculo sea muy <b>preciso</b> — el intervalo es estrecho.
-      Pero si la muestra <b>no es aleatoria</b> (las incautaciones reflejan donde hay operativos, no donde hay licor), el resultado puede estar <b>sesgado</b>: muy preciso pero falso.
+      Pero si la muestra <b>no es aleatoria</b> (las incautaciones reflejan dónde hay operativos, no dónde hay licor), el resultado puede estar <b>sesgado</b>: muy preciso pero falso.
     </p>
   </div>
 
-  <div class="body-row cols-2" style="margin-top:14px">
+  <div class="body-row cols-2 reveal" style="margin-top:14px">
     <div class="card b-ambar"><div class="top-bar"></div>
       <h4>Síntomas de sesgo</h4>
       <ul style="font-size:11.5pt;line-height:1.6">
-        <li>La muestra se obtuvo <i>solo</i> en ciertos lugares.</li>
-        <li>Los participantes se autoseleccionaron.</li>
-        <li>Hay subcobertura sistemática de un grupo.</li>
+        <li>Muestra obtenida <i>solo</i> en ciertos lugares.</li>
+        <li>Autoselección de los participantes.</li>
+        <li>Subcobertura sistemática de un grupo.</li>
         <li>El criterio de inclusión correlaciona con la variable estudiada.</li>
       </ul>
     </div>
@@ -737,93 +947,161 @@
       <h4>Cómo mitigarlo</h4>
       <ul style="font-size:11.5pt;line-height:1.6">
         <li>Diseño <b>probabilístico</b>: muestreo aleatorio simple, estratificado o por conglomerados.</li>
-        <li>Declarar siempre los <b>supuestos</b> y limitaciones.</li>
-        <li>Comparar con fuentes externas (triangulación).</li>
+        <li>Declarar siempre los <b>supuestos</b>.</li>
+        <li>Triangular con fuentes externas.</li>
         <li>Reportar el sesgo, no esconderlo.</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- 30. Mapa final: aplicación a las 3 actividades -->
-<section class="slide slide-gradient" style="background:linear-gradient(135deg,#eff6ff 0%,#ede9fe 100%)">
-  <div class="slide-header"><div class="slide-label">Cierre · Aplicación</div><div class="slide-nav"></div></div>
-  <h2>Mapa: cómo aplicar cada concepto en las actividades U2</h2>
+<!-- 31. Mapa final -->
+<section class="slide" data-section="0" style="background:linear-gradient(135deg,#eff6ff 0%,#ede9fe 100%)">
+  <div class="slide-header"><div class="slide-label"><span class="seccion-num">▸</span>Cierre · Aplicación</div><div class="slide-nav"></div></div>
+  <h2 class="reveal">Mapa: cómo aplicar cada concepto en las actividades U2</h2>
 
-  <table style="margin-top:10px">
+  <table class="reveal" style="margin-top:10px">
     <thead><tr><th>Concepto</th><th>Aprendo haciendo</th><th>Profundizo</th><th>Demuestro</th></tr></thead>
     <tbody>
       <tr><td><b>Tablas y gráficas</b></td><td>4 tablas (mes, zona, franja, factor)</td><td>Tabla 5×3 + variación %</td><td>Tabla por tipo y por año</td></tr>
       <tr><td><b>Tendencia central</b></td><td>media, mediana, moda mensual</td><td>media histórica de cada delito</td><td>media + mediana (asimetría)</td></tr>
       <tr><td><b>Dispersión</b></td><td>$s$, $CV$ por mes</td><td>$CV$ por delito (comparar)</td><td>$CV$ del consolidado anual</td></tr>
       <tr><td><b>Probabilidad</b></td><td>$P$ por zona, franja, conjunta</td><td>regla unión $P(A\cup B)$</td><td>$P$ por tipo y departamento</td></tr>
-      <tr><td><b>Conjuntos</b></td><td>—</td><td>$A,B,C$ + Venn 3 conjuntos</td><td>$A,B$ Top-5 + Venn 2 conjuntos</td></tr>
+      <tr><td><b>Conjuntos</b></td><td>—</td><td>$A,B,C$ + Venn 3 conj.</td><td>$A,B$ Top-5 + Venn 2 conj.</td></tr>
       <tr><td><b>Inferencia muestral</b></td><td>—</td><td>—</td><td>$SE$, $ME$, $n_{\min}$, sesgo</td></tr>
     </tbody>
   </table>
 
-  <div class="card b-azul shadow" style="margin-top:18px"><div class="top-bar"></div>
+  <div class="card b-azul shadow reveal" style="margin-top:18px"><div class="top-bar"></div>
     <h4>Recursos en el repositorio</h4>
     <p style="font-size:12.5pt">Los tres ejemplos resueltos están en
-      <b>github.com/JotaJ1991/esjim-profundizo-u1</b> — usalos como referencia para tu propio informe, no copies sino adaptá la metodología a tu caso.</p>
+      <b>github.com/JotaJ1991/esjim-profundizo-u1</b> — usalos como referencia para tu propio informe; adaptá la metodología a tu caso.</p>
   </div>
 </section>
 
-<!-- 31. Cierre -->
-<section class="slide portada">
+<!-- 32. Cierre con confetti -->
+<section class="slide portada" data-section="0">
   <div class="splash">
     <span style="top:10%;left:10%">∑</span><span style="top:20%;right:12%">σ²</span>
     <span style="bottom:18%;left:14%">∩</span><span style="bottom:12%;right:14%">P̂</span>
   </div>
-  <div class="badge-u">FIN DE LA PRESENTACIÓN</div>
-  <div class="mega" style="font-size:60pt">¡A practicar!</div>
-  <div class="subtitle">Abrí los tres ejemplos y construí el tuyo</div>
-  <div style="margin-top:30px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);padding:18px 28px;border-radius:14px;backdrop-filter:blur(10px)">
-    <p style="font-size:13pt;color:#fff;line-height:1.6">
-      📚 <b>Aprendo haciendo</b> · análisis de robos<br>
-      📊 <b>Profundizo</b> · estadística delictiva + Venn<br>
-      🍾 <b>Demuestro</b> · licor adulterado + inferencia
+  <div class="badge-u reveal">FIN DE LA PRESENTACIÓN</div>
+  <div class="mega reveal" style="font-size:64pt">¡A practicar!</div>
+  <div class="subtitle reveal">Abrí los tres ejemplos y construí el tuyo</div>
+  <div class="reveal" style="margin-top:30px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);padding:18px 28px;border-radius:14px;backdrop-filter:blur(10px)">
+    <p style="font-size:13pt;color:#fff;line-height:1.7">
+      🔍 <b>Aprendo haciendo</b> · análisis de robos en barrio histórico<br>
+      📊 <b>Profundizo</b> · estadística delictiva + Venn 3 conjuntos<br>
+      🍾 <b>Demuestro</b> · licor adulterado + inferencia muestral
     </p>
   </div>
-  <div class="docente">Docente: Yenifer Fontalvo Marriaga · ESJIM · 2026</div>
+  <button class="reveal" id="confetti-trigger" style="margin-top:24px;padding:12px 28px;background:linear-gradient(135deg,#f59e0b,#ec4899);color:#fff;border:none;border-radius:30px;font-size:14pt;font-weight:700;cursor:pointer;box-shadow:0 8px 20px rgba(236,72,153,.4)">🎉 ¡Celebrar!</button>
+  <div class="reveal docente">Docente: Yenifer Fontalvo Marriaga · ESJIM · 2026</div>
 </section>
 
 </div>
 
+<!-- Overview / slide grid -->
+<div class="overview" id="overview">
+  <button class="close-overview" id="close-overview">✕ Cerrar (O)</button>
+  <h2>📑 Vista general — clic para saltar</h2>
+  <div class="grid" id="overview-grid"></div>
+</div>
+
+<canvas id="confetti-canvas"></canvas>
+
 <div class="nav-buttons">
-  <button id="prev" aria-label="Anterior">←</button>
-  <button id="next" aria-label="Siguiente">→</button>
+  <button id="overview-btn" title="Overview (O)">▦ Overview</button>
+  <button id="prev" title="Anterior (←)">←</button>
+  <button id="next" title="Siguiente (→)">→</button>
+</div>
+
+<div class="keyboard-hints">
+  <kbd>← →</kbd> Navegar &nbsp;·&nbsp; <kbd>O</kbd> Overview &nbsp;·&nbsp; <kbd>F</kbd> Fullscreen &nbsp;·&nbsp; <kbd>Home/End</kbd> Inicio/Fin
 </div>
 
 <script>
+// ========== NAVEGACIÓN ==========
 const slides = document.querySelectorAll('.slide');
 const total = slides.length;
 let idx = 0;
+let prevIdx = 0;
+
+const SECTION_LABELS = ['Intro','Variables','Tendencia','Dispersión','Probabilidad','Conjuntos','Inferencia'];
+const sectionDots = document.getElementById('section-dots');
+SECTION_LABELS.forEach((lbl,i)=>{
+  const d = document.createElement('div');
+  d.className='dot'; d.dataset.label = lbl; d.dataset.section = i;
+  d.onclick = ()=>{ const target = [...slides].findIndex(s=>+s.dataset.section===i); if(target>=0) show(target); };
+  sectionDots.appendChild(d);
+});
 
 function show(n){
-  slides[idx].classList.remove('active');
+  prevIdx = idx;
+  slides[idx].classList.remove('active','from-prev');
   idx = Math.max(0, Math.min(total-1, n));
   slides[idx].classList.add('active');
+  if(n < prevIdx) slides[idx].classList.add('from-prev');
   document.getElementById('progress').style.width = ((idx+1)/total*100)+'%';
   document.querySelectorAll('.slide-nav').forEach(el=>el.textContent = (idx+1)+' / '+total);
   document.getElementById('prev').disabled = idx===0;
   document.getElementById('next').disabled = idx===total-1;
-  // Re-render KaTeX in newly visible slide (auto-render runs once on load)
+  // Update section dots
+  const sect = +slides[idx].dataset.section;
+  document.querySelectorAll('.section-dots .dot').forEach((d,i)=>d.classList.toggle('active', i===sect));
+  // Re-render KaTeX
   if(window.renderMathInElement){ try{ renderMathInElement(slides[idx],{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false}); }catch(e){} }
+  // Animate counters
+  animateCounters(slides[idx]);
 }
 
 document.getElementById('prev').onclick = ()=>show(idx-1);
 document.getElementById('next').onclick = ()=>show(idx+1);
 document.addEventListener('keydown', e=>{
-  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown') show(idx+1);
-  if(e.key==='ArrowLeft'||e.key==='PageUp') show(idx-1);
+  if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return;
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){ show(idx+1); e.preventDefault(); }
+  if(e.key==='ArrowLeft'||e.key==='PageUp'){ show(idx-1); e.preventDefault(); }
   if(e.key==='Home') show(0);
   if(e.key==='End') show(total-1);
+  if(e.key==='o'||e.key==='O') toggleOverview();
+  if(e.key==='f'||e.key==='F') toggleFullscreen();
+  if(e.key==='Escape'){ document.getElementById('overview').classList.remove('show'); }
 });
 
-show(0);
+// ========== ANIMATED COUNTERS ==========
+function animateCounters(el){
+  el.querySelectorAll('[data-count]').forEach(node=>{
+    const target = +node.dataset.count;
+    let cur = 0; const step = target/40;
+    const t = setInterval(()=>{ cur += step; if(cur>=target){ cur=target; clearInterval(t); } node.textContent = Math.round(cur); }, 25);
+  });
+}
 
-// Charts
+// ========== OVERVIEW ==========
+const overview = document.getElementById('overview');
+const overviewGrid = document.getElementById('overview-grid');
+slides.forEach((s,i)=>{
+  const t = document.createElement('button');
+  t.className = 'thumb';
+  if(s.classList.contains('portada')) t.classList.add('portada-thumb');
+  if(s.classList.contains('divider')) t.classList.add('divider-thumb');
+  const title = s.querySelector('h1, h2')?.textContent?.slice(0,80) || s.querySelector('.slide-label')?.textContent || 'Slide';
+  t.innerHTML = `<div class="num">Slide ${i+1} / ${total}</div><div class="title">${title}</div>`;
+  t.onclick = ()=>{ show(i); overview.classList.remove('show'); };
+  overviewGrid.appendChild(t);
+});
+function toggleOverview(){ overview.classList.toggle('show'); }
+document.getElementById('overview-btn').onclick = toggleOverview;
+document.getElementById('close-overview').onclick = toggleOverview;
+
+// ========== FULLSCREEN ==========
+function toggleFullscreen(){
+  if(!document.fullscreenElement){ document.documentElement.requestFullscreen(); }
+  else{ document.exitFullscreen(); }
+}
+document.getElementById('fs-btn').onclick = toggleFullscreen;
+
+// ========== CHARTS ==========
 const azul='#3b82f6', verde='#10b981', violeta='#8b5cf6', rojo='#ef4444', ambar='#f59e0b';
 const data6 = [25,32,40,45,50,55];
 const labels6 = ['Oct','Nov','Dic','Ene','Feb','Mar'];
@@ -840,6 +1118,240 @@ new Chart(document.getElementById('ch-dona'),{type:'doughnut',
   data:{labels:['Aguardiente','Ron','Ñeque','Otros'], datasets:[{data:[45,25,20,10], backgroundColor:[ambar,rojo,violeta,verde], borderColor:'#fff', borderWidth:2}]},
   options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom', labels:{font:{size:9}}}, title:{display:true, text:'Composición por tipo (%)', font:{size:13}}}, cutout:'55%'}
 });
+
+// ========== CALC: MEDIA / MEDIANA ==========
+function parseNums(s){ return s.split(/[,;\s]+/).map(x=>parseFloat(x.replace(',','.'))).filter(x=>!isNaN(x)); }
+function calcMedia(){
+  const arr = parseNums(document.getElementById('calc-data').value);
+  if(arr.length===0) return;
+  const n = arr.length;
+  const sum = arr.reduce((a,b)=>a+b,0);
+  const mean = sum/n;
+  const sorted = [...arr].sort((a,b)=>a-b);
+  let med;
+  if(n%2===0) med = (sorted[n/2-1]+sorted[n/2])/2;
+  else med = sorted[(n-1)/2];
+  document.getElementById('out-media').textContent = mean.toFixed(2).replace('.',',');
+  document.getElementById('out-mediana').textContent = med.toFixed(2).replace('.',',');
+  document.getElementById('out-n').textContent = n;
+}
+document.getElementById('calc-data').addEventListener('input', calcMedia);
+
+// ========== CALC: σ y CV ==========
+function calcSD(){
+  const arr = parseNums(document.getElementById('sd-data').value);
+  if(arr.length<2) return;
+  const n = arr.length;
+  const mean = arr.reduce((a,b)=>a+b,0)/n;
+  const variance = arr.reduce((a,b)=>a+(b-mean)**2,0)/(n-1);
+  const sd = Math.sqrt(variance);
+  const cv = (sd/mean)*100;
+  document.getElementById('sd-media').textContent = mean.toFixed(2).replace('.',',');
+  document.getElementById('sd-var').textContent = variance.toFixed(2).replace('.',',');
+  document.getElementById('sd-sd').textContent = sd.toFixed(2).replace('.',',');
+  document.getElementById('sd-cv').textContent = cv.toFixed(1).replace('.',',') + ' %';
+  const lblEl = document.getElementById('sd-label');
+  if(cv<10){ lblEl.textContent = '✓ Serie homogénea (CV < 10 %)'; lblEl.style.color = 'var(--verde)'; }
+  else if(cv<=30){ lblEl.textContent = '◐ Dispersión moderada'; lblEl.style.color = 'var(--ambar)'; }
+  else{ lblEl.textContent = '⚠ Serie heterogénea (CV > 30 %)'; lblEl.style.color = 'var(--rojo)'; }
+}
+document.getElementById('sd-data').addEventListener('input', calcSD);
+
+// ========== CALC: SE / ME / IC ==========
+function calcSE(){
+  const p = parseFloat(document.getElementById('se-p').value);
+  const n = parseInt(document.getElementById('se-n').value);
+  const z = parseFloat(document.getElementById('se-z').value);
+  if(isNaN(p)||isNaN(n)||p<0||p>1||n<1) return;
+  const se = Math.sqrt(p*(1-p)/n);
+  const me = z*se;
+  const lo = Math.max(0,(p-me)*100).toFixed(2).replace('.',',');
+  const hi = Math.min(100,(p+me)*100).toFixed(2).replace('.',',');
+  document.getElementById('se-out').textContent = se.toFixed(5).replace('.',',');
+  document.getElementById('me-out').textContent = '±' + (me*100).toFixed(2).replace('.',',') + ' pp';
+  document.getElementById('ic-out').textContent = `(${lo}%; ${hi}%)`;
+}
+['se-p','se-n','se-z'].forEach(id=>document.getElementById(id).addEventListener('input', calcSE));
+
+// ========== DRAG & DROP variables ==========
+let dragged = null;
+document.querySelectorAll('.drag-item').forEach(item=>{
+  item.addEventListener('dragstart', e=>{ dragged = item; item.classList.add('dragging'); });
+  item.addEventListener('dragend', e=>{ item.classList.remove('dragging'); });
+});
+document.querySelectorAll('.drop-target').forEach(zone=>{
+  zone.addEventListener('dragover', e=>{ e.preventDefault(); zone.classList.add('over'); });
+  zone.addEventListener('dragleave', e=>{ zone.classList.remove('over'); });
+  zone.addEventListener('drop', e=>{
+    e.preventDefault(); zone.classList.remove('over');
+    if(!dragged) return;
+    const isCorrect = dragged.dataset.cat === zone.dataset.cat;
+    if(isCorrect){
+      dragged.style.background = 'linear-gradient(135deg,#d1fae5,#a7f3d0)';
+      dragged.style.borderColor = 'var(--verde)';
+      dragged.style.color = '#065f46';
+      zone.appendChild(dragged);
+      checkDragComplete();
+    } else {
+      dragged.style.animation = 'shake .4s ease';
+      setTimeout(()=>dragged.style.animation='',400);
+      const fb = document.getElementById('drag-feedback');
+      fb.textContent = '❌ Esa categoría no es la correcta. Intentá otra.';
+      fb.style.color = 'var(--rojo)';
+      setTimeout(()=>{ if(fb.textContent.startsWith('❌')) fb.textContent=''; }, 2500);
+    }
+  });
+});
+function checkDragComplete(){
+  const remaining = document.getElementById('drag-source').querySelectorAll('.drag-item').length;
+  const fb = document.getElementById('drag-feedback');
+  if(remaining===0){
+    fb.innerHTML = '🎉 <b>¡Excelente! Las 6 variables están bien clasificadas.</b>';
+    fb.style.color = 'var(--verde)';
+    fireConfetti();
+  } else {
+    fb.textContent = `✓ Bien · faltan ${remaining}`;
+    fb.style.color = 'var(--azul)';
+  }
+}
+
+// ========== QUIZ probabilidad ==========
+const QUIZ_QS = [
+  {q:'P1. Si $P(A) = 0{,}4$ y $P(B) = 0{,}5$ y son <i>mutuamente excluyentes</i>, ¿cuánto vale $P(A \\cup B)$?',
+   opts:[{t:'a) 0,20',c:false},{t:'b) 0,90',c:true},{t:'c) 1,10',c:false},{t:'d) 0,50',c:false}],
+   fb:'✓ Correcto. Como son excluyentes, $P(A \\cap B) = 0$, así $P(A \\cup B) = 0{,}4 + 0{,}5 = 0{,}9$.'},
+  {q:'P2. Si $A$ y $B$ son <i>independientes</i> con $P(A)=0{,}3$ y $P(B)=0{,}2$, ¿cuánto es $P(A \\cap B)$?',
+   opts:[{t:'a) 0,5',c:false},{t:'b) 0,06',c:true},{t:'c) 0,1',c:false},{t:'d) 0',c:false}],
+   fb:'✓ Para eventos independientes $P(A \\cap B) = P(A) \\cdot P(B) = 0{,}3 \\times 0{,}2 = 0{,}06$.'},
+  {q:'P3. Una urna tiene 60 botellas, 27 son aguardiente. ¿Cuál es $\\hat{P}(\\text{aguardiente})$?',
+   opts:[{t:'a) 0,27',c:false},{t:'b) 0,33',c:false},{t:'c) 0,45',c:true},{t:'d) 0,60',c:false}],
+   fb:'✓ Frecuencia relativa: $\\hat{P} = 27/60 = 0{,}45 = 45\\%$.'}
+];
+let quizIdx = 0, quizScore = 0;
+const quizContainer = document.getElementById('quiz-1');
+function renderQuiz(){
+  if(quizIdx >= QUIZ_QS.length){ finishQuiz(); return; }
+  const q = QUIZ_QS[quizIdx];
+  quizContainer.innerHTML = `
+    <div class="quiz-question" data-q="${quizIdx}">${q.q}</div>
+    <div class="quiz-options" data-q="${quizIdx}">
+      ${q.opts.map((o,i)=>`<button class="quiz-option" data-correct="${o.c}">${o.t}</button>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="qf-1"></div>
+  `;
+  if(window.renderMathInElement){ try{ renderMathInElement(quizContainer,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false}); }catch(e){} }
+  quizContainer.querySelectorAll('.quiz-option').forEach(btn=>{
+    btn.onclick = ()=>{
+      const correct = btn.dataset.correct === 'true';
+      const allBtns = quizContainer.querySelectorAll('.quiz-option');
+      allBtns.forEach(b=>b.disabled = true);
+      if(correct){ btn.classList.add('correct'); quizScore++; }
+      else{ btn.classList.add('incorrect'); allBtns.forEach(b=>{ if(b.dataset.correct==='true') b.classList.add('correct'); }); }
+      const fb = document.getElementById('qf-1');
+      fb.innerHTML = QUIZ_QS[quizIdx].fb;
+      fb.classList.add('show', correct?'ok':'bad');
+      if(window.renderMathInElement){ try{ renderMathInElement(fb,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false}); }catch(e){} }
+      // Update progress dots
+      const dots = document.querySelectorAll('#quiz-prog-1 .dot');
+      dots[quizIdx].classList.add(correct?'correct':'incorrect');
+      if(quizIdx+1 < dots.length) dots[quizIdx+1].classList.add('active');
+      // Next button
+      setTimeout(()=>{
+        const nextBtn = document.createElement('button');
+        nextBtn.textContent = quizIdx+1 < QUIZ_QS.length ? 'Siguiente pregunta →' : 'Ver puntaje final';
+        nextBtn.style.cssText = 'margin-top:14px;padding:10px 24px;background:var(--azul);color:#fff;border:none;border-radius:8px;font-size:13pt;font-weight:700;cursor:pointer';
+        nextBtn.onclick = ()=>{ quizIdx++; renderQuiz(); };
+        fb.appendChild(document.createElement('br'));
+        fb.appendChild(nextBtn);
+      }, 800);
+    };
+  });
+}
+function finishQuiz(){
+  quizContainer.innerHTML = '';
+  const final = document.getElementById('quiz-1-final');
+  const pct = (quizScore/QUIZ_QS.length*100).toFixed(0);
+  final.style.display = 'block';
+  final.innerHTML = `<h3 style="color:var(--azul);margin-bottom:14px">Tu puntaje</h3>
+    <div class="quiz-score">${quizScore} / ${QUIZ_QS.length} (${pct}%)</div>
+    <p style="margin-top:14px;font-size:13pt">${quizScore===QUIZ_QS.length?'🎉 ¡Perfecto! Dominás la probabilidad básica.':quizScore>=2?'👍 Bien, repasá la pregunta donde fallaste.':'📚 Te recomiendo volver a las slides 18-22 antes de seguir.'}</p>
+    <button onclick="quizIdx=0;quizScore=0;document.getElementById('quiz-1-final').style.display='none';renderQuiz();document.querySelectorAll('#quiz-prog-1 .dot').forEach((d,i)=>{d.className='dot';if(i===0)d.classList.add('active');});" style="margin-top:14px;padding:10px 24px;background:var(--violeta);color:#fff;border:none;border-radius:8px;font-size:12pt;font-weight:700;cursor:pointer">↻ Volver a intentar</button>`;
+  if(quizScore===QUIZ_QS.length) fireConfetti();
+}
+renderQuiz();
+
+// ========== VENN INTERACTIVO ==========
+const VENN_OPS = {
+  A: {hl:'hl-A', label:'<b>A</b> · Conjunto A — todos los elementos del círculo izquierdo.'},
+  B: {hl:'hl-B', label:'<b>B</b> · Conjunto B — todos los elementos del círculo derecho.'},
+  union: {hl:['hl-A','hl-B'], label:'<b>A ∪ B</b> · Unión — elementos en A, en B o en ambos. (Todo lo coloreado.)'},
+  intersect: {hl:'hl-intersect', label:'<b>A ∩ B</b> · Intersección — elementos que están <i>simultáneamente</i> en A y en B.'},
+  'diff-ab': {hl:'hl-diff-ab', label:'<b>A \\ B</b> · Diferencia — elementos en A pero no en B.'},
+  'diff-ba': {hl:'hl-diff-ba', label:'<b>B \\ A</b> · Diferencia — elementos en B pero no en A.'},
+  complement: {hl:'hl-complement', label:'<b>$\\overline{A \\cup B}$</b> · Complemento — elementos del universo que no están ni en A ni en B.'}
+};
+function vennSet(op){
+  // Apagar todos
+  ['hl-A','hl-B','hl-intersect','hl-diff-ab','hl-diff-ba','hl-complement'].forEach(id=>{
+    const el = document.getElementById(id); if(el) el.setAttribute('opacity','0');
+  });
+  const o = VENN_OPS[op];
+  if(Array.isArray(o.hl)) o.hl.forEach(id=>document.getElementById(id).setAttribute('opacity','0.5'));
+  else document.getElementById(o.hl).setAttribute('opacity','0.55');
+  document.getElementById('venn-explain').innerHTML = o.label;
+  if(window.renderMathInElement){ try{ renderMathInElement(document.getElementById('venn-explain'),{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false}); }catch(e){} }
+  document.querySelectorAll('.venn-controls button').forEach(b=>b.classList.toggle('active', b.dataset.op===op));
+}
+document.querySelectorAll('.venn-controls button').forEach(btn=>btn.onclick = ()=>vennSet(btn.dataset.op));
+vennSet('A');
+
+// ========== CONFETTI ==========
+const confettiCanvas = document.getElementById('confetti-canvas');
+const ctx = confettiCanvas.getContext('2d');
+function resizeCanvas(){ confettiCanvas.width = innerWidth; confettiCanvas.height = innerHeight; }
+resizeCanvas(); addEventListener('resize', resizeCanvas);
+let confettiParticles = [];
+function fireConfetti(){
+  const colors = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899'];
+  for(let i=0;i<140;i++){
+    confettiParticles.push({
+      x: innerWidth/2 + (Math.random()-.5)*100,
+      y: innerHeight/2,
+      vx: (Math.random()-.5)*16,
+      vy: (Math.random()-.5)*16 - 4,
+      g: 0.45,
+      size: 6 + Math.random()*5,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      rot: Math.random()*Math.PI*2,
+      vrot: (Math.random()-.5)*0.3,
+      life: 0
+    });
+  }
+}
+function tickConfetti(){
+  ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+  confettiParticles = confettiParticles.filter(p=>p.life<200);
+  confettiParticles.forEach(p=>{
+    p.vy += p.g; p.x += p.vx; p.y += p.vy; p.rot += p.vrot; p.life++;
+    ctx.save();
+    ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+    ctx.fillStyle = p.color;
+    ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.6);
+    ctx.restore();
+  });
+  requestAnimationFrame(tickConfetti);
+}
+tickConfetti();
+document.getElementById('confetti-trigger').onclick = fireConfetti;
+
+// ========== INIT ==========
+// Auto-render KaTeX on load (only in active slide first)
+window.addEventListener('load', ()=>{
+  if(window.renderMathInElement){
+    renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\[',right:'\\]',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false}],throwOnError:false});
+  }
+});
+show(0);
 </script>
 </body>
 </html>
