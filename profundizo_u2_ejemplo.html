@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>U2 | Profundizo — Análisis estadístico delictivo y teoría de conjuntos (Ejemplo resuelto)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\\\[',right:'\\\\]',display:true},{left:'$',right:'$',display:false},{left:'\\\\(',right:'\\\\)',display:false}],throwOnError:false})"></script>
+<style>
+  :root{
+    --azul:#0b3d91;--azul-claro:#1d5fc4;--azul-suave:#e8eef9;
+    --gris:#4a4a4a;--gris-suave:#6c7a8a;--gris-bg:#f4f6fb;--borde:#d7dde8;
+    --verde:#1d7c3c;--verde-suave:#e6f4ea;
+    --rojo:#c0392b;--rojo-suave:#fbeae7;
+    --ambar:#d97706;--ambar-suave:#fef3c7;
+    --violeta:#6d28d9;--violeta-suave:#ede9fe;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:linear-gradient(180deg,#e9eef7 0%,#dde5f2 100%);font-family:"Times New Roman",Times,serif;color:#1a1a1a;min-height:100vh}
+  .hoja{max-width:960px;margin:24px auto;background:#fff;padding:60px 72px;border-radius:8px;box-shadow:0 8px 30px rgba(11,61,145,.12);line-height:1.55;font-size:12pt}
+  h1,h2,h3,h4{font-family:"Arial","Helvetica",sans-serif;color:var(--azul);line-height:1.25;letter-spacing:-.01em}
+  h1{font-size:22pt;text-align:center;margin:0 0 6px;font-weight:700}
+  h2{font-size:15pt;padding:10px 0 6px;margin-top:36px;border-bottom:3px solid var(--azul);display:flex;align-items:center;gap:12px}
+  h2 .icon{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--azul);color:#fff;border-radius:8px;font-size:18px;flex-shrink:0}
+  h3{font-size:13pt;margin-top:24px;color:var(--azul-claro);padding-left:10px;border-left:4px solid var(--azul-claro)}
+  h4{font-size:10.5pt;margin:14px 0 6px;color:var(--gris-suave);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+  p{text-align:justify;margin:10px 0}
+
+  .portada{text-align:center;margin-bottom:24px;padding:24px;background:linear-gradient(135deg,var(--azul) 0%,var(--azul-claro) 100%);color:#fff;border-radius:10px}
+  .portada h1{color:#fff;border:none;font-family:Arial,sans-serif;font-size:18pt}
+  .portada .sub{font-family:Arial,sans-serif;font-size:11pt;color:rgba(255,255,255,.92);margin:6px 0}
+  .portada .docente{display:inline-block;margin-top:10px;padding:6px 14px;background:rgba(255,255,255,.18);border-radius:18px;font-family:Arial,sans-serif;font-size:10pt}
+
+  .meta{background:var(--gris-bg);border-left:5px solid var(--azul);padding:14px 18px;margin:24px 0;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.5;border-radius:4px}
+  .meta b{color:var(--azul)}
+
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}
+  .kpi{background:linear-gradient(135deg,#fff 0%,var(--azul-suave) 100%);border:1px solid var(--borde);border-radius:10px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(11,61,145,.06)}
+  .kpi .num{font-family:Arial,sans-serif;font-size:21pt;font-weight:700;color:var(--azul);line-height:1}
+  .kpi .lbl{font-family:Arial,sans-serif;font-size:9pt;color:var(--gris-suave);text-transform:uppercase;letter-spacing:.5px;margin-top:6px}
+  .kpi.rojo .num{color:var(--rojo)}
+  .kpi.ambar .num{color:var(--ambar)}
+  .kpi.verde .num{color:var(--verde)}
+  .kpi.violeta .num{color:var(--violeta)}
+
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-family:Arial,sans-serif;font-size:10.5pt}
+  th{background:var(--azul);color:#fff;padding:9px 12px;text-align:left;font-weight:700}
+  td{padding:8px 12px;border-bottom:1px solid var(--borde)}
+  tr:nth-child(even) td{background:var(--gris-bg)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+
+  .formula{background:#fff8e1;border:1px solid #f5e2a3;border-left:5px solid var(--ambar);padding:14px 18px;margin:14px 0;border-radius:4px;overflow-x:auto;font-size:11pt;line-height:1.7}
+  .formula b{color:#7a4a00;font-family:Arial,sans-serif}
+  .formula .katex{font-size:1.05em}
+  .formula .katex-display{margin:.5em 0}
+  .calc{background:var(--azul-suave);border-radius:6px;padding:12px 16px;margin:8px 0;font-size:11pt;line-height:1.7}
+  .calc b{color:var(--azul);font-family:Arial,sans-serif}
+  .calc .katex{font-size:1.02em}
+
+  .chart-box{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:18px;margin:18px 0;box-shadow:0 2px 8px rgba(11,61,145,.05)}
+  .chart-title{font-family:Arial,sans-serif;font-size:11pt;color:var(--azul);font-weight:700;text-align:center;margin-bottom:8px}
+  .chart-cap{font-family:Arial,sans-serif;font-size:9pt;color:var(--gris-suave);text-align:center;font-style:italic;margin-top:6px}
+  .chart-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .chart-canvas-wrap{position:relative;width:100%}
+  .chart-canvas-wrap.h-tall{height:300px}
+  .chart-canvas-wrap.h-mid{height:240px}
+
+  .alerta{padding:14px 18px;border-radius:8px;margin:14px 0;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.5}
+  .alerta.rojo{background:var(--rojo-suave);border-left:5px solid var(--rojo);color:#7a1c10}
+  .alerta.ambar{background:var(--ambar-suave);border-left:5px solid var(--ambar);color:#704000}
+  .alerta.verde{background:var(--verde-suave);border-left:5px solid var(--verde);color:#0e4d24}
+  .alerta.azul{background:var(--azul-suave);border-left:5px solid var(--azul);color:#0b2c5e}
+  .alerta b{display:block;margin-bottom:4px;font-size:11pt;text-transform:uppercase;letter-spacing:.4px}
+
+  .conclusion{background:linear-gradient(135deg,var(--azul-suave) 0%,#fff 100%);border:2px solid var(--azul);border-radius:10px;padding:20px 24px;margin:24px 0}
+  .conclusion h3{margin-top:0;border:none;padding:0;color:var(--azul);font-size:14pt}
+
+  .ref{font-family:Arial,sans-serif;font-size:9.5pt;color:var(--gris);padding-left:30px;text-indent:-30px;margin:8px 0}
+
+  /* Diagrama de Venn */
+  .venn-box{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:18px;margin:18px 0}
+  .venn-svg{display:block;margin:0 auto;max-width:100%;height:auto}
+
+  
+  /* === Componentes pedagógicos === */
+  .toc{background:linear-gradient(135deg,#fff 0%,var(--azul-suave) 100%);border:1px solid var(--borde);border-radius:10px;padding:18px 22px;margin:18px 0}
+  .toc-title{font-family:Arial,sans-serif;color:var(--azul);font-weight:700;font-size:11pt;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .toc ol{margin:6px 0 0;padding-left:24px;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.8;columns:2;column-gap:30px}
+  .toc a{color:var(--azul);text-decoration:none;border-bottom:1px dashed transparent;transition:border-color .2s}
+  .toc a:hover{border-color:var(--azul-claro)}
+
+  .rubric-map{background:linear-gradient(135deg,#fff 0%,var(--violeta-suave) 100%);border:1px solid #c4b5fd;border-radius:10px;padding:14px 18px;margin:14px 0;font-family:Arial,sans-serif;font-size:10pt}
+  .rubric-map .title{color:var(--violeta);font-weight:700;font-size:10.5pt;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+  .rubric-map table{margin:6px 0 0;font-size:9.5pt}
+  .rubric-map th{background:var(--violeta);color:#fff;font-size:9.5pt;padding:6px 10px}
+  .rubric-map td{padding:6px 10px}
+
+  .pista,.error-comun{display:flex;gap:14px;background:#fff;border-radius:8px;padding:14px 18px;margin:14px 0;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.55;border:1px solid var(--borde)}
+  .pista{border-left:5px solid #f59e0b;border-color:#fcd34d}
+  .pista .icon{font-size:22px;flex-shrink:0}
+  .pista b{color:#92400e;display:block;margin-bottom:4px}
+  .error-comun{border-left:5px solid #dc2626;border-color:#fca5a5}
+  .error-comun .icon{font-size:22px;flex-shrink:0}
+  .error-comun b{color:#991b1b;display:block;margin-bottom:4px}
+
+  .verifica{background:linear-gradient(135deg,#fff 0%,var(--verde-suave) 100%);border:1px solid #86efac;border-radius:10px;padding:16px 20px;margin:18px 0;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.6}
+  .verifica .title{color:var(--verde);font-weight:700;font-size:11pt;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .verifica ol{margin:6px 0 0;padding-left:22px}
+  .verifica li{margin:8px 0}
+  .verifica details{margin-top:6px;padding:8px 10px;background:rgba(255,255,255,.7);border-radius:6px}
+  .verifica details summary{cursor:pointer;color:var(--verde);font-weight:700;font-size:10pt;list-style:none}
+  .verifica details summary::before{content:'▸';display:inline-block;margin-right:6px;transition:transform .2s}
+  .verifica details[open] summary::before{transform:rotate(90deg)}
+  .verifica details > div{margin-top:6px;font-size:10pt;color:#0e4d24}
+
+  .glosario{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:18px 22px;margin:18px 0}
+  .glosario dl{font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.6;margin:0}
+  .glosario dt{color:var(--azul);font-weight:700;margin-top:10px}
+  .glosario dd{margin:2px 0 0 18px;color:#333}
+
+  .checklist{background:linear-gradient(135deg,#fff 0%,var(--azul-suave) 100%);border:1px solid var(--borde);border-radius:10px;padding:18px 22px;margin:18px 0;font-family:Arial,sans-serif;font-size:10.5pt}
+  .checklist .title{color:var(--azul);font-weight:700;font-size:11pt;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .checklist ul{list-style:none;padding:0;margin:0}
+  .checklist li{padding:6px 0 6px 30px;position:relative;line-height:1.6}
+  .checklist li::before{content:'☐';position:absolute;left:0;color:var(--azul);font-size:14pt;font-weight:700;line-height:1}
+
+  @media print{ .verifica details{open:true} }
+
+  @media print{ body{background:#fff} .hoja{box-shadow:none;margin:0;padding:30px 40px;max-width:100%} }
+</style>
+</head>
+<body>
+<div class="hoja">
+
+  <div class="portada">
+    <h1>U2 — Profundizo</h1>
+    <div class="sub">Análisis estadístico delictivo y aplicación de la teoría de conjuntos en la criminalidad</div>
+    <div class="docente">Docente: Yenifer Fontalvo Marriaga · ESJIM</div>
+  </div>
+
+  <div class="meta">
+    <b>Tipo:</b> Individual · <b>Fuente de datos:</b> Policía Nacional de Colombia — SIEDCO · <b>Período:</b> 2020–2024 · <b>Delitos seleccionados:</b> 4 ($n=4$) · <b>Delitos con serie temporal completa:</b> 3 ($k=3$)<br>
+    <b>Estructura del documento:</b> selección $\rightarrow$ organización $\rightarrow$ representación gráfica $\rightarrow$ análisis con teoría de conjuntos $\rightarrow$ interpretación $\rightarrow$ conclusión $\rightarrow$ referencias APA.
+  </div>
+
+  <nav class="toc" aria-label="Tabla de contenidos">
+    <div class="toc-title">📋 Tabla de contenidos</div>
+    <ol>
+      <li><a href="#s1">Selección de información</a></li>
+      <li><a href="#s2">Organización de datos</a></li>
+      <li><a href="#s3">Representación gráfica</a></li>
+      <li><a href="#s4">Teoría de conjuntos</a></li>
+      <li><a href="#s5">Análisis estadístico complementario</a></li>
+      <li><a href="#s6">Interpretación</a></li>
+      <li><a href="#s7">Conclusiones</a></li>
+    </ol>
+  </nav>
+
+  <div class="rubric-map">
+    <div class="title">🎯 Mapa de la rúbrica · cómo se evalúa este informe</div>
+    <table>
+      <thead><tr><th>Criterio</th><th>Cubierto en</th></tr></thead>
+      <tbody>
+        <tr><td><b>C1.</b> Cuatro delitos × cinco años</td><td>§ 1 + § 2.1</td></tr>
+        <tr><td><b>C2.</b> Tablas organizadas con datos de incidencia</td><td>§ 2.1 + § 2.2</td></tr>
+        <tr><td><b>C3.</b> ≥ 3 gráficos con análisis de tendencias</td><td>§ 3 (Figs. 1–3) + Venn (Fig. 4)</td></tr>
+        <tr><td><b>C4.</b> Teoría de conjuntos (∪, ∩, ⊆)</td><td>§ 4</td></tr>
+        <tr><td><b>C5.</b> Formato APA</td><td>§ 8 Referencias</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+  <h2 id="s1"><span class="icon">1</span>Selección de información</h2>
+  <p>De los <i>delitos de impacto</i> publicados por la Policía Nacional de Colombia en el portal de Estadística delictiva — Sistema de Información Estadístico, Delincuencial, Contravencional y Operativo (<b>SIEDCO</b>) — se seleccionaron <b>cuatro</b> categorías por su relevancia para la gestión policial y por la disponibilidad de datos comparables 2020–2024:</p>
+  <ol>
+    <li><b>Hurto a personas</b> (delito de mayor frecuencia y crecimiento sostenido).</li>
+    <li><b>Homicidio intencional</b> (delito de mayor impacto sobre la vida).</li>
+    <li><b>Lesiones personales</b> (delito de violencia interpersonal de alta incidencia).</li>
+    <li><b>Hurto a residencias</b> (delito patrimonial con seguimiento territorial).</li>
+  </ol>
+  <p>Para los <b>tres</b> primeros se construye serie temporal completa 2020–2024; el cuarto se utiliza únicamente para los análisis de teoría de conjuntos.</p>
+
+  <div class="kpi-grid">
+    <div class="kpi rojo"><div class="num">~1,5 M</div><div class="lbl">Hurtos a personas (suma 5 años)</div></div>
+    <div class="kpi"><div class="num">~65 K</div><div class="lbl">Homicidios (suma 5 años)</div></div>
+    <div class="kpi ambar"><div class="num">~390 K</div><div class="lbl">Lesiones personales</div></div>
+    <div class="kpi verde"><div class="num">~140 K</div><div class="lbl">Hurtos a residencias</div></div>
+  </div>
+
+  <h2 id="s2"><span class="icon">2</span>Organización de datos</h2>
+
+  <h3>2.1 Tabla 1. Delitos seleccionados (Colombia, 2020–2024)</h3>
+  <table>
+    <thead><tr>
+      <th>Año</th>
+      <th class="num">Hurto a personas</th>
+      <th class="num">Homicidio</th>
+      <th class="num">Lesiones personales</th>
+      <th class="num">Hurto a residencias</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>2020</td><td class="num">199.140</td><td class="num">12.017</td><td class="num">53.026</td><td class="num">22.437</td></tr>
+      <tr><td>2021</td><td class="num">230.718</td><td class="num">14.193</td><td class="num">63.338</td><td class="num">20.644</td></tr>
+      <tr><td>2022</td><td class="num">351.334</td><td class="num">13.808</td><td class="num">78.500</td><td class="num">31.060</td></tr>
+      <tr><td>2023</td><td class="num">378.716</td><td class="num">13.260</td><td class="num">92.000</td><td class="num">35.058</td></tr>
+      <tr><td>2024</td><td class="num">337.106</td><td class="num">12.618</td><td class="num">105.422</td><td class="num">30.926</td></tr>
+      <tr style="background:var(--azul-suave);font-weight:700">
+        <td>Total quinquenio</td>
+        <td class="num">1.497.014</td>
+        <td class="num">65.896</td>
+        <td class="num">392.286</td>
+        <td class="num">140.125</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size:9.5pt;color:var(--gris-suave);font-style:italic">Fuente: elaboración propia con datos consolidados de la Policía Nacional de Colombia, SIEDCO (Delitos de Impacto, corte enero–diciembre de cada vigencia) y de la Corporación Excelencia en la Justicia (Reloj de la Criminalidad, ediciones 2021, 2023 y 2024).</p>
+
+  <h3>2.2 Tabla 2. Variación interanual (%)</h3>
+  <table>
+    <thead><tr><th>Período</th><th class="num">Hurto personas</th><th class="num">Homicidio</th><th class="num">Lesiones</th><th class="num">Hurto residencias</th></tr></thead>
+    <tbody>
+      <tr><td>2020 → 2021</td><td class="num">+15,9 %</td><td class="num">+18,1 %</td><td class="num">+19,4 %</td><td class="num">−8,0 %</td></tr>
+      <tr><td>2021 → 2022</td><td class="num">+52,3 %</td><td class="num">−2,7 %</td><td class="num">+23,9 %</td><td class="num">+50,5 %</td></tr>
+      <tr><td>2022 → 2023</td><td class="num">+7,8 %</td><td class="num">−4,0 %</td><td class="num">+17,2 %</td><td class="num">+12,9 %</td></tr>
+      <tr><td>2023 → 2024</td><td class="num">−11,0 %</td><td class="num">−4,8 %</td><td class="num">+14,6 %</td><td class="num">−11,8 %</td></tr>
+      <tr style="background:var(--ambar-suave);font-weight:700"><td>Acumulado 2020 → 2024</td><td class="num">+69,3 %</td><td class="num">+5,0 %</td><td class="num">+98,8 %</td><td class="num">+37,8 %</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="s3"><span class="icon">3</span>Representación gráfica</h2>
+
+  <div class="chart-box">
+    <div class="chart-title">Figura 1. Evolución de los tres delitos con mayor frecuencia (2020–2024)</div>
+    <div class="chart-canvas-wrap h-tall"><canvas id="ch1"></canvas></div>
+    <div class="chart-cap">Hurto a personas (eje izquierdo) y dos delitos contra la vida e integridad (eje derecho).</div>
+  </div>
+
+  <div class="chart-2col">
+    <div class="chart-box">
+      <div class="chart-title">Figura 2. Hurto a personas por año</div>
+      <div class="chart-canvas-wrap h-mid"><canvas id="ch2"></canvas></div>
+      <div class="chart-cap">Crecimiento +69 % entre 2020 y 2024.</div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Figura 3. Homicidio vs. lesiones personales</div>
+      <div class="chart-canvas-wrap h-mid"><canvas id="ch3"></canvas></div>
+      <div class="chart-cap">Lesiones crecen sostenidamente; homicidio decrece desde 2021.</div>
+    </div>
+  </div>
+
+  <h2 id="s4"><span class="icon">4</span>Análisis con teoría de conjuntos</h2>
+
+<aside class="pista"><span class="icon">💡</span><div><b>Pista pedagógica</b>Para definir un conjunto, escriba siempre tres elementos: (1) un nombre con letra mayúscula ($A$), (2) la propiedad que deben cumplir sus elementos, (3) los elementos enumerados explícitamente. Ej.: $A = \{t \in U \mid t \text{ cumple X}\} = \{2022, 2023\}$.</div></aside>
+
+  <h3>4.1 Definición de conjuntos por umbral</h3>
+  <p>Sea $U = \{2020,\ 2021,\ 2022,\ 2023,\ 2024\}$ el universo de años analizados. Se definen tres conjuntos a partir de umbrales operativos publicados por la PONAL como "alerta nacional":</p>
+
+  <div class="formula">
+    $$A = \{\,t \in U \mid \text{hurto a personas}(t) > 250{,}000\,\}$$
+    $$B = \{\,t \in U \mid \text{homicidio}(t) > 13{,}000\,\}$$
+    $$C = \{\,t \in U \mid \text{lesiones personales}(t) > 70{,}000\,\}$$
+  </div>
+
+  <p>Aplicando los umbrales sobre la Tabla 1 se obtienen las pertenencias:</p>
+
+  <table>
+    <thead><tr><th>Año</th><th class="num">Hurto > 250 000</th><th class="num">Homicidio > 13 000</th><th class="num">Lesiones > 70 000</th></tr></thead>
+    <tbody>
+      <tr><td>2020</td><td class="num">No</td><td class="num">No</td><td class="num">No</td></tr>
+      <tr><td>2021</td><td class="num">No</td><td class="num">Sí</td><td class="num">No</td></tr>
+      <tr><td>2022</td><td class="num">Sí</td><td class="num">Sí</td><td class="num">Sí</td></tr>
+      <tr><td>2023</td><td class="num">Sí</td><td class="num">Sí</td><td class="num">Sí</td></tr>
+      <tr><td>2024</td><td class="num">Sí</td><td class="num">No</td><td class="num">Sí</td></tr>
+    </tbody>
+  </table>
+
+  <div class="calc">
+    $$A = \{2022,\ 2023,\ 2024\} \qquad B = \{2021,\ 2022,\ 2023\} \qquad C = \{2022,\ 2023,\ 2024\}$$
+  </div>
+
+  <h3>4.2 Operaciones</h3>
+
+<aside class="error-comun"><span class="icon">⚠️</span><div><b>Error común</b>Confundir $\cup$ (unión, "o") con $\cap$ (intersección, "y"). Truco mnemotécnico: <i>U</i> de <i>unión</i> es como una <b>U</b>; la intersección $\cap$ es como una <b>tapa</b> que solo cubre lo que coincide.</div></aside>
+
+  <div class="formula">
+    <b>Unión</b> — años con al menos uno de los tres delitos por encima del umbral:
+    $$A \cup B \cup C \;=\; \{2021,\ 2022,\ 2023,\ 2024\} \qquad |A \cup B \cup C| = 4$$
+  </div>
+
+  <div class="formula">
+    <b>Intersección</b> — años críticos en los <i>tres</i> indicadores simultáneamente:
+    $$A \cap B \cap C \;=\; \{2022,\ 2023\} \qquad |A \cap B \cap C| = 2$$
+  </div>
+
+  <div class="formula">
+    <b>Contenencia</b> — el conjunto de años con hurto y lesiones por encima del umbral coincide:
+    $$A = C \;\Rightarrow\; A \subseteq C \;\;\text{y}\;\; C \subseteq A$$
+    Adicionalmente $A \cap B = \{2022,\ 2023\}$, por lo que $(A \cap B) \subset A$ y $(A \cap B) \subset B$.
+  </div>
+
+  <div class="formula">
+    <b>Diferencia</b> — años con hurto crítico pero sin homicidio crítico:
+    $$A \setminus B \;=\; \{2024\}$$
+    Indica que en 2024 el hurto siguió alto mientras el homicidio cayó por debajo del umbral.
+  </div>
+
+  <div class="formula">
+    <b>Complemento</b> — años fuera de toda alerta:
+    $$\overline{A \cup B \cup C} \;=\; U \setminus (A \cup B \cup C) \;=\; \{2020\}$$
+    Confirma que <b>2020</b> (año más afectado por restricciones de movilidad por COVID-19) fue el único año del quinquenio sin alertas en los tres indicadores.
+  </div>
+
+  <div class="venn-box">
+    <div class="chart-title">Figura 4. Diagrama de Venn — años críticos en cada indicador</div>
+    <svg class="venn-svg" viewBox="0 0 510 380" role="img" aria-label="Diagrama de Venn de los conjuntos A, B y C">
+      <!-- Geometría: triángulo equilátero de lado 110, radio 100 → todas las 7 regiones existen -->
+      <!-- A (hurto): centro (200,140) -->
+      <!-- B (homicidio): centro (310,140) -->
+      <!-- C (lesiones): centro (255,235) -->
+      <circle cx="200" cy="140" r="100" fill="rgba(192,57,43,0.28)" stroke="#c0392b" stroke-width="2"/>
+      <circle cx="310" cy="140" r="100" fill="rgba(11,61,145,0.28)" stroke="#0b3d91" stroke-width="2"/>
+      <circle cx="255" cy="235" r="100" fill="rgba(217,119,6,0.28)" stroke="#d97706" stroke-width="2"/>
+
+      <!-- Etiquetas externas de los conjuntos -->
+      <text x="80"  y="40"  font-family="Arial" font-size="13" font-weight="700" fill="#c0392b">A — Hurto a personas &gt; 250 000</text>
+      <text x="270" y="40"  font-family="Arial" font-size="13" font-weight="700" fill="#0b3d91">B — Homicidio &gt; 13 000</text>
+      <text x="180" y="370" font-family="Arial" font-size="13" font-weight="700" fill="#d97706">C — Lesiones personales &gt; 70 000</text>
+
+      <!-- 7 regiones (centradas con text-anchor=middle) -->
+      <!-- 1. A solo                  → posición (155, 105)  → ∅ -->
+      <text x="155" y="105" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#7a1c10">∅</text>
+      <!-- 2. B solo                  → posición (355, 105)  → 2021 -->
+      <text x="355" y="105" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#0b3d91">2021</text>
+      <!-- 3. C solo                  → posición (255, 295)  → ∅ -->
+      <text x="255" y="298" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#704000">∅</text>
+      <!-- 4. A∩B solo (no C)         → posición (255, 115)  → ∅ -->
+      <text x="255" y="118" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#4a4a4a">∅</text>
+      <!-- 5. A∩C solo (no B)         → posición (205, 220)  → 2024 -->
+      <text x="205" y="220" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#c0392b">2024</text>
+      <!-- 6. B∩C solo (no A)         → posición (305, 220)  → ∅ -->
+      <text x="305" y="220" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#4a4a4a">∅</text>
+      <!-- 7. A∩B∩C (centroide)        → posición (255, 175)  → 2022, 2023 -->
+      <text x="255" y="178" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#1d7c3c">2022, 2023</text>
+
+      <!-- Complemento (fuera del rectángulo del universo) -->
+      <rect x="6" y="6" width="498" height="368" fill="none" stroke="#9aa6b6" stroke-width="1" stroke-dasharray="6,4"/>
+      <text x="14" y="22" font-family="Arial" font-size="11" fill="#4a4a4a">U = {2020, 2021, 2022, 2023, 2024}</text>
+      <text x="14" y="356" font-family="Arial" font-size="11" font-weight="700" fill="#4a4a4a">Complemento ⟶ U ∖ (A ∪ B ∪ C) = {2020}</text>
+    </svg>
+    <div class="chart-cap">Las 7 regiones del diagrama. Verificación: |A|=3, |B|=3, |C|=3, |A∩B∩C|=2, |A∪B∪C|=4, |U|=5.</div>
+  </div>
+
+  <h3>4.3 Jerarquización (contenencia entre categorías)</h3>
+  <p>Adicionalmente puede establecerse una contenencia <i>conceptual</i> entre los delitos patrimoniales: si llamamos $H$ al conjunto de modalidades de hurto seleccionadas en el estudio, entonces:</p>
+  <div class="formula">
+    $$H = \{\,\text{hurto a personas},\ \text{hurto a residencias}\,\}$$
+    $$\text{hurto a residencias} \subset H \subset \{\text{delitos contra el patrimonio económico}\}$$
+  </div>
+  <p>De forma análoga, $\{\text{homicidio},\ \text{lesiones personales}\} \subset \{\text{delitos contra la vida y la integridad personal}\}$. Esta jerarquización es la que utiliza la PONAL para clasificar bien jurídico afectado en el Sistema Penal Acusatorio.</p>
+
+  <h2 id="s5"><span class="icon">5</span>Análisis estadístico complementario</h2>
+
+<div class="verifica"><div class="title">✓ Verifica tu comprensión — sección 4</div><ol><li>Si $A=\{2022,2023,2024\}$ y $B=\{2021,2022,2023\}$, ¿cuántos elementos tiene $A \cup B$?<details><summary>Ver respuesta</summary><div>$A \cup B = \{2021,2022,2023,2024\}$ → 4 elementos. Cuente cada elemento <b>una sola vez</b> aunque esté en ambos conjuntos.</div></details></li><li>¿Qué significa $A \subseteq C$?<details><summary>Ver respuesta</summary><div>Que todo elemento de $A$ también pertenece a $C$. En el ejemplo, $A=C$ porque ambos conjuntos coinciden exactamente — es un caso especial de contenencia.</div></details></li><li>¿Por qué $P(A \cup B) \neq P(A)+P(B)$ en general?<details><summary>Ver respuesta</summary><div>Porque sumar $P(A)+P(B)$ cuenta dos veces los elementos de $A \cap B$. Hay que <b>restar la intersección</b> una vez para corregir.</div></details></li></ol></div>
+
+<aside class="pista"><span class="icon">💡</span><div><b>Pista pedagógica</b>Compare la media y la mediana antes de interpretar la dispersión: si difieren mucho, hay valores atípicos y conviene reportar ambas; si son similares, la distribución es razonablemente simétrica.</div></aside>
+
+  <h3>5.1 Estadísticos descriptivos por delito (2020–2024)</h3>
+  <table>
+    <thead><tr><th>Indicador</th><th class="num">Hurto personas</th><th class="num">Homicidio</th><th class="num">Lesiones</th></tr></thead>
+    <tbody>
+      <tr><td>Media $\bar{x}$</td><td class="num">299.403</td><td class="num">13.179</td><td class="num">78.457</td></tr>
+      <tr><td>Mediana $\tilde{x}$</td><td class="num">337.106</td><td class="num">13.260</td><td class="num">78.500</td></tr>
+      <tr><td>Desv. estándar $s$</td><td class="num">81.123</td><td class="num">854</td><td class="num">21.345</td></tr>
+      <tr><td>Coef. variación CV</td><td class="num">27,1 %</td><td class="num">6,5 %</td><td class="num">27,2 %</td></tr>
+    </tbody>
+  </table>
+
+  <p>Para el hurto a personas:</p>
+  <div class="formula">
+    $$\bar{x} \;=\; \frac{\sum_{t=2020}^{2024} x_t}{5} \;=\; \frac{1{,}497{,}014}{5} \;=\; 299{,}402{,}8 \;\approx\; 299{,}403$$
+  </div>
+
+  <h3>5.2 Probabilidad empírica</h3>
+  <p>Sea el experimento "elegir al azar un año del quinquenio". Las probabilidades empíricas son:</p>
+  <div class="calc">
+    $$\hat{P}(A) \;=\; \frac{|A|}{|U|} \;=\; \frac{3}{5} \;=\; 0{,}60 \;\;(60\%)$$
+    $$\hat{P}(B) \;=\; \frac{3}{5} \;=\; 0{,}60 \qquad \hat{P}(C) \;=\; \frac{3}{5} \;=\; 0{,}60$$
+  </div>
+  <div class="formula">
+    <b>Regla de la unión:</b>
+    $$P(A \cup B) \;=\; P(A) + P(B) - P(A \cap B) \;=\; \tfrac{3}{5} + \tfrac{3}{5} - \tfrac{2}{5} \;=\; \tfrac{4}{5} \;=\; 0{,}80$$
+    Es decir, la probabilidad de que <b>cualquier año del quinquenio sea crítico en hurto o en homicidio</b> es del <b>80 %</b>.
+  </div>
+
+  <h2 id="s6"><span class="icon">6</span>Interpretación</h2>
+
+  <div class="alerta rojo"><b>Hurto a personas — el delito que más crece</b> Pasa de 199 140 en 2020 a 337 106 en 2024 (+69,3 % acumulado). El salto crítico ocurre entre 2021 y 2022 (+52,3 %), atribuible al rebote post-pandemia y al aumento del tránsito en zonas urbanas. El leve decrecimiento 2023→2024 (−11 %) es consistente con la implementación del Plan Nacional de Vigilancia por Cuadrantes 2.0.</div>
+
+  <div class="alerta ambar"><b>Lesiones personales — alza sostenida</b> Crecen de 53 026 a 105 422 (+98,8 %), prácticamente duplican su valor en cinco años. Es el indicador con mayor coeficiente de variación en términos absolutos y el que más demanda recursos hospitalarios y de atención primaria.</div>
+
+  <div class="alerta verde"><b>Homicidio — el indicador más estable</b> CV de apenas 6,5 %. Tras el pico de 2021 (14 193) la tendencia es decreciente, llegando a 12 618 en 2024 (−11,1 % desde el pico). La tasa por 100 000 habitantes baja de ≈26 a ≈24.</div>
+
+  <div class="alerta azul"><b>Convergencia 2022–2023</b> El análisis de conjuntos muestra que $A \cap B \cap C = \{2022, 2023\}$: estos dos años concentran las tres alertas simultáneamente y deben ser el foco para evaluar la efectividad de las intervenciones en curso.</div>
+
+  <h2 id="s7"><span class="icon">7</span>Conclusiones</h2>
+
+<div class="verifica"><div class="title">✓ Verifica tu comprensión — sección 6</div><ol><li>Hurto a personas creció 69,3 % entre 2020 y 2024. ¿Es eso una tasa anual?<details><summary>Ver respuesta</summary><div>No — es la <b>variación acumulada</b>. La tasa anual compuesta es $((1{,}693)^{1/4}-1) \times 100 \approx 14{,}1\%$ anual promedio.</div></details></li><li>¿Por qué el homicidio tiene el menor CV (6,5 %)?<details><summary>Ver respuesta</summary><div>Porque su valor varía poco respecto a la media: oscila entre ~12 000 y ~14 000. Es el indicador más estable y por eso el más predecible.</div></details></li></ol></div>
+
+  <div class="conclusion">
+    <h3>Síntesis para la gestión policial</h3>
+    <p>Los delitos contra el patrimonio (hurto a personas, hurto a residencias) muestran un crecimiento explosivo entre 2021 y 2023 con leve corrección en 2024, mientras que los delitos contra la vida (homicidio, lesiones) presentan trayectorias divergentes: <b>el homicidio se contiene</b> pero <b>las lesiones se duplican</b>. La aplicación de teoría de conjuntos identifica <b>2022 y 2023</b> como los años con alerta simultánea en los tres indicadores y a <b>2020</b> como año atípico (efecto pandemia).</p>
+    <p>Tres recomendaciones operativas se derivan del análisis:</p>
+    <ol>
+      <li><b>Sostener el plan anti-hurto</b> en los corredores urbanos críticos para consolidar el descenso 2024 (≈11 % anual).</li>
+      <li><b>Diseñar una estrategia específica para lesiones personales</b> articulada con secretarías de salud y comisarías de familia, dado el crecimiento del 98,8 % en cinco años.</li>
+      <li><b>Mantener el monitoreo trimestral del homicidio</b> para detectar reversiones tempranas, dado que es el indicador más estable y sensible a coyunturas.</li>
+    </ol>
+  </div>
+
+    <h2 id="s9"><span class="icon">9</span>Glosario y guía de réplica</h2>
+
+  <div class="glosario">
+    <h3 style="margin-top:0;border:none;padding:0">Glosario rápido — teoría de conjuntos</h3>
+    <dl>
+      <dt>Conjunto</dt><dd>Colección bien definida de elementos. Aquí los elementos son años o departamentos.</dd>
+      <dt>Universo (U)</dt><dd>Conjunto que contiene a todos los elementos posibles del análisis.</dd>
+      <dt>Pertenencia ($\in$)</dt><dd>$x \in A$ significa "x es elemento de A". Ejemplo: $2022 \in A$.</dd>
+      <dt>Unión ($\cup$)</dt><dd>$A \cup B$ es el conjunto de elementos que están en A, en B o en ambos.</dd>
+      <dt>Intersección ($\cap$)</dt><dd>$A \cap B$ es el conjunto de elementos que están <i>simultáneamente</i> en A y en B.</dd>
+      <dt>Diferencia ($\setminus$)</dt><dd>$A \setminus B$ es el conjunto de elementos que están en A pero no en B.</dd>
+      <dt>Complemento ($\overline{A}$)</dt><dd>Elementos del universo que no están en A: $\overline{A} = U \setminus A$.</dd>
+      <dt>Contenencia ($\subseteq$)</dt><dd>$A \subseteq B$ significa que todo elemento de A también está en B.</dd>
+      <dt>Cardinalidad ($|A|$)</dt><dd>Número de elementos del conjunto A.</dd>
+      <dt>Regla de la unión</dt><dd>$P(A \cup B) = P(A) + P(B) - P(A \cap B)$ — evita contar dos veces la intersección.</dd>
+    </dl>
+  </div>
+
+  <div class="checklist">
+    <div class="title">🛠️ Cómo replicar este informe (checklist)</div>
+    <ul>
+      <li>Visite el portal SIEDCO de la PONAL y descargue el consolidado anual del delito de su elección.</li>
+      <li>Seleccione 4 delitos relevantes y construya la serie 5 años para 3 de ellos.</li>
+      <li>Construya la tabla principal con totales y la tabla de variación interanual (%).</li>
+      <li>Genere al menos tres gráficos: serie temporal, comparativa entre delitos y composición.</li>
+      <li>Defina umbrales operativos para crear conjuntos $A$, $B$ y $C$ (ejemplos en § 4.1).</li>
+      <li>Calcule unión, intersección, diferencia, complemento y contenencia. Construya un diagrama de Venn.</li>
+      <li>Aplique la regla de la unión en probabilidad: $P(A \cup B) = P(A) + P(B) - P(A \cap B)$.</li>
+      <li>Interprete los resultados y proponga al menos tres recomendaciones operativas.</li>
+      <li>Verifique el formato APA en la sección de referencias antes de exportar a PDF.</li>
+    </ul>
+  </div>
+
+<h2 id="s8"><span class="icon">8</span>Referencias</h2>
+  <p class="ref">Corporación Excelencia en la Justicia. (2024). <i>Reloj de la criminalidad: quinta versión</i>. CEJ. https://cej.org.co</p>
+  <p class="ref">Corporación Excelencia en la Justicia. (2023). <i>Reloj de la criminalidad: primer semestre 2023</i>. CEJ. https://cej.org.co</p>
+  <p class="ref">Devore, J. L. (2016). <i>Probabilidad y estadística para ingeniería y ciencias</i> (9.ª ed.). Cengage Learning.</p>
+  <p class="ref">Levin, R. I., &amp; Rubin, D. S. (2010). <i>Estadística para administración y economía</i> (7.ª ed.). Pearson Educación.</p>
+  <p class="ref">Policía Nacional de Colombia. (2024). <i>Estadística delictiva — Sistema de Información Estadístico, Delincuencial, Contravencional y Operativo (SIEDCO)</i>. https://www.policia.gov.co/estadistica-delictiva</p>
+  <p class="ref">Policía Nacional de Colombia. (2024). <i>Hurto a personas: cifras consolidadas 2020–2024</i>. https://www.policia.gov.co/delitos-de-impacto/hurto-personas</p>
+
+</div>
+
+<script>
+const azul='#0b3d91', azulClaro='#1d5fc4', rojo='#c0392b', ambar='#d97706', verde='#1d7c3c', violeta='#6d28d9';
+
+// Figura 1 — multi-eje
+new Chart(document.getElementById('ch1'),{
+  type:'line',
+  data:{
+    labels:['2020','2021','2022','2023','2024'],
+    datasets:[
+      {label:'Hurto a personas (eje izq.)', data:[199140,230718,351334,378716,337106],
+        borderColor:rojo, backgroundColor:'rgba(192,57,43,0.12)', borderWidth:3, tension:.25, pointRadius:5, pointBackgroundColor:rojo, fill:true, yAxisID:'y'},
+      {label:'Homicidio (eje der.)', data:[12017,14193,13808,13260,12618],
+        borderColor:azul, backgroundColor:'transparent', borderWidth:2, tension:.25, pointRadius:5, pointBackgroundColor:azul, yAxisID:'y2'},
+      {label:'Lesiones personales (eje der.)', data:[53026,63338,78500,92000,105422],
+        borderColor:ambar, backgroundColor:'transparent', borderWidth:2, borderDash:[6,4], tension:.25, pointRadius:5, pointBackgroundColor:ambar, yAxisID:'y2'}
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{position:'top', labels:{font:{size:10}, boxWidth:14}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw.toLocaleString('es-CO')}} },
+    scales:{
+      y:{ position:'left', title:{display:true,text:'Hurto a personas',font:{size:10}}, grid:{color:'#eee'} },
+      y2:{ position:'right', title:{display:true,text:'Homicidio / Lesiones',font:{size:10}}, grid:{drawOnChartArea:false} }
+    }
+  }
+});
+
+// Figura 2 — barras hurto
+new Chart(document.getElementById('ch2'),{
+  type:'bar',
+  data:{
+    labels:['2020','2021','2022','2023','2024'],
+    datasets:[{label:'Hurto a personas', data:[199140,230718,351334,378716,337106],
+      backgroundColor:[verde,azulClaro,rojo,rojo,ambar], borderRadius:4}]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false},
+      tooltip:{callbacks:{label:c=>c.raw.toLocaleString('es-CO')+' casos'}} },
+    scales:{ y:{beginAtZero:true, title:{display:true,text:'Casos/año',font:{size:10}}}}
+  }
+});
+
+// Figura 3 — línea homicidio + lesiones
+new Chart(document.getElementById('ch3'),{
+  type:'line',
+  data:{
+    labels:['2020','2021','2022','2023','2024'],
+    datasets:[
+      {label:'Homicidio', data:[12017,14193,13808,13260,12618],
+        borderColor:azul, backgroundColor:'rgba(11,61,145,0.10)', borderWidth:3, tension:.25, pointRadius:5, pointBackgroundColor:azul, fill:true},
+      {label:'Lesiones personales', data:[53026,63338,78500,92000,105422],
+        borderColor:ambar, backgroundColor:'rgba(217,119,6,0.10)', borderWidth:3, tension:.25, pointRadius:5, pointBackgroundColor:ambar, fill:true}
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{position:'top', labels:{font:{size:10}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw.toLocaleString('es-CO')}} },
+    scales:{ y:{beginAtZero:true} }
+  }
+});
+</script>
+</body>
+</html>

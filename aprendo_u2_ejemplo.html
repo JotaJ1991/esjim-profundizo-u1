@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>U2 | Aprendo haciendo — Análisis de robos en barrio histórico (Ejemplo resuelto)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\\\[',right:'\\\\]',display:true},{left:'$',right:'$',display:false},{left:'\\\\(',right:'\\\\)',display:false}],throwOnError:false})"></script>
+<style>
+  :root{
+    --azul:#0b3d91;--azul-claro:#1d5fc4;--azul-suave:#e8eef9;
+    --gris:#4a4a4a;--gris-suave:#6c7a8a;--gris-bg:#f4f6fb;--borde:#d7dde8;
+    --verde:#1d7c3c;--verde-suave:#e6f4ea;
+    --rojo:#c0392b;--rojo-suave:#fbeae7;
+    --ambar:#d97706;--ambar-suave:#fef3c7;
+    --violeta:#6d28d9;--violeta-suave:#ede9fe;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:linear-gradient(180deg,#e9eef7 0%,#dde5f2 100%);font-family:"Times New Roman",Times,serif;color:#1a1a1a;min-height:100vh}
+  .hoja{max-width:960px;margin:24px auto;background:#fff;padding:60px 72px;border-radius:8px;box-shadow:0 8px 30px rgba(11,61,145,.12);line-height:1.55;font-size:12pt}
+  h1,h2,h3,h4{font-family:"Arial","Helvetica",sans-serif;color:var(--azul);line-height:1.25;letter-spacing:-.01em}
+  h1{font-size:22pt;text-align:center;margin:0 0 6px;font-weight:700}
+  h2{font-size:15pt;padding:10px 0 6px;margin-top:36px;border-bottom:3px solid var(--azul);display:flex;align-items:center;gap:12px}
+  h2 .icon{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--azul);color:#fff;border-radius:8px;font-size:18px;flex-shrink:0}
+  h3{font-size:13pt;margin-top:24px;color:var(--azul-claro);padding-left:10px;border-left:4px solid var(--azul-claro)}
+  h4{font-size:10.5pt;margin:14px 0 6px;color:var(--gris-suave);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+  p{text-align:justify;margin:10px 0}
+
+  .portada{text-align:center;margin-bottom:24px;padding:24px;background:linear-gradient(135deg,var(--azul) 0%,var(--azul-claro) 100%);color:#fff;border-radius:10px}
+  .portada h1{color:#fff;border:none;font-family:Arial,sans-serif;font-size:18pt}
+  .portada .sub{font-family:Arial,sans-serif;font-size:11pt;color:rgba(255,255,255,.92);margin:6px 0}
+  .portada .docente{display:inline-block;margin-top:10px;padding:6px 14px;background:rgba(255,255,255,.18);border-radius:18px;font-family:Arial,sans-serif;font-size:10pt}
+
+  .meta{background:var(--gris-bg);border-left:5px solid var(--azul);padding:14px 18px;margin:24px 0;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.5;border-radius:4px}
+  .meta b{color:var(--azul)}
+
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}
+  .kpi{background:linear-gradient(135deg,#fff 0%,var(--azul-suave) 100%);border:1px solid var(--borde);border-radius:10px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(11,61,145,.06)}
+  .kpi .num{font-family:Arial,sans-serif;font-size:22pt;font-weight:700;color:var(--azul);line-height:1}
+  .kpi .lbl{font-family:Arial,sans-serif;font-size:9pt;color:var(--gris-suave);text-transform:uppercase;letter-spacing:.5px;margin-top:6px}
+  .kpi.rojo .num{color:var(--rojo)}
+  .kpi.ambar .num{color:var(--ambar)}
+  .kpi.verde .num{color:var(--verde)}
+
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-family:Arial,sans-serif;font-size:10.5pt}
+  th{background:var(--azul);color:#fff;padding:9px 12px;text-align:left;font-weight:700}
+  td{padding:8px 12px;border-bottom:1px solid var(--borde)}
+  tr:nth-child(even) td{background:var(--gris-bg)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+
+  .formula{background:#fff8e1;border:1px solid #f5e2a3;border-left:5px solid var(--ambar);padding:14px 18px;margin:14px 0;border-radius:4px;overflow-x:auto;font-size:11pt;line-height:1.7}
+  .formula b{color:#7a4a00;font-family:Arial,sans-serif}
+  .formula .katex{font-size:1.05em}
+  .formula .katex-display{margin:.5em 0}
+  .calc{background:var(--azul-suave);border-radius:6px;padding:12px 16px;margin:8px 0;font-size:11pt;line-height:1.7}
+  .calc b{color:var(--azul);font-family:Arial,sans-serif}
+  .calc .katex{font-size:1.02em}
+
+  .chart-box{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:18px;margin:18px 0;box-shadow:0 2px 8px rgba(11,61,145,.05)}
+  .chart-title{font-family:Arial,sans-serif;font-size:11pt;color:var(--azul);font-weight:700;text-align:center;margin-bottom:8px}
+  .chart-cap{font-family:Arial,sans-serif;font-size:9pt;color:var(--gris-suave);text-align:center;font-style:italic;margin-top:6px}
+  .chart-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .chart-canvas-wrap{position:relative;width:100%}
+  .chart-canvas-wrap.h-tall{height:280px}
+  .chart-canvas-wrap.h-mid{height:240px}
+
+  .alerta{padding:14px 18px;border-radius:8px;margin:14px 0;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.5}
+  .alerta.rojo{background:var(--rojo-suave);border-left:5px solid var(--rojo);color:#7a1c10}
+  .alerta.ambar{background:var(--ambar-suave);border-left:5px solid var(--ambar);color:#704000}
+  .alerta.verde{background:var(--verde-suave);border-left:5px solid var(--verde);color:#0e4d24}
+  .alerta.azul{background:var(--azul-suave);border-left:5px solid var(--azul);color:#0b2c5e}
+  .alerta b{display:block;margin-bottom:4px;font-size:11pt;text-transform:uppercase;letter-spacing:.4px}
+
+  .estrategia{background:#fff;border:1px solid var(--borde);border-left:5px solid var(--verde);border-radius:8px;padding:14px 18px;margin:14px 0;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+  .estrategia h4{color:var(--verde);margin:0 0 6px;font-size:12pt;text-transform:none;letter-spacing:0}
+  .estrategia .meta-est{font-family:Arial,sans-serif;font-size:9.5pt;color:var(--gris-suave);margin-top:10px;padding-top:8px;border-top:1px dashed var(--borde)}
+  .badge{display:inline-block;padding:3px 9px;border-radius:14px;font-family:Arial,sans-serif;font-size:9pt;font-weight:700;margin-right:4px}
+  .badge.alto{background:var(--rojo);color:#fff}
+  .badge.medio{background:var(--ambar);color:#fff}
+  .badge.bajo{background:var(--verde);color:#fff}
+
+  .conclusion{background:linear-gradient(135deg,var(--azul-suave) 0%,#fff 100%);border:2px solid var(--azul);border-radius:10px;padding:20px 24px;margin:24px 0}
+  .conclusion h3{margin-top:0;border:none;padding:0;color:var(--azul);font-size:14pt}
+
+  .ref{font-family:Arial,sans-serif;font-size:9.5pt;color:var(--gris);padding-left:30px;text-indent:-30px;margin:8px 0}
+
+  
+  /* === Componentes pedagógicos === */
+  .toc{background:linear-gradient(135deg,#fff 0%,var(--azul-suave) 100%);border:1px solid var(--borde);border-radius:10px;padding:18px 22px;margin:18px 0}
+  .toc-title{font-family:Arial,sans-serif;color:var(--azul);font-weight:700;font-size:11pt;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .toc ol{margin:6px 0 0;padding-left:24px;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.8;columns:2;column-gap:30px}
+  .toc a{color:var(--azul);text-decoration:none;border-bottom:1px dashed transparent;transition:border-color .2s}
+  .toc a:hover{border-color:var(--azul-claro)}
+
+  .rubric-map{background:linear-gradient(135deg,#fff 0%,var(--violeta-suave) 100%);border:1px solid #c4b5fd;border-radius:10px;padding:14px 18px;margin:14px 0;font-family:Arial,sans-serif;font-size:10pt}
+  .rubric-map .title{color:var(--violeta);font-weight:700;font-size:10.5pt;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+  .rubric-map table{margin:6px 0 0;font-size:9.5pt}
+  .rubric-map th{background:var(--violeta);color:#fff;font-size:9.5pt;padding:6px 10px}
+  .rubric-map td{padding:6px 10px}
+
+  .pista,.error-comun{display:flex;gap:14px;background:#fff;border-radius:8px;padding:14px 18px;margin:14px 0;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.55;border:1px solid var(--borde)}
+  .pista{border-left:5px solid #f59e0b;border-color:#fcd34d}
+  .pista .icon{font-size:22px;flex-shrink:0}
+  .pista b{color:#92400e;display:block;margin-bottom:4px}
+  .error-comun{border-left:5px solid #dc2626;border-color:#fca5a5}
+  .error-comun .icon{font-size:22px;flex-shrink:0}
+  .error-comun b{color:#991b1b;display:block;margin-bottom:4px}
+
+  .verifica{background:linear-gradient(135deg,#fff 0%,var(--verde-suave) 100%);border:1px solid #86efac;border-radius:10px;padding:16px 20px;margin:18px 0;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.6}
+  .verifica .title{color:var(--verde);font-weight:700;font-size:11pt;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .verifica ol{margin:6px 0 0;padding-left:22px}
+  .verifica li{margin:8px 0}
+  .verifica details{margin-top:6px;padding:8px 10px;background:rgba(255,255,255,.7);border-radius:6px}
+  .verifica details summary{cursor:pointer;color:var(--verde);font-weight:700;font-size:10pt;list-style:none}
+  .verifica details summary::before{content:'▸';display:inline-block;margin-right:6px;transition:transform .2s}
+  .verifica details[open] summary::before{transform:rotate(90deg)}
+  .verifica details > div{margin-top:6px;font-size:10pt;color:#0e4d24}
+
+  .glosario{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:18px 22px;margin:18px 0}
+  .glosario dl{font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.6;margin:0}
+  .glosario dt{color:var(--azul);font-weight:700;margin-top:10px}
+  .glosario dd{margin:2px 0 0 18px;color:#333}
+
+  .checklist{background:linear-gradient(135deg,#fff 0%,var(--azul-suave) 100%);border:1px solid var(--borde);border-radius:10px;padding:18px 22px;margin:18px 0;font-family:Arial,sans-serif;font-size:10.5pt}
+  .checklist .title{color:var(--azul);font-weight:700;font-size:11pt;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .checklist ul{list-style:none;padding:0;margin:0}
+  .checklist li{padding:6px 0 6px 30px;position:relative;line-height:1.6}
+  .checklist li::before{content:'☐';position:absolute;left:0;color:var(--azul);font-size:14pt;font-weight:700;line-height:1}
+
+  @media print{ .verifica details{open:true} }
+
+  @media print{
+    body{background:#fff}
+    .hoja{box-shadow:none;margin:0;padding:30px 40px;max-width:100%}
+  }
+</style>
+</head>
+<body>
+<div class="hoja">
+
+  <div class="portada">
+    <h1>U2 — Aprendo haciendo</h1>
+    <div class="sub">Análisis de datos sobre el aumento de robos en el barrio histórico</div>
+    <div class="docente">Docente: Yenifer Fontalvo Marriaga · ESJIM</div>
+  </div>
+
+  <div class="meta">
+    <b>Tipo:</b> Individual · <b>Modalidad:</b> Sesión online con tutor · <b>Unidad:</b> Fundamentos de Estadística<br>
+    <b>Resultado de aprendizaje:</b> Interpretar datos estadísticos básicos utilizando análisis descriptivo, probabilidad y representaciones gráficas para tomar decisiones informadas en contextos policiales.<br>
+    <b>Estructura del informe:</b> Introducción → datos y exploración → análisis estadístico → probabilidades → interpretación → estrategias → conclusiones · 3-5 páginas · Arial 12 · interlineado 1,5 · APA.
+  </div>
+
+  <nav class="toc" aria-label="Tabla de contenidos">
+    <div class="toc-title">📋 Tabla de contenidos</div>
+    <ol>
+      <li><a href="#s1">Introducción</a></li>
+      <li><a href="#s2">Datos disponibles</a></li>
+      <li><a href="#s3">Selección de gráficas</a></li>
+      <li><a href="#s4">Análisis estadístico</a></li>
+      <li><a href="#s5">Probabilidades</a></li>
+      <li><a href="#s6">Interpretación</a></li>
+      <li><a href="#s7">Estrategias de prevención</a></li>
+      <li><a href="#s8">Conclusiones</a></li>
+    </ol>
+  </nav>
+
+  <div class="rubric-map">
+    <div class="title">🎯 Mapa de la rúbrica · cómo se evalúa este informe</div>
+    <table>
+      <thead><tr><th>Criterio</th><th>Cubierto en</th></tr></thead>
+      <tbody>
+        <tr><td><b>C1.</b> Variables estadísticas y representación gráfica</td><td>§ 2 + § 3 (Figs. 1–4)</td></tr>
+        <tr><td><b>C2.</b> Tendencia central y dispersión</td><td>§ 4.1 — § 4.3</td></tr>
+        <tr><td><b>C3.</b> Conceptos de probabilidad</td><td>§ 5</td></tr>
+        <tr><td><b>C4.</b> Conclusiones basadas en datos</td><td>§ 6 + § 8</td></tr>
+        <tr><td><b>C5.</b> Estrategias bien fundamentadas</td><td>§ 7 (3 propuestas)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+  <h2 id="s1"><span class="icon">1</span>Introducción</h2>
+  <p>El barrio histórico ha experimentado un aumento sostenido de robos durante los últimos seis meses (octubre 2025 – marzo 2026). Las autoridades locales registraron <b>247 incidentes</b> distribuidos en zonas, franjas horarias y bajo distintos factores de riesgo. Este informe organiza la información mediante estadística descriptiva y probabilidad, identifica los patrones espacio-temporales con mayor incidencia y propone tres estrategias de mitigación basadas en evidencia para apoyar la toma de decisiones operativas del comando de distrito.</p>
+
+  <div class="kpi-grid">
+    <div class="kpi"><div class="num">247</div><div class="lbl">Robos totales (6 meses)</div></div>
+    <div class="kpi rojo"><div class="num">+120%</div><div class="lbl">Crecimiento Oct → Mar</div></div>
+    <div class="kpi ambar"><div class="num">45,3%</div><div class="lbl">Robos en franja nocturna</div></div>
+    <div class="kpi verde"><div class="num">3</div><div class="lbl">Estrategias propuestas</div></div>
+  </div>
+
+  <h2 id="s2"><span class="icon">2</span>Datos disponibles</h2>
+
+<aside class="pista"><span class="icon">💡</span><div><b>Pista pedagógica</b>Antes de hacer cálculos, observe la estructura de cada tabla: ¿la variable es cuantitativa o cualitativa? ¿es ordinal o nominal? Esa decisión guía la elección del gráfico (líneas vs. barras vs. pastel).</div></aside>
+
+  <h3>2.1 Frecuencia mensual</h3>
+  <table>
+    <thead><tr><th>Mes</th><th class="num">Cantidad de robos</th><th class="num">Variación (%)</th></tr></thead>
+    <tbody>
+      <tr><td>Octubre</td><td class="num">25</td><td class="num">—</td></tr>
+      <tr><td>Noviembre</td><td class="num">32</td><td class="num">+28,0%</td></tr>
+      <tr><td>Diciembre</td><td class="num">40</td><td class="num">+25,0%</td></tr>
+      <tr><td>Enero</td><td class="num">45</td><td class="num">+12,5%</td></tr>
+      <tr><td>Febrero</td><td class="num">50</td><td class="num">+11,1%</td></tr>
+      <tr><td>Marzo</td><td class="num">55</td><td class="num">+10,0%</td></tr>
+      <tr style="background:var(--azul-suave);font-weight:700"><td>Total</td><td class="num">247</td><td class="num">+120% (vs Oct)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.2 Distribución por zona</h3>
+  <table>
+    <thead><tr><th>Zona</th><th class="num">Robos</th><th class="num">% del total</th></tr></thead>
+    <tbody>
+      <tr><td>Plaza central</td><td class="num">45</td><td class="num">29,4%</td></tr>
+      <tr><td>Calle comercial</td><td class="num">38</td><td class="num">24,8%</td></tr>
+      <tr><td>Parque urbano</td><td class="num">35</td><td class="num">22,9%</td></tr>
+      <tr><td>Estación de transporte</td><td class="num">22</td><td class="num">14,4%</td></tr>
+      <tr><td>Zona residencial</td><td class="num">12</td><td class="num">7,8%</td></tr>
+      <tr style="background:var(--azul-suave);font-weight:700"><td>Total</td><td class="num">152</td><td class="num">100%</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.3 Distribución por franja horaria</h3>
+  <table>
+    <thead><tr><th>Franja horaria</th><th class="num">Robos</th><th class="num">% del total</th></tr></thead>
+    <tbody>
+      <tr><td>06:00 – 12:00 (mañana)</td><td class="num">15</td><td class="num">9,8%</td></tr>
+      <tr><td>12:00 – 18:00 (tarde)</td><td class="num">25</td><td class="num">16,3%</td></tr>
+      <tr style="background:var(--rojo-suave);font-weight:700"><td>18:00 – 00:00 (noche)</td><td class="num">60</td><td class="num">39,2%</td></tr>
+      <tr style="background:var(--ambar-suave);font-weight:700"><td>00:00 – 06:00 (madrugada)</td><td class="num">52</td><td class="num">34,0%</td></tr>
+      <tr style="background:var(--azul-suave);font-weight:700"><td>Total</td><td class="num">152</td><td class="num">100%</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.4 Factores de riesgo</h3>
+  <table>
+    <thead><tr><th>Factor</th><th>Condición observada</th><th class="num">% asociado</th></tr></thead>
+    <tbody>
+      <tr><td>Iluminación</td><td>Robos en zonas con iluminación deficiente</td><td class="num">60%</td></tr>
+      <tr><td>Presencia policial</td><td>Robos en lugares con patrullaje frecuente</td><td class="num">25%</td></tr>
+      <tr><td>Tránsito peatonal</td><td>Robos en zonas con alta circulación</td><td class="num">70%</td></tr>
+    </tbody>
+  </table>
+
+  <p><b>Nota metodológica.</b> Las tres distribuciones (mes, zona, franja) provienen de registros distintos del consolidado de incidentes; los totales no coinciden porque la unidad de análisis es diferente (mes = fecha completa, zona = lugar geocodificado, franja = horario reportado).</p>
+
+  <h2 id="s3"><span class="icon">3</span>Selección de representaciones gráficas</h2>
+
+<div class="verifica" id="check-2"><div class="title">✓ Verifica tu comprensión — sección 2</div><ol><li>¿Cuál es la diferencia entre los totales por mes (247) y por zona/franja (152)?<details><summary>Ver respuesta</summary><div>247 cuenta todos los incidentes registrados con fecha; 152 son los que tienen además geocodificación o franja horaria reportada. La diferencia evidencia subregistro en variables específicas.</div></details></li><li>¿Por qué la zona "Plaza central" no es la zona con más probabilidad de robo en términos absolutos?<details><summary>Ver respuesta</summary><div>Es la zona con <b>mayor frecuencia</b> (45 casos = 29,4 %), pero no la de mayor probabilidad por habitante porque no se conoce la población expuesta de cada zona.</div></details></li></ol></div>
+  <p>Las variables analizadas son <b>cuantitativas discretas</b> (cantidad de robos) clasificadas por dimensiones <b>cualitativas</b> (mes, zona, franja). Por la naturaleza ordinal del tiempo se selecciona <b>línea</b> para la serie temporal; por las categorías nominales de zona y franja se selecciona <b>barras horizontales/verticales</b>. La estructura porcentual de los factores se representa con <b>pastel</b> para hacer visible la composición.</p>
+
+  <div class="chart-box">
+    <div class="chart-title">Figura 1. Evolución mensual de robos (octubre 2025 – marzo 2026)</div>
+    <div class="chart-canvas-wrap h-tall"><canvas id="ch1"></canvas></div>
+    <div class="chart-cap">Crecimiento sostenido de 25 → 55 robos/mes (incremento del 120%).</div>
+  </div>
+
+  <div class="chart-2col">
+    <div class="chart-box">
+      <div class="chart-title">Figura 2. Robos por zona</div>
+      <div class="chart-canvas-wrap h-mid"><canvas id="ch2"></canvas></div>
+      <div class="chart-cap">Plaza central concentra 29,4%.</div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Figura 3. Robos por franja horaria (orden cronológico)</div>
+      <div class="chart-canvas-wrap h-mid"><canvas id="ch3"></canvas></div>
+      <div class="chart-cap">Noche + madrugada concentran 73,7%.</div>
+    </div>
+  </div>
+
+  <div class="chart-box">
+    <div class="chart-title">Figura 4. Composición porcentual por franja horaria</div>
+    <div class="chart-canvas-wrap h-mid" style="max-width:420px;margin:0 auto"><canvas id="ch4"></canvas></div>
+    <div class="chart-cap">El bloque nocturno (18:00–06:00) acumula 73,7% de los incidentes.</div>
+  </div>
+
+  <h2 id="s4"><span class="icon">4</span>Análisis estadístico de los datos</h2>
+
+<aside class="pista"><span class="icon">💡</span><div><b>Pista pedagógica</b>Trabaje siempre la fórmula primero, luego sustituya con números, y al final entregue el resultado redondeado a 2 decimales. Esto permite al lector verificar cada paso.</div></aside>
+
+  <h3>4.1 Tendencia central — frecuencia mensual</h3>
+  <p>Datos ordenados: $25,\ 32,\ 40,\ 45,\ 50,\ 55$. Tamaño $n=6$.</p>
+
+  <div class="formula"><b>Media aritmética:</b>
+    $$\bar{x} \;=\; \frac{\sum_{i=1}^{n} x_i}{n} \;=\; \frac{25+32+40+45+50+55}{6} \;=\; \frac{247}{6} \;\approx\; 41{,}17 \ \text{robos/mes}$$
+  </div>
+
+  <div class="calc"><b>Mediana</b> (con $n$ par, promedio de los dos valores centrales):
+    $$\tilde{x} \;=\; \frac{x_{(3)}+x_{(4)}}{2} \;=\; \frac{40+45}{2} \;=\; 42{,}50$$
+  </div>
+
+  <div class="calc"><b>Moda:</b> ningún valor se repite $\Rightarrow$ distribución <b>amodal</b>.</div>
+
+  <h3>4.2 Dispersión — frecuencia mensual</h3>
+
+<aside class="error-comun"><span class="icon">⚠️</span><div><b>Error común</b>Confundir la varianza muestral $s^2$ (denominador $n-1$) con la varianza poblacional $\sigma^2$ (denominador $n$). Para muestras se usa $n-1$ — es la corrección de Bessel.</div></aside>
+  <div class="formula"><b>Rango:</b>
+    $$R \;=\; x_{\max} - x_{\min} \;=\; 55 - 25 \;=\; 30 \ \text{robos}$$
+  </div>
+
+  <p>Cálculo de la varianza muestral $s^2$ con desviaciones respecto a la media $\bar{x}\approx 41{,}17$:</p>
+  <table>
+    <thead><tr><th>Mes</th><th class="num">$x_i$</th><th class="num">$x_i - \bar{x}$</th><th class="num">$(x_i - \bar{x})^2$</th></tr></thead>
+    <tbody>
+      <tr><td>Octubre</td><td class="num">25</td><td class="num">−16,17</td><td class="num">261,47</td></tr>
+      <tr><td>Noviembre</td><td class="num">32</td><td class="num">−9,17</td><td class="num">84,07</td></tr>
+      <tr><td>Diciembre</td><td class="num">40</td><td class="num">−1,17</td><td class="num">1,37</td></tr>
+      <tr><td>Enero</td><td class="num">45</td><td class="num">3,83</td><td class="num">14,67</td></tr>
+      <tr><td>Febrero</td><td class="num">50</td><td class="num">8,83</td><td class="num">77,97</td></tr>
+      <tr><td>Marzo</td><td class="num">55</td><td class="num">13,83</td><td class="num">191,27</td></tr>
+      <tr style="background:var(--azul-suave);font-weight:700"><td colspan="3">$\sum (x_i - \bar{x})^2$</td><td class="num">630,82</td></tr>
+    </tbody>
+  </table>
+
+  <div class="formula">
+    <b>Varianza muestral:</b>
+    $$s^2 \;=\; \frac{\sum_{i=1}^{n}(x_i-\bar{x})^2}{n-1} \;=\; \frac{630{,}82}{5} \;=\; 126{,}16$$
+    <b>Desviación estándar:</b>
+    $$s \;=\; \sqrt{s^2} \;=\; \sqrt{126{,}16} \;\approx\; 11{,}23 \ \text{robos}$$
+    <b>Coeficiente de variación:</b>
+    $$CV \;=\; \frac{s}{\bar{x}}\times 100 \;=\; \frac{11{,}23}{41{,}17}\times 100 \;\approx\; 27{,}3\%$$
+  </div>
+
+  <div class="alerta azul"><b>Lectura</b> La media mensual es de 41 robos con una dispersión moderada (CV ≈ 27%). El crecimiento es <b>monótono y casi lineal</b>: pasa de 25 en octubre a 55 en marzo, lo cual descarta que se trate de una fluctuación estacional aleatoria.</div>
+
+  <h3>4.3 Tendencia central y dispersión — zonas</h3>
+  <p>Datos: $45,\ 38,\ 35,\ 22,\ 12$. Tamaño $n=5$.</p>
+  <div class="calc">
+    $$\bar{x} \;=\; \frac{45+38+35+22+12}{5} \;=\; \frac{152}{5} \;=\; 30{,}4 \ \text{robos/zona}$$
+    <b>Mediana:</b> $\tilde{x}=35$ &nbsp;·&nbsp; <b>Moda:</b> amodal &nbsp;·&nbsp; <b>Rango:</b> $R = 45-12 = 33$
+  </div>
+  <div class="calc">
+    $$s \;\approx\; 13{,}29 \ \text{robos} \qquad CV \;=\; \frac{s}{\bar{x}}\times 100 \;\approx\; 43{,}7\%$$
+    <small>Alta heterogeneidad espacial: la concentración del riesgo no es uniforme entre zonas.</small>
+  </div>
+
+  <h2 id="s5"><span class="icon">5</span>Cálculo de probabilidades</h2>
+
+<div class="verifica" id="check-4"><div class="title">✓ Verifica tu comprensión — sección 4</div><ol><li>Si la media es 41,17 y la mediana 42,50, ¿la distribución es simétrica, asimétrica positiva o asimétrica negativa?<details><summary>Ver respuesta</summary><div>Como mediana &gt; media, la distribución es <b>asimétrica negativa</b> (cola hacia los valores bajos). Aquí la diferencia es muy pequeña, casi simétrica.</div></details></li><li>Calcule el CV de las zonas (s = 13,29; x̄ = 30,4) y compárelo con el de los meses (27,3 %).<details><summary>Ver respuesta</summary><div>$CV_{\text{zonas}} = 13{,}29/30{,}4 \times 100 \approx 43{,}7\%$ — mayor que el de meses, indicando que la variabilidad espacial supera la variabilidad temporal.</div></details></li></ol></div>
+
+<aside class="pista"><span class="icon">💡</span><div><b>Pista pedagógica</b>La probabilidad empírica es siempre un número entre 0 y 1. Si su cálculo da más de 1, revise: probablemente sumó eventos no exhaustivos o el denominador está mal.</div></aside>
+
+  <p>Tomando los <b>152 robos</b> con clasificación de zona y franja como espacio muestral $\Omega$, se estiman las probabilidades empíricas mediante frecuencia relativa:</p>
+
+  <div class="formula">
+    $$\hat{P}(E) \;=\; \frac{\#\{\text{casos favorables a } E\}}{\#\Omega}$$
+  </div>
+
+  <div class="calc">
+    $$\hat{P}(\text{plaza central}) \;=\; \frac{45}{152} \;\approx\; 0{,}296 \;\;(29{,}6\%)$$
+  </div>
+  <div class="calc">
+    $$\hat{P}(\text{franja } 18\text{–}00) \;=\; \frac{60}{152} \;\approx\; 0{,}395 \;\;(39{,}5\%)$$
+  </div>
+  <div class="calc">
+    $$\hat{P}(\text{noche} \cup \text{madrugada}) \;=\; \frac{60+52}{152} \;=\; \frac{112}{152} \;\approx\; 0{,}737 \;\;(73{,}7\%)$$
+  </div>
+  <div class="calc">
+    $$\hat{P}(\text{zona residencial}) \;=\; \frac{12}{152} \;\approx\; 0{,}079 \;\;(7{,}9\%)$$
+    <small>La zona residencial es la de menor riesgo relativo.</small>
+  </div>
+
+  <h3>5.1 Probabilidad condicional con factores de riesgo</h3>
+
+<aside class="error-comun"><span class="icon">⚠️</span><div><b>Error común</b>Asumir independencia sin justificarla. Si los factores están correlacionados (lo común en problemas reales), $P(A \cap B) \neq P(A) \cdot P(B)$. Mencione siempre el supuesto y sus límites.</div></aside>
+  <p>Definimos los eventos:</p>
+  <div class="calc">
+    $A:$ "el robo ocurre en zona con iluminación deficiente"<br>
+    $B:$ "el robo ocurre en zona sin patrullaje frecuente"
+  </div>
+  <p>De los registros: $P(A)=0{,}60$ y $P(\neg B)=0{,}25$, por lo tanto $P(B)=1-0{,}25=0{,}75$.</p>
+  <p>Asumiendo <b>independencia aproximada</b> entre los factores (supuesto a validar con un análisis de correlación):</p>
+  <div class="formula"><b>Probabilidad conjunta:</b>
+    $$P(A \cap B) \;=\; P(A)\cdot P(B) \;=\; 0{,}60 \times 0{,}75 \;=\; \boxed{0{,}45}$$
+    Es decir, hay un <b>45 %</b> de probabilidad estimada de que un robo ocurra en una zona simultáneamente <b>poco iluminada y sin patrullaje frecuente</b>.
+  </div>
+
+  <div class="alerta rojo"><b>Hallazgo crítico</b> La intersección de los dos factores estructurales (iluminación y patrullaje) explica casi la mitad de los incidentes. Cualquier estrategia de mitigación debería atacar al menos uno de ellos para producir efecto medible.</div>
+
+  <h2 id="s6"><span class="icon">6</span>Interpretación de resultados</h2>
+
+<div class="verifica" id="check-5"><div class="title">✓ Verifica tu comprensión — sección 5</div><ol><li>¿Qué significa $P(A \cup B) = P(A)+P(B)-P(A \cap B)$?<details><summary>Ver respuesta</summary><div>La probabilidad de que ocurra A o B (o ambos) es la suma de las individuales <b>menos la intersección</b>, para no contar dos veces los casos que están en ambos.</div></details></li><li>¿Por qué se considera "alta probabilidad" un valor de 0,45?<details><summary>Ver respuesta</summary><div>Significa que casi 1 de cada 2 robos ocurre cuando coinciden los dos factores estructurales. En decisiones operativas, &gt; 0,40 ya se considera prioridad alta.</div></details></li></ol></div>
+
+  <p>Los resultados convergen en cuatro hallazgos:</p>
+
+  <div class="alerta ambar"><b>1. Crecimiento sostenido</b> El número de robos crece monótonamente: +120% acumulado en seis meses (de 25 a 55 mensuales). El crecimiento mensual marginal se desacelera (de +28% a +10%), lo que sugiere una posible saturación, pero el nivel absoluto sigue siendo crítico.</div>
+
+  <div class="alerta rojo"><b>2. Concentración espacial</b> Tres zonas (plaza central, calle comercial, parque urbano) concentran el 77,1% de los incidentes. El CV ≈ 44% confirma alta heterogeneidad — el riesgo no es uniforme.</div>
+
+  <div class="alerta ambar"><b>3. Concentración temporal</b> Las franjas noche y madrugada acumulan el 73,7% de los robos. La probabilidad de un robo nocturno triplica la de un robo matutino.</div>
+
+  <div class="alerta azul"><b>4. Factores estructurales</b> Iluminación deficiente (60%) y ausencia de patrullaje (75%) son los predictores más fuertes. La paradoja del tránsito peatonal (70%) debe leerse con cuidado: <b>alta circulación no causa robos</b> sino que los robos ocurren <b>donde hay víctimas</b>.</div>
+
+  <h3>6.1 Incertidumbre y limitaciones</h3>
+  <p>El análisis se basa en un período corto (n = 6 meses) y los totales por dimensión (mes vs zona/franja) no coinciden, lo que sugiere que algunos registros carecen de geocodificación o de hora reportada. La estimación de probabilidades es <b>empírica</b> y conviene complementarla con un intervalo de confianza al 95% (con n = 152, el margen de error es aproximadamente ±7,9 puntos porcentuales). El supuesto de independencia entre iluminación y patrullaje es una aproximación: lo más probable es que las zonas mal iluminadas también sean las menos patrulladas, en cuyo caso la probabilidad conjunta real sería mayor que 0,45.</p>
+
+  <h2 id="s7"><span class="icon">7</span>Estrategias de prevención propuestas</h2>
+
+<aside class="pista"><span class="icon">💡</span><div><b>Pista pedagógica</b>Cada estrategia debe responder a tres preguntas: <i>¿qué hacer?</i>, <i>¿por qué este dato lo justifica?</i> y <i>¿cómo se medirá su impacto?</i>. Eso convierte una sugerencia en una recomendación operativa.</div></aside>
+
+  <div class="estrategia">
+    <h4>Estrategia 1 — Plan de patrullaje focalizado en franja 18:00–06:00</h4>
+    <p>Reasignar el 60% del personal disponible al horario nocturno y de madrugada en las tres zonas críticas (plaza central, calle comercial, parque urbano). Aumentar la frecuencia de rondas de cada 90 a cada 30 minutos.</p>
+    <div class="meta-est">
+      <span class="badge alto">Impacto esperado: alto</span>
+      <span class="badge medio">Costo: medio</span>
+      Justificación: ataca directamente el factor con mayor peso (P(¬patrullaje) = 0,75) en las franjas y zonas con mayor concentración estadística (73,7% × 77,1% del riesgo).
+    </div>
+  </div>
+
+  <div class="estrategia">
+    <h4>Estrategia 2 — Mejoramiento de iluminación pública en las tres zonas críticas</h4>
+    <p>Coordinar con la alcaldía local la auditoría lumínica y reposición de luminarias LED en plaza central, calle comercial y parque urbano. Meta: pasar del 40% al 80% de cobertura lumínica adecuada en seis meses.</p>
+    <div class="meta-est">
+      <span class="badge alto">Impacto esperado: alto</span>
+      <span class="badge alto">Costo: alto (inversión inicial)</span>
+      Justificación: P(iluminación deficiente | robo) = 0,60. Reducir a la mitad este factor podría disminuir el 30% del total estimado de incidentes.
+    </div>
+  </div>
+
+  <div class="estrategia">
+    <h4>Estrategia 3 — Sistema de alerta ciudadana y mapa de calor compartido</h4>
+    <p>Implementar canal de WhatsApp y aplicación tipo "Mi Policía" para reporte ciudadano georreferenciado. Generar mapa de calor semanal que actualice las zonas críticas y permita ajustar el patrullaje dinámicamente. Articular con cuadrante y CAI más cercano.</p>
+    <div class="meta-est">
+      <span class="badge medio">Impacto esperado: medio</span>
+      <span class="badge bajo">Costo: bajo</span>
+      Justificación: convierte la alta circulación peatonal (70%) de factor de exposición en factor de vigilancia, aprovechando que ya hay testigos potenciales en las zonas críticas.
+    </div>
+  </div>
+
+  <h2 id="s8"><span class="icon">8</span>Conclusiones</h2>
+
+  <div class="conclusion">
+    <h3>Síntesis decisional</h3>
+    <p>El barrio histórico atraviesa una <b>tendencia lineal creciente</b> de robos (+120% en seis meses) con concentración espacio-temporal clara: <b>tres zonas</b> (plaza central, calle comercial, parque urbano) en <b>franja nocturna y de madrugada</b> explican más del 70% del fenómeno. Los factores estructurales —iluminación deficiente (60%) y ausencia de patrullaje (75%)— son corregibles y su combinación tiene una probabilidad conjunta estimada de 0,45.</p>
+    <p>La <b>recomendación operativa</b> es priorizar la Estrategia 1 (patrullaje focalizado nocturno) por su balance impacto/costo, y articularla con la Estrategia 3 (alerta ciudadana) para validar y ajustar las zonas en tiempo real. La Estrategia 2 (iluminación) requiere coordinación interinstitucional pero ofrece la mayor reducción potencial sostenida.</p>
+    <p>Se sugiere repetir el análisis al cierre del próximo trimestre para evaluar el impacto de las medidas y validar empíricamente las hipótesis estadísticas asumidas (independencia de factores, estabilidad del crecimiento lineal).</p>
+  </div>
+
+    <h2 id="s9"><span class="icon">9</span>Glosario y guía de réplica</h2>
+
+  <div class="glosario">
+    <h3 style="margin-top:0;border:none;padding:0">Glosario rápido</h3>
+    <dl>
+      <dt>Media (x̄)</dt><dd>Promedio aritmético — suma de los valores dividida entre el número de observaciones.</dd>
+      <dt>Mediana</dt><dd>Valor central cuando los datos están ordenados; con n par, promedio de los dos centrales.</dd>
+      <dt>Moda</dt><dd>Valor más frecuente. Si todos aparecen igual número de veces, la distribución es <i>amodal</i>.</dd>
+      <dt>Rango (R)</dt><dd>Diferencia entre el valor máximo y el mínimo. Mide la amplitud bruta.</dd>
+      <dt>Desviación estándar (s)</dt><dd>Promedio de qué tan lejos están los datos respecto a la media.</dd>
+      <dt>Coeficiente de variación (CV)</dt><dd>$CV = s/\bar{x}\times 100$. Permite comparar dispersiones entre series con escalas diferentes. CV &gt; 30 % = alta heterogeneidad.</dd>
+      <dt>Probabilidad empírica</dt><dd>Frecuencia relativa de un evento: casos favorables / casos totales.</dd>
+      <dt>Eventos independientes</dt><dd>Dos eventos A y B son independientes si $P(A \cap B) = P(A) \cdot P(B)$.</dd>
+      <dt>KPI</dt><dd>Indicador clave de desempeño (<i>Key Performance Indicator</i>). Variable cuantitativa que sintetiza un fenómeno.</dd>
+    </dl>
+  </div>
+
+  <div class="checklist">
+    <div class="title">🛠️ Cómo replicar este informe (checklist)</div>
+    <ul>
+      <li>Lea detenidamente el caso del barrio histórico — identifique las cuatro tablas de datos.</li>
+      <li>Construya las tablas en Excel o Google Sheets respetando los totales de la consigna.</li>
+      <li>Identifique las variables y elija el tipo de gráfico (línea para serie temporal, barras para categorías, dona para composición).</li>
+      <li>Calcule media, mediana, moda, rango, desviación estándar y CV para al menos una de las distribuciones.</li>
+      <li>Calcule al menos cuatro probabilidades empíricas y aplique al menos una probabilidad conjunta.</li>
+      <li>Discuta la incertidumbre y las limitaciones del análisis (sección 6.1 del ejemplo).</li>
+      <li>Proponga al menos tres estrategias con justificación cuantitativa anclada a sus cálculos.</li>
+      <li>Cierre con conclusiones operativas y referencias en formato APA.</li>
+      <li>Verifique formato (Arial 12, interlineado 1,5, 3–5 páginas) antes de exportar a PDF.</li>
+    </ul>
+  </div>
+
+<h2 id="s9"><span class="icon">9</span>Referencias</h2>
+  <p class="ref">Devore, J. L. (2016). <i>Probabilidad y estadística para ingeniería y ciencias</i> (9.ª ed.). Cengage Learning.</p>
+  <p class="ref">Levin, R. I., &amp; Rubin, D. S. (2010). <i>Estadística para administración y economía</i> (7.ª ed.). Pearson Educación.</p>
+  <p class="ref">Policía Nacional de Colombia. (2024). <i>Estadística delictiva: Sistema de Información Estadístico, Delincuencial, Contravencional y Operativo (SIEDCO)</i>. https://www.policia.gov.co/estadistica-delictiva</p>
+  <p class="ref">Alcaldía Mayor de Bogotá D.C. (2023). <i>Plan integral de seguridad y convivencia ciudadana 2024-2027</i>.</p>
+
+</div>
+
+<script>
+const azul = '#0b3d91', azulClaro='#1d5fc4', rojo='#c0392b', ambar='#d97706', verde='#1d7c3c', violeta='#6d28d9';
+const opt = { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{enabled:true} } };
+
+// Figura 1 — Línea temporal (mes)
+new Chart(document.getElementById('ch1'), {
+  type:'line',
+  data:{
+    labels:['Octubre','Noviembre','Diciembre','Enero','Febrero','Marzo'],
+    datasets:[{
+      label:'Robos',
+      data:[25,32,40,45,50,55],
+      borderColor:azul, backgroundColor:'rgba(11,61,145,0.15)',
+      borderWidth:3, tension:0.3, pointRadius:6, pointBackgroundColor:azul, pointBorderColor:'#fff', pointBorderWidth:2, fill:true
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false},
+      tooltip:{callbacks:{label:c=>'Robos: '+c.raw}} },
+    scales:{
+      y:{ beginAtZero:true, title:{display:true, text:'Robos / mes', font:{size:11}} },
+      x:{ ticks:{font:{size:11}} }
+    }
+  }
+});
+
+// Figura 2 — Barras horizontales (zona)
+new Chart(document.getElementById('ch2'), {
+  type:'bar',
+  data:{
+    labels:['Plaza central','Calle comercial','Parque urbano','Estación transp.','Zona residencial'],
+    datasets:[{
+      label:'Robos',
+      data:[45,38,35,22,12],
+      backgroundColor:[rojo,'#d65a4f','#e08679',ambar,verde],
+      borderRadius:4
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    indexAxis:'y',
+    plugins:{ legend:{display:false},
+      tooltip:{callbacks:{label:c=>c.raw+' robos ('+(c.raw/152*100).toFixed(1)+'%)'}} },
+    scales:{
+      x:{ beginAtZero:true, title:{display:true, text:'Robos', font:{size:10}} },
+      y:{ ticks:{font:{size:10}} }
+    }
+  }
+});
+
+// Figura 3 — Barras verticales en orden cronológico (franja horaria)
+new Chart(document.getElementById('ch3'), {
+  type:'bar',
+  data:{
+    labels:['06–12 (mañana)','12–18 (tarde)','18–00 (noche)','00–06 (madrugada)'],
+    datasets:[{
+      label:'Robos',
+      data:[15,25,60,52],
+      backgroundColor:[verde,azulClaro,rojo,ambar],
+      borderRadius:4
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false},
+      tooltip:{callbacks:{label:c=>c.raw+' robos ('+(c.raw/152*100).toFixed(1)+'%)'}} },
+    scales:{
+      y:{ beginAtZero:true, title:{display:true, text:'Robos', font:{size:10}} },
+      x:{ ticks:{font:{size:9}} }
+    }
+  }
+});
+
+// Figura 4 — Dona composición (franja)
+new Chart(document.getElementById('ch4'), {
+  type:'doughnut',
+  data:{
+    labels:['18–00 noche','00–06 madrugada','12–18 tarde','06–12 mañana'],
+    datasets:[{
+      data:[60,52,25,15],
+      backgroundColor:[rojo,ambar,azulClaro,verde],
+      borderColor:'#fff', borderWidth:2
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{position:'right', labels:{font:{size:10}, padding:8}},
+      tooltip:{callbacks:{label:c=>c.label+': '+c.raw+' ('+(c.raw/152*100).toFixed(1)+'%)'}}
+    },
+    cutout:'55%'
+  }
+});
+</script>
+</body>
+</html>

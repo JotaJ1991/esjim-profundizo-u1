@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>U2 | Demuestro mi aprendizaje — Análisis de incautaciones de licor adulterado en Colombia (Ejemplo resuelto)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\\\[',right:'\\\\]',display:true},{left:'$',right:'$',display:false},{left:'\\\\(',right:'\\\\)',display:false}],throwOnError:false})"></script>
+<style>
+  :root{
+    --azul:#0b3d91;--azul-claro:#1d5fc4;--azul-suave:#e8eef9;
+    --gris:#4a4a4a;--gris-suave:#6c7a8a;--gris-bg:#f4f6fb;--borde:#d7dde8;
+    --verde:#1d7c3c;--verde-suave:#e6f4ea;
+    --rojo:#c0392b;--rojo-suave:#fbeae7;
+    --ambar:#d97706;--ambar-suave:#fef3c7;
+    --violeta:#6d28d9;--violeta-suave:#ede9fe;
+    --rosa:#be185d;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:linear-gradient(180deg,#e9eef7 0%,#dde5f2 100%);font-family:"Times New Roman",Times,serif;color:#1a1a1a;min-height:100vh}
+  .hoja{max-width:960px;margin:24px auto;background:#fff;padding:60px 72px;border-radius:8px;box-shadow:0 8px 30px rgba(11,61,145,.12);line-height:1.55;font-size:12pt}
+  h1,h2,h3,h4{font-family:"Arial","Helvetica",sans-serif;color:var(--azul);line-height:1.25;letter-spacing:-.01em}
+  h1{font-size:22pt;text-align:center;margin:0 0 6px;font-weight:700}
+  h2{font-size:15pt;padding:10px 0 6px;margin-top:36px;border-bottom:3px solid var(--azul);display:flex;align-items:center;gap:12px}
+  h2 .icon{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--azul);color:#fff;border-radius:8px;font-size:18px;flex-shrink:0}
+  h3{font-size:13pt;margin-top:24px;color:var(--azul-claro);padding-left:10px;border-left:4px solid var(--azul-claro)}
+  h4{font-size:10.5pt;margin:14px 0 6px;color:var(--gris-suave);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+  p{text-align:justify;margin:10px 0}
+
+  .portada{text-align:center;margin-bottom:24px;padding:24px;background:linear-gradient(135deg,var(--azul) 0%,var(--azul-claro) 100%);color:#fff;border-radius:10px}
+  .portada h1{color:#fff;border:none;font-family:Arial,sans-serif;font-size:18pt}
+  .portada .sub{font-family:Arial,sans-serif;font-size:11pt;color:rgba(255,255,255,.92);margin:6px 0}
+  .portada .docente{display:inline-block;margin-top:10px;padding:6px 14px;background:rgba(255,255,255,.18);border-radius:18px;font-family:Arial,sans-serif;font-size:10pt}
+
+  .meta{background:var(--gris-bg);border-left:5px solid var(--azul);padding:14px 18px;margin:24px 0;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.5;border-radius:4px}
+  .meta b{color:var(--azul)}
+
+  .fase{background:linear-gradient(135deg,var(--violeta) 0%,#7c3aed 100%);color:#fff;padding:8px 16px;border-radius:6px;font-family:Arial,sans-serif;font-size:10pt;font-weight:700;display:inline-block;margin-top:24px;letter-spacing:.5px;text-transform:uppercase}
+
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}
+  .kpi{background:linear-gradient(135deg,#fff 0%,var(--azul-suave) 100%);border:1px solid var(--borde);border-radius:10px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(11,61,145,.06)}
+  .kpi .num{font-family:Arial,sans-serif;font-size:21pt;font-weight:700;color:var(--azul);line-height:1}
+  .kpi .lbl{font-family:Arial,sans-serif;font-size:9pt;color:var(--gris-suave);text-transform:uppercase;letter-spacing:.5px;margin-top:6px}
+  .kpi.rojo .num{color:var(--rojo)}
+  .kpi.ambar .num{color:var(--ambar)}
+  .kpi.verde .num{color:var(--verde)}
+  .kpi.violeta .num{color:var(--violeta)}
+
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-family:Arial,sans-serif;font-size:10.5pt}
+  th{background:var(--azul);color:#fff;padding:9px 12px;text-align:left;font-weight:700}
+  td{padding:8px 12px;border-bottom:1px solid var(--borde)}
+  tr:nth-child(even) td{background:var(--gris-bg)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+
+  .formula{background:#fff8e1;border:1px solid #f5e2a3;border-left:5px solid var(--ambar);padding:14px 18px;margin:14px 0;border-radius:4px;overflow-x:auto;font-size:11pt;line-height:1.7}
+  .formula b{color:#7a4a00;font-family:Arial,sans-serif}
+  .formula .katex{font-size:1.05em}
+  .formula .katex-display{margin:.5em 0}
+  .calc{background:var(--azul-suave);border-radius:6px;padding:12px 16px;margin:8px 0;font-size:11pt;line-height:1.7}
+  .calc b{color:var(--azul);font-family:Arial,sans-serif}
+  .calc .katex{font-size:1.02em}
+
+  .chart-box{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:18px;margin:18px 0;box-shadow:0 2px 8px rgba(11,61,145,.05)}
+  .chart-title{font-family:Arial,sans-serif;font-size:11pt;color:var(--azul);font-weight:700;text-align:center;margin-bottom:8px}
+  .chart-cap{font-family:Arial,sans-serif;font-size:9pt;color:var(--gris-suave);text-align:center;font-style:italic;margin-top:6px}
+  .chart-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .chart-canvas-wrap{position:relative;width:100%}
+  .chart-canvas-wrap.h-tall{height:300px}
+  .chart-canvas-wrap.h-mid{height:240px}
+  .chart-canvas-wrap.h-small{height:200px}
+
+  .alerta{padding:14px 18px;border-radius:8px;margin:14px 0;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.5}
+  .alerta.rojo{background:var(--rojo-suave);border-left:5px solid var(--rojo);color:#7a1c10}
+  .alerta.ambar{background:var(--ambar-suave);border-left:5px solid var(--ambar);color:#704000}
+  .alerta.verde{background:var(--verde-suave);border-left:5px solid var(--verde);color:#0e4d24}
+  .alerta.azul{background:var(--azul-suave);border-left:5px solid var(--azul);color:#0b2c5e}
+  .alerta.violeta{background:var(--violeta-suave);border-left:5px solid var(--violeta);color:#3b0991}
+  .alerta b{display:block;margin-bottom:4px;font-size:11pt;text-transform:uppercase;letter-spacing:.4px}
+
+  .recomendacion{background:#fff;border:1px solid var(--borde);border-left:5px solid var(--verde);border-radius:8px;padding:14px 18px;margin:14px 0;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+  .recomendacion h4{color:var(--verde);margin:0 0 6px;font-size:12pt;text-transform:none;letter-spacing:0}
+  .recomendacion .meta-rec{font-family:Arial,sans-serif;font-size:9.5pt;color:var(--gris-suave);margin-top:10px;padding-top:8px;border-top:1px dashed var(--borde)}
+  .badge{display:inline-block;padding:3px 9px;border-radius:14px;font-family:Arial,sans-serif;font-size:9pt;font-weight:700;margin-right:4px}
+  .badge.alto{background:var(--rojo);color:#fff}
+  .badge.medio{background:var(--ambar);color:#fff}
+  .badge.bajo{background:var(--verde);color:#fff}
+
+  .conclusion{background:linear-gradient(135deg,var(--azul-suave) 0%,#fff 100%);border:2px solid var(--azul);border-radius:10px;padding:20px 24px;margin:24px 0}
+  .conclusion h3{margin-top:0;border:none;padding:0;color:var(--azul);font-size:14pt}
+
+  .ref{font-family:Arial,sans-serif;font-size:9.5pt;color:var(--gris);padding-left:30px;text-indent:-30px;margin:8px 0}
+
+  .venn-box{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:18px;margin:18px 0}
+  .venn-svg{display:block;margin:0 auto;max-width:100%;height:auto}
+
+  
+  /* === Componentes pedagógicos === */
+  .toc{background:linear-gradient(135deg,#fff 0%,var(--azul-suave) 100%);border:1px solid var(--borde);border-radius:10px;padding:18px 22px;margin:18px 0}
+  .toc-title{font-family:Arial,sans-serif;color:var(--azul);font-weight:700;font-size:11pt;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .toc ol{margin:6px 0 0;padding-left:24px;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.8;columns:2;column-gap:30px}
+  .toc a{color:var(--azul);text-decoration:none;border-bottom:1px dashed transparent;transition:border-color .2s}
+  .toc a:hover{border-color:var(--azul-claro)}
+
+  .rubric-map{background:linear-gradient(135deg,#fff 0%,var(--violeta-suave) 100%);border:1px solid #c4b5fd;border-radius:10px;padding:14px 18px;margin:14px 0;font-family:Arial,sans-serif;font-size:10pt}
+  .rubric-map .title{color:var(--violeta);font-weight:700;font-size:10.5pt;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+  .rubric-map table{margin:6px 0 0;font-size:9.5pt}
+  .rubric-map th{background:var(--violeta);color:#fff;font-size:9.5pt;padding:6px 10px}
+  .rubric-map td{padding:6px 10px}
+
+  .pista,.error-comun{display:flex;gap:14px;background:#fff;border-radius:8px;padding:14px 18px;margin:14px 0;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.55;border:1px solid var(--borde)}
+  .pista{border-left:5px solid #f59e0b;border-color:#fcd34d}
+  .pista .icon{font-size:22px;flex-shrink:0}
+  .pista b{color:#92400e;display:block;margin-bottom:4px}
+  .error-comun{border-left:5px solid #dc2626;border-color:#fca5a5}
+  .error-comun .icon{font-size:22px;flex-shrink:0}
+  .error-comun b{color:#991b1b;display:block;margin-bottom:4px}
+
+  .verifica{background:linear-gradient(135deg,#fff 0%,var(--verde-suave) 100%);border:1px solid #86efac;border-radius:10px;padding:16px 20px;margin:18px 0;font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.6}
+  .verifica .title{color:var(--verde);font-weight:700;font-size:11pt;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .verifica ol{margin:6px 0 0;padding-left:22px}
+  .verifica li{margin:8px 0}
+  .verifica details{margin-top:6px;padding:8px 10px;background:rgba(255,255,255,.7);border-radius:6px}
+  .verifica details summary{cursor:pointer;color:var(--verde);font-weight:700;font-size:10pt;list-style:none}
+  .verifica details summary::before{content:'▸';display:inline-block;margin-right:6px;transition:transform .2s}
+  .verifica details[open] summary::before{transform:rotate(90deg)}
+  .verifica details > div{margin-top:6px;font-size:10pt;color:#0e4d24}
+
+  .glosario{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:18px 22px;margin:18px 0}
+  .glosario dl{font-family:Arial,sans-serif;font-size:10.5pt;line-height:1.6;margin:0}
+  .glosario dt{color:var(--azul);font-weight:700;margin-top:10px}
+  .glosario dd{margin:2px 0 0 18px;color:#333}
+
+  .checklist{background:linear-gradient(135deg,#fff 0%,var(--azul-suave) 100%);border:1px solid var(--borde);border-radius:10px;padding:18px 22px;margin:18px 0;font-family:Arial,sans-serif;font-size:10.5pt}
+  .checklist .title{color:var(--azul);font-weight:700;font-size:11pt;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .checklist ul{list-style:none;padding:0;margin:0}
+  .checklist li{padding:6px 0 6px 30px;position:relative;line-height:1.6}
+  .checklist li::before{content:'☐';position:absolute;left:0;color:var(--azul);font-size:14pt;font-weight:700;line-height:1}
+
+  @media print{ .verifica details{open:true} }
+
+  @media print{ body{background:#fff} .hoja{box-shadow:none;margin:0;padding:30px 40px;max-width:100%} }
+</style>
+</head>
+<body>
+<div class="hoja">
+
+  <div class="portada">
+    <h1>U2 — Demuestro mi aprendizaje</h1>
+    <div class="sub">Análisis de incautaciones de licor adulterado en Colombia (2019–2024)</div>
+    <div class="docente">Docente: Yenifer Fontalvo Marriaga · ESJIM</div>
+  </div>
+
+  <div class="meta">
+    <b>Tipo:</b> Colaborativa · entrega individual &nbsp;·&nbsp; <b>Producto:</b> informe analítico 8–10 páginas en PDF<br>
+    <b>Fuente principal:</b> Policía Nacional de Colombia — SIEDCO; <b>fuente secundaria:</b> El País (2024) — "Colombia se incauta de 100 000 botellas de licor al año".<br>
+    <b>Estructura del documento:</b> Introducción $\rightarrow$ Fase 1 (datos) $\rightarrow$ Fase 2 (análisis estadístico + teoría de conjuntos + probabilidad + muestra) $\rightarrow$ Fase 3 (interpretación + recomendaciones) $\rightarrow$ Conclusiones $\rightarrow$ Referencias APA.
+  </div>
+
+  <nav class="toc" aria-label="Tabla de contenidos">
+    <div class="toc-title">📋 Tabla de contenidos</div>
+    <ol>
+      <li><a href="#s1">Introducción</a></li>
+      <li><a href="#s2">Fase 1 — Fuentes y datos</a></li>
+      <li><a href="#s3">Fase 2 — Análisis estadístico</a></li>
+      <li><a href="#s4">Fase 2 — Teoría de conjuntos</a></li>
+      <li><a href="#s5">Fase 2 — Probabilidad</a></li>
+      <li><a href="#s6">Fase 2 — Análisis muestral</a></li>
+      <li><a href="#s7">Fase 3 — Interpretación</a></li>
+      <li><a href="#s8">Fase 3 — Recomendaciones</a></li>
+      <li><a href="#s9">Conclusiones</a></li>
+    </ol>
+  </nav>
+
+  <div class="rubric-map">
+    <div class="title">🎯 Mapa de la rúbrica · cómo se evalúa este informe</div>
+    <table>
+      <thead><tr><th>Criterio (5 niveles: 1 / 0,8 / 0,6 / 0,3 / 0)</th><th>Cubierto en</th></tr></thead>
+      <tbody>
+        <tr><td><b>C1.</b> Análisis de datos</td><td>§ 2 + § 3.1</td></tr>
+        <tr><td><b>C2.</b> Representación gráfica</td><td>§ 3.3 (Figs. 1–3) + § 4 (Venn)</td></tr>
+        <tr><td><b>C3.</b> Interpretación de resultados</td><td>§ 5 + § 6 + § 7</td></tr>
+        <tr><td><b>C4.</b> Propuestas de mejora</td><td>§ 8 (4 recomendaciones)</td></tr>
+        <tr><td><b>C5.</b> Presentación y formato</td><td>Estructura completa + § 10 APA</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+  <h2 id="s1"><span class="icon">1</span>Introducción</h2>
+  <p>El comercio ilegal de licor adulterado representa una problemática de seguridad pública y económica que la Policía Nacional de Colombia atiende a través del Modelo de Servicio de Policía y de la Subdirección de Investigación Criminal e INTERPOL. En el quinquenio 2019–2024 se han incautado más de <b>560 000 botellas</b>, principalmente de bebidas como ñeque (chirrinchi), aguardiente y ron. Las mayores incautaciones se concentran en departamentos como <b>Sucre, Atlántico, Magdalena, Nariño y Antioquia</b>. La problemática genera riesgos sanitarios graves —metanol, intoxicaciones, muertes— y afecta el recaudo departamental por estampilla pro-cultura y deporte (Federación Nacional de Departamentos, 2024).</p>
+  <p>Este informe aplica las herramientas de la Unidad 2 (estadística descriptiva, representaciones gráficas, teoría de conjuntos, probabilidad e inferencia muestral) para interpretar los datos del fenómeno y formular recomendaciones operativas que apoyen la toma de decisiones del comando de policía y de las gobernaciones.</p>
+
+  <div class="kpi-grid">
+    <div class="kpi rojo"><div class="num">560 706</div><div class="lbl">Botellas incautadas (2019–2024)</div></div>
+    <div class="kpi"><div class="num">93 451</div><div class="lbl">Promedio anual</div></div>
+    <div class="kpi ambar"><div class="num">5</div><div class="lbl">Departamentos críticos</div></div>
+    <div class="kpi verde"><div class="num">3</div><div class="lbl">Tipos de licor dominantes</div></div>
+  </div>
+
+  <span class="fase">Fase 1 · Análisis del caso y exploración de datos</span>
+
+<aside class="pista"><span class="icon">💡</span><div><b>Pista pedagógica — Fase 1</b>Antes de calcular nada, lea los datos y formule una hipótesis intuitiva: ¿el fenómeno crece, decrece o es estacional? El análisis estadístico debe <b>confirmar o refutar</b> esa intuición, no inventarla a posteriori.</div></aside>
+
+  <h2 id="s2"><span class="icon">2</span>Fuentes y estructura de los datos</h2>
+  <p>Los datos provienen del consolidado anual del SIEDCO (PONAL) y del reporte periodístico de El País (2024). La unidad de análisis es la <b>botella incautada</b>; las dimensiones de clasificación son: <b>año</b> (variable cuantitativa discreta), <b>tipo de licor</b> (variable cualitativa nominal de 4 categorías) y <b>departamento</b> (variable cualitativa nominal de 32 categorías; aquí se enfocan los Top-5 con mayor incidencia).</p>
+
+  <h3>2.1 Tabla 1. Incautaciones totales por año</h3>
+  <table>
+    <thead><tr><th>Año</th><th class="num">Total botellas</th><th class="num">Variación anual</th><th class="num">Variación vs. 2019</th></tr></thead>
+    <tbody>
+      <tr><td>2019</td><td class="num">180 000</td><td class="num">—</td><td class="num">—</td></tr>
+      <tr><td>2020</td><td class="num">70 321</td><td class="num">−60,9 %</td><td class="num">−60,9 %</td></tr>
+      <tr><td>2021</td><td class="num">66 873</td><td class="num">−4,9 %</td><td class="num">−62,8 %</td></tr>
+      <tr><td>2022</td><td class="num">80 000</td><td class="num">+19,6 %</td><td class="num">−55,6 %</td></tr>
+      <tr><td>2023</td><td class="num">90 000</td><td class="num">+12,5 %</td><td class="num">−50,0 %</td></tr>
+      <tr><td>2024</td><td class="num">73 506</td><td class="num">−18,3 %</td><td class="num">−59,2 %</td></tr>
+      <tr style="background:var(--azul-suave);font-weight:700"><td>Total quinquenio</td><td class="num">560 700</td><td class="num">—</td><td class="num">—</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:9.5pt;color:var(--gris-suave);font-style:italic">Fuente: El País (2024) y consolidado SIEDCO 2019–2024.</p>
+
+  <h3>2.2 Exploración inicial — patrones y posibles inconsistencias</h3>
+  <ul>
+    <li>El año <b>2019 es atípico</b> (180 000 botellas) y duplica la media de los años posteriores. Coincide con la operación nacional "Salud y Vida" del MinSalud + PONAL.</li>
+    <li>2020 y 2021 muestran caída fuerte por <b>cierre de comercio nocturno</b> durante la pandemia COVID-19.</li>
+    <li>La tendencia se recupera 2022–2023 (+12 a +20 % anual) y vuelve a contraerse en 2024 (−18 %), posiblemente por el aumento de operativos preventivos.</li>
+    <li><b>Posible subregistro</b>: las incautaciones reflejan capacidad de detección, no el volumen real de licor adulterado en circulación. La FND estima que el mercado ilegal supera 2,5 millones de botellas/año.</li>
+  </ul>
+
+  <span class="fase">Fase 2 · Representación y análisis estadístico</span>
+
+<aside class="pista"><span class="icon">💡</span><div><b>Pista pedagógica — Fase 2</b>Cada gráfico debe responder a una pregunta concreta. Si no puede formularla en una oración antes de hacer el gráfico, está sobre-graficando. Use composición (dona) para "qué proporción", series (línea) para "cómo cambia", barras para "cuánto comparado con qué".</div></aside>
+
+  <h2 id="s3"><span class="icon">3</span>Análisis estadístico descriptivo</h2>
+
+  <h3>3.1 Estadísticos del consolidado anual</h3>
+  <p>Sea $X = \{180\,000;\ 70\,321;\ 66\,873;\ 80\,000;\ 90\,000;\ 73\,506\}$ con $n = 6$.</p>
+  <div class="formula">
+    <b>Media:</b>
+    $$\bar{x} \;=\; \frac{\sum_{i=1}^{6} x_i}{6} \;=\; \frac{560{,}700}{6} \;=\; 93{,}450 \ \text{botellas/año}$$
+  </div>
+  <div class="calc">
+    <b>Mediana</b> (datos ordenados $66\,873; 70\,321; 73\,506; 80\,000; 90\,000; 180\,000$):
+    $$\tilde{x} \;=\; \frac{73\,506 + 80\,000}{2} \;=\; 76\,753$$
+    La diferencia entre $\bar{x}$ y $\tilde{x}$ (~17 000) confirma <b>asimetría positiva</b> introducida por el dato de 2019.
+  </div>
+  <div class="formula">
+    <b>Desviación estándar muestral:</b>
+    $$s \;=\; \sqrt{\frac{\sum (x_i-\bar{x})^2}{n-1}} \;\approx\; 42{,}530 \quad CV \;=\; \frac{s}{\bar{x}} \approx 45{,}5\%$$
+    El coeficiente de variación es muy alto (>30 %) → la serie es <b>heterogénea</b>; un solo valor (2019) explica gran parte de la dispersión.
+  </div>
+
+  <h3>3.2 Tabla 2. Incautaciones por tipo de licor (2019–2024)</h3>
+  <table>
+    <thead><tr><th>Tipo</th><th class="num">2019</th><th class="num">2020</th><th class="num">2021</th><th class="num">2022</th><th class="num">2023</th><th class="num">2024</th><th class="num">Total</th></tr></thead>
+    <tbody>
+      <tr><td>Aguardiente</td><td class="num">81 000</td><td class="num">31 644</td><td class="num">30 093</td><td class="num">36 000</td><td class="num">40 500</td><td class="num">33 077</td><td class="num">252 314</td></tr>
+      <tr><td>Ron</td><td class="num">45 000</td><td class="num">17 580</td><td class="num">16 718</td><td class="num">20 000</td><td class="num">22 500</td><td class="num">18 377</td><td class="num">140 175</td></tr>
+      <tr><td>Ñeque (chirrinchi)</td><td class="num">36 000</td><td class="num">14 064</td><td class="num">13 374</td><td class="num">16 000</td><td class="num">18 000</td><td class="num">14 701</td><td class="num">112 139</td></tr>
+      <tr><td>Otros</td><td class="num">18 000</td><td class="num">7 033</td><td class="num">6 688</td><td class="num">8 000</td><td class="num">9 000</td><td class="num">7 351</td><td class="num">56 072</td></tr>
+      <tr style="background:var(--azul-suave);font-weight:700"><td>Total</td><td class="num">180 000</td><td class="num">70 321</td><td class="num">66 873</td><td class="num">80 000</td><td class="num">90 000</td><td class="num">73 506</td><td class="num">560 700</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:9.5pt;color:var(--gris-suave);font-style:italic">Fuente: estimación propia con base en proporciones reportadas por SIEDCO y FND (~45 % aguardiente, 25 % ron, 20 % ñeque, 10 % otros).</p>
+
+  <h3>3.3 Composición porcentual por tipo (5 años)</h3>
+  <div class="chart-2col">
+    <div class="chart-box">
+      <div class="chart-title">Figura 1. Evolución anual de incautaciones</div>
+      <div class="chart-canvas-wrap h-mid"><canvas id="ch1"></canvas></div>
+      <div class="chart-cap">2019 = año atípico (operativo nacional intensivo).</div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Figura 2. Composición por tipo de licor</div>
+      <div class="chart-canvas-wrap h-mid"><canvas id="ch2"></canvas></div>
+      <div class="chart-cap">Aguardiente concentra el 45 % del total.</div>
+    </div>
+  </div>
+
+  <div class="chart-box">
+    <div class="chart-title">Figura 3. Incautaciones por tipo y año (barras apiladas)</div>
+    <div class="chart-canvas-wrap h-tall"><canvas id="ch3"></canvas></div>
+    <div class="chart-cap">La distribución relativa entre tipos se mantiene estable; solo varía el volumen total.</div>
+  </div>
+
+  <h2 id="s4"><span class="icon">4</span>Teoría de conjuntos aplicada a los departamentos</h2>
+
+<div class="verifica"><div class="title">✓ Verifica tu comprensión — Fase 2 estadística</div><ol><li>Si $\bar{x}=93\,450$ y $\tilde{x}=76\,753$, ¿qué tipo de asimetría tiene la distribución?<details><summary>Ver respuesta</summary><div>Asimétrica <b>positiva</b> ($\bar{x} > \tilde{x}$): hay un valor atípico alto que arrastra la media. En este caso, el dato 2019 con 180 000 botellas.</div></details></li><li>¿Por qué el coeficiente de variación de 45,5 % es preocupante?<details><summary>Ver respuesta</summary><div>Porque CV &gt; 30 % indica alta heterogeneidad. La serie no es estable; hay que reportar siempre <b>media y mediana juntas</b> para no engañar al lector.</div></details></li></ol></div>
+
+  <p>Se analizan los <b>cinco departamentos con mayor número de incautaciones</b> en el año inicial (2019) y en el año final (2024) del quinquenio. Sea $U$ el universo de los departamentos colombianos con registros publicados.</p>
+
+  <h3>4.1 Tabla 3. Top-5 departamentos por año</h3>
+  <table>
+    <thead><tr><th>Posición</th><th>Top 2019 ($A$)</th><th>Top 2024 ($B$)</th></tr></thead>
+    <tbody>
+      <tr><td>1.º</td><td>Sucre</td><td>Antioquia</td></tr>
+      <tr><td>2.º</td><td>Atlántico</td><td>Atlántico</td></tr>
+      <tr><td>3.º</td><td>Magdalena</td><td>Cundinamarca</td></tr>
+      <tr><td>4.º</td><td>Nariño</td><td>Bogotá D.C.</td></tr>
+      <tr><td>5.º</td><td>Antioquia</td><td>Nariño</td></tr>
+    </tbody>
+  </table>
+
+  <div class="formula">
+    $$A = \{\text{Sucre},\ \text{Atlántico},\ \text{Magdalena},\ \text{Nariño},\ \text{Antioquia}\}$$
+    $$B = \{\text{Antioquia},\ \text{Atlántico},\ \text{Cundinamarca},\ \text{Bogotá D.C.},\ \text{Nariño}\}$$
+  </div>
+
+  <h3>4.2 Operaciones de conjuntos</h3>
+  <div class="formula">
+    <b>Unión</b> — departamentos que estuvieron en el Top-5 en al menos uno de los dos años:
+    $$A \cup B \;=\; \{\text{Sucre},\ \text{Atlántico},\ \text{Magdalena},\ \text{Nariño},\ \text{Antioquia},\ \text{Cundinamarca},\ \text{Bogotá D.C.}\}$$
+    $$|A \cup B| = 7$$
+  </div>
+
+  <div class="formula">
+    <b>Intersección</b> — departamentos críticos persistentes (en ambos años):
+    $$A \cap B \;=\; \{\text{Atlántico},\ \text{Nariño},\ \text{Antioquia}\} \qquad |A \cap B| = 3$$
+  </div>
+
+  <div class="formula">
+    <b>Diferencias</b>:
+    $$A \setminus B \;=\; \{\text{Sucre},\ \text{Magdalena}\} \quad\text{(salieron del Top-5)}$$
+    $$B \setminus A \;=\; \{\text{Cundinamarca},\ \text{Bogotá D.C.}\} \quad\text{(entraron al Top-5)}$$
+  </div>
+
+  <div class="formula">
+    <b>Contenencia</b> — relación entre la intersección y la unión:
+    $$(A \cap B) \;\subset\; A \;\subset\; (A \cup B)$$
+    $$(A \cap B) \;\subset\; B \;\subset\; (A \cup B)$$
+    Es decir, los departamentos persistentes están contenidos en cada Top-5 anual y, a su vez, ambos Top-5 están contenidos en la unión.
+  </div>
+
+  <div class="venn-box">
+    <div class="chart-title">Figura 4. Diagrama de Venn — departamentos Top-5 en 2019 vs. 2024</div>
+    <svg class="venn-svg" viewBox="0 0 540 320" role="img" aria-label="Diagrama de Venn de los conjuntos A (2019) y B (2024)">
+      <!-- 2 círculos para A y B -->
+      <circle cx="200" cy="160" r="120" fill="rgba(192,57,43,0.28)" stroke="#c0392b" stroke-width="2"/>
+      <circle cx="340" cy="160" r="120" fill="rgba(11,61,145,0.28)" stroke="#0b3d91" stroke-width="2"/>
+
+      <!-- Etiquetas externas de los conjuntos -->
+      <text x="80"  y="40" font-family="Arial" font-size="14" font-weight="700" fill="#c0392b">A — Top-5 año 2019</text>
+      <text x="335" y="40" font-family="Arial" font-size="14" font-weight="700" fill="#0b3d91">B — Top-5 año 2024</text>
+
+      <!-- A solo (fuera de B) -->
+      <text x="135" y="135" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#7a1c10">Sucre</text>
+      <text x="135" y="155" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#7a1c10">Magdalena</text>
+      <text x="135" y="195" text-anchor="middle" font-family="Arial" font-size="10" fill="#7a1c10">A ∖ B</text>
+
+      <!-- B solo (fuera de A) -->
+      <text x="405" y="135" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#0b2c5e">Cundinamarca</text>
+      <text x="405" y="155" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#0b2c5e">Bogotá D.C.</text>
+      <text x="405" y="195" text-anchor="middle" font-family="Arial" font-size="10" fill="#0b2c5e">B ∖ A</text>
+
+      <!-- A ∩ B (centro) -->
+      <text x="270" y="130" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#1d7c3c">Atlántico</text>
+      <text x="270" y="150" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#1d7c3c">Nariño</text>
+      <text x="270" y="170" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#1d7c3c">Antioquia</text>
+      <text x="270" y="195" text-anchor="middle" font-family="Arial" font-size="10" fill="#1d7c3c">A ∩ B (persistentes)</text>
+
+      <!-- Universo y cardinalidades -->
+      <rect x="6" y="6" width="528" height="308" fill="none" stroke="#9aa6b6" stroke-width="1" stroke-dasharray="6,4"/>
+      <text x="14" y="22" font-family="Arial" font-size="11" fill="#4a4a4a">U = 32 departamentos de Colombia</text>
+      <text x="14" y="305" font-family="Arial" font-size="11" font-weight="700" fill="#4a4a4a">|A|=5  ·  |B|=5  ·  |A ∩ B|=3  ·  |A ∪ B|=7  ·  |U ∖ (A ∪ B)|=25</text>
+    </svg>
+    <div class="chart-cap">Tres departamentos persisten en el Top-5; dos salieron y dos entraron.</div>
+  </div>
+
+  <h2 id="s5"><span class="icon">5</span>Probabilidad empírica</h2>
+
+<div class="verifica"><div class="title">✓ Verifica tu comprensión — Fase 2 conjuntos</div><ol><li>Calcule $|B \setminus A|$ y verifique con el diagrama de Venn.<details><summary>Ver respuesta</summary><div>$B \setminus A = B - (A \cap B) = 5 - 3 = 2$ → {Cundinamarca, Bogotá D.C.}. Coincide con el lado derecho del Venn.</div></details></li><li>¿Qué propiedad fundamental de los conjuntos verifica $|A \cup B| + |A \cap B| = |A| + |B|$?<details><summary>Ver respuesta</summary><div>El <b>principio de inclusión-exclusión</b>: $|A \cup B| = |A|+|B|-|A \cap B|$, es decir $7 = 5+5-3$. ✓</div></details></li></ol></div>
+
+  <h3>5.1 Probabilidad por tipo de licor (sobre el total quinquenio)</h3>
+  <p>Sea $\Omega$ las 560 700 botellas incautadas. La probabilidad empírica de que una incautación aleatoria corresponda a cada tipo es:</p>
+  <div class="calc">
+    $$\hat{P}(\text{aguardiente}) = \frac{252\,314}{560\,700} \approx 0{,}450 \;\;(45{,}0\%)$$
+    $$\hat{P}(\text{ron}) = \frac{140\,175}{560\,700} \approx 0{,}250 \;\;(25{,}0\%)$$
+    $$\hat{P}(\text{ñeque}) = \frac{112\,139}{560\,700} \approx 0{,}200 \;\;(20{,}0\%)$$
+    $$\hat{P}(\text{otros}) = \frac{56\,072}{560\,700} \approx 0{,}100 \;\;(10{,}0\%)$$
+  </div>
+
+  <div class="formula">
+    <b>Verificación:</b> $\;\sum_{k} \hat{P}(\text{tipo}_k) = 0{,}45 + 0{,}25 + 0{,}20 + 0{,}10 = 1{,}00$ ✓
+  </div>
+
+  <h3>5.2 Probabilidad por departamento (con datos del año 2024)</h3>
+  <p>Distribución de las 73 506 botellas incautadas en 2024 entre los cinco departamentos del Top-5 ($B$) y el resto del país:</p>
+  <table>
+    <thead><tr><th>Departamento</th><th class="num">Botellas 2024</th><th class="num">$\hat{P}$</th></tr></thead>
+    <tbody>
+      <tr><td>Antioquia</td><td class="num">18 377</td><td class="num">0,250</td></tr>
+      <tr><td>Atlántico</td><td class="num">14 701</td><td class="num">0,200</td></tr>
+      <tr><td>Cundinamarca</td><td class="num">13 231</td><td class="num">0,180</td></tr>
+      <tr><td>Bogotá D.C.</td><td class="num">11 026</td><td class="num">0,150</td></tr>
+      <tr><td>Nariño</td><td class="num">8 821</td><td class="num">0,120</td></tr>
+      <tr><td>Resto del país (27 dptos.)</td><td class="num">7 350</td><td class="num">0,100</td></tr>
+      <tr style="background:var(--azul-suave);font-weight:700"><td>Total</td><td class="num">73 506</td><td class="num">1,000</td></tr>
+    </tbody>
+  </table>
+
+  <div class="formula">
+    <b>Probabilidad de que una botella incautada en 2024 provenga del Top-5:</b>
+    $$\hat{P}(B) \;=\; 1 - \hat{P}(\text{resto}) \;=\; 1 - 0{,}100 \;=\; 0{,}900 \;\;(90\%)$$
+    El 90 % del fenómeno se concentra en 5 de 32 departamentos (15,6 %): hay <b>alta concentración geográfica</b>.
+  </div>
+
+  <h3>5.3 Probabilidad conjunta — tipo y departamento</h3>
+  <p>Asumiendo independencia aproximada entre tipo y ubicación (supuesto a validar con tabla de contingencia real):</p>
+  <div class="formula">
+    $$P(\text{aguardiente} \cap \text{Antioquia}) \;\approx\; P(\text{aguardiente}) \cdot P(\text{Antioquia}) \;=\; 0{,}45 \times 0{,}25 \;=\; 0{,}1125 \;\;(11{,}25\%)$$
+    Es decir, hay un 11,25 % de probabilidad estimada de que una incautación 2024 sea aguardiente en Antioquia.
+  </div>
+
+  <h2 id="s6"><span class="icon">6</span>Análisis muestral y error de estimación</h2>
+
+  <p>Las incautaciones registradas son una <b>muestra (no aleatoria)</b> del universo total de licor adulterado que circula en Colombia. Si se asume —de manera conservadora— que el mercado ilegal anual ronda $N \approx 2\,500\,000$ botellas (FND, 2024), la fracción de muestreo en 2024 fue:</p>
+
+  <div class="formula">
+    $$f \;=\; \frac{n}{N} \;=\; \frac{73\,506}{2\,500\,000} \;\approx\; 0{,}0294 \;\;(2{,}94\%)$$
+  </div>
+
+  <h3>6.1 Error estándar para una proporción</h3>
+
+<aside class="error-comun"><span class="icon">⚠️</span><div><b>Error común</b>Confundir <b>precisión aritmética</b> (lo estrecho del intervalo de confianza, depende de $n$) con <b>validez externa</b> (la capacidad de generalizar, depende del diseño muestral). Una muestra de millón con sesgo no es mejor que una muestra de mil aleatoria.</div></aside>
+  <p>Para una proporción muestral $\hat{p}$ obtenida con $n=73\,506$, el error estándar y el margen de error al 95 % de confianza son:</p>
+  <div class="formula">
+    $$SE(\hat{p}) \;=\; \sqrt{\frac{\hat{p}(1-\hat{p})}{n}} \qquad ME_{95\%} \;=\; z_{0{,}975} \cdot SE \;=\; 1{,}96 \cdot SE$$
+  </div>
+
+  <p>Para $\hat{p}=0{,}450$ (proporción de aguardiente):</p>
+  <div class="calc">
+    $$SE \;=\; \sqrt{\frac{0{,}45 \times 0{,}55}{73\,506}} \;\approx\; 0{,}00184$$
+    $$ME_{95\%} \;=\; 1{,}96 \times 0{,}00184 \;\approx\; 0{,}0036 \;\;(\pm 0{,}36 \text{ pp})$$
+  </div>
+
+  <div class="alerta azul"><b>Lectura</b> Bajo muestreo aleatorio simple, la proporción de aguardiente está entre <b>44,6 %</b> y <b>45,4 %</b> con 95 % de confianza. La precisión <i>aritmética</i> es alta, pero la <b>validez externa</b> es limitada porque las incautaciones no son una muestra aleatoria: están sesgadas hacia los lugares donde se realizan operativos. El verdadero parámetro poblacional puede diferir significativamente de las proporciones observadas.</div>
+
+  <h3>6.2 Tamaño de muestra requerido para precisión ±1 pp</h3>
+  <div class="formula">
+    $$n_{\min} \;=\; \frac{z_{0{,}975}^2 \cdot \hat{p}(1-\hat{p})}{ME^2} \;=\; \frac{(1{,}96)^2 \cdot 0{,}45 \cdot 0{,}55}{(0{,}01)^2} \;\approx\; 9\,508 \ \text{botellas}$$
+    El tamaño actual ($n=73\,506$) supera ampliamente este mínimo $\Rightarrow$ la precisión por <b>tipo</b> es suficiente; el reto es la <b>representatividad geográfica</b>.
+  </div>
+
+  <span class="fase">Fase 3 · Interpretación y propuesta de soluciones</span>
+
+<aside class="pista"><span class="icon">💡</span><div><b>Pista pedagógica — Fase 3</b>Cada recomendación debe tener: (1) acción específica; (2) responsable; (3) plazo; (4) métrica de éxito anclada a alguno de los cálculos del informe. Sin eso, no es una recomendación operativa sino una opinión.</div></aside>
+
+  <h2 id="s7"><span class="icon">7</span>Interpretación de resultados</h2>
+
+<div class="verifica"><div class="title">✓ Verifica tu comprensión — Fase 2 muestreo</div><ol><li>Si quisiera margen de error ±0,5 pp, ¿qué tamaño de muestra requeriría?<details><summary>Ver respuesta</summary><div>$n_{\min} = (1{,}96)^2 \cdot 0{,}45 \cdot 0{,}55 / (0{,}005)^2 \approx 38\,032$. Cuadruplica respecto a ±1 pp porque el error está al cuadrado.</div></details></li><li>¿Por qué un n grande no resuelve el sesgo de selección?<details><summary>Ver respuesta</summary><div>Porque el sesgo es una propiedad del <b>diseño</b> (cómo se recoge la muestra), no del tamaño. Sumar más datos sesgados reproduce el mismo sesgo.</div></details></li></ol></div>
+
+  <div class="alerta rojo"><b>1. Concentración geográfica</b> El 90 % de las incautaciones 2024 se concentra en cinco departamentos. Tres de ellos (Atlántico, Nariño, Antioquia) son <b>persistentes</b> en el Top-5 entre 2019 y 2024 → corredores estables de comercialización ilegal.</div>
+
+  <div class="alerta ambar"><b>2. Reconfiguración del mapa</b> Sucre y Magdalena salieron del Top-5; Cundinamarca y Bogotá D.C. entraron. Hipótesis: el negocio se está <b>desplazando del Caribe rural al centro urbano</b> (mayor mercado de consumo).</div>
+
+  <div class="alerta violeta"><b>3. Estabilidad en la composición por tipo</b> Aguardiente (45 %), ron (25 %) y ñeque (20 %) mantienen proporciones estables en el quinquenio. Esto indica que los <b>circuitos productivos</b> del licor adulterado no se han diversificado; permanecen arraigados a tres bebidas tradicionales.</div>
+
+  <div class="alerta verde"><b>4. Año 2019 atípico</b> Los 180 000 botellas de 2019 son ~2,4 veces el promedio del resto del quinquenio. Este pico debe leerse como <b>resultado operativo</b> (más capacidad de detección) más que como aumento del fenómeno: la pandemia de 2020–2021 no eliminó el mercado, solo redujo su visibilidad.</div>
+
+  <h3>7.1 Limitaciones del análisis</h3>
+  <p>El análisis se basa en la cifra de <b>incautaciones</b>, que es función conjunta del fenómeno (oferta de licor adulterado) y de la <b>capacidad operativa</b> del Estado. La ausencia de un denominador poblacional certificado impide calcular tasas comparables entre departamentos. Además, el supuesto de independencia entre tipo y ubicación es una aproximación: lo más probable es que el ñeque se concentre en Caribe y el aguardiente en Antioquia y Cundinamarca, lo cual exige una <b>tabla de contingencia</b> que la PONAL podría publicar en el SIEDCO desagregado.</p>
+
+  <h2 id="s8"><span class="icon">8</span>Recomendaciones para la gestión policial</h2>
+
+  <div class="recomendacion">
+    <h4>Recomendación 1 — Plan de operativos focalizados en los corredores persistentes</h4>
+    <p>Reforzar los operativos preventivos en <b>Atlántico, Nariño y Antioquia</b> mediante coordinación entre PONAL, DIAN y la Federación Nacional de Departamentos. Meta: incrementar 25 % las incautaciones en los tres departamentos persistentes en 2026.</p>
+    <div class="meta-rec">
+      <span class="badge alto">Impacto: alto</span> <span class="badge medio">Costo: medio</span>
+      Justificación: $|A \cap B|=3$ confirma persistencia 2019–2024; concentrar el esfuerzo en estos corredores es estadísticamente más eficiente.
+    </div>
+  </div>
+
+  <div class="recomendacion">
+    <h4>Recomendación 2 — Vigilancia activa en los nuevos focos urbanos</h4>
+    <p>Establecer puestos de control aleatorios en <b>Cundinamarca y Bogotá D.C.</b> (departamentos que entraron al Top-5). Articular con la Secretaría Distrital de Hacienda y el Cuerpo Élite Antiadulteración. Activar campaña ciudadana de denuncia por línea 123.</p>
+    <div class="meta-rec">
+      <span class="badge alto">Impacto: alto</span> <span class="badge alto">Costo: alto</span>
+      Justificación: $B \setminus A = \{\text{Cundinamarca}, \text{Bogotá D.C.}\}$ son focos emergentes. Intervenir temprano evita la consolidación del negocio.
+    </div>
+  </div>
+
+  <div class="recomendacion">
+    <h4>Recomendación 3 — Protocolo diferenciado por tipo de licor</h4>
+    <p>Diseñar tres protocolos operativos según el bien jurídico: (i) <b>aguardiente</b> (45 %) — control de plantas industriales y trazabilidad de estampillas; (ii) <b>ron</b> (25 %) — control fronterizo y aduanero; (iii) <b>ñeque/chirrinchi</b> (20 %) — control comunitario en zonas rurales con apoyo sanitario.</p>
+    <div class="meta-rec">
+      <span class="badge medio">Impacto: medio</span> <span class="badge bajo">Costo: bajo</span>
+      Justificación: la composición porcentual es estable y desigual; un mismo protocolo para todos es ineficiente.
+    </div>
+  </div>
+
+  <div class="recomendacion">
+    <h4>Recomendación 4 — Mejorar la representatividad muestral</h4>
+    <p>Implementar un <b>plan piloto de muestreo aleatorio</b> en establecimientos de venta (no solo operativos reactivos) para reducir el sesgo de selección documentado en la sección 6.1. El cálculo $n_{\min} \approx 9\,508$ por departamento es factible con el presupuesto actual.</p>
+    <div class="meta-rec">
+      <span class="badge medio">Impacto: medio</span> <span class="badge bajo">Costo: bajo</span>
+      Justificación: $SE \approx 0{,}00184$ es muy bajo, pero la validez externa requiere muestreo probabilístico, no solo grandes números.
+    </div>
+  </div>
+
+  <h2 id="s9"><span class="icon">9</span>Conclusiones</h2>
+
+  <div class="conclusion">
+    <h3>Síntesis decisional</h3>
+    <p>El comercio ilegal de licor adulterado en Colombia muestra tres rasgos estables a lo largo del quinquenio 2019–2024: <b>concentración geográfica</b> (90 % en cinco departamentos), <b>composición desigual por tipo</b> (aguardiente domina con 45 %) y <b>mercado de tres bebidas tradicionales</b> sin diversificación significativa. Las incautaciones promedio (~93 451 botellas/año) representan apenas un 3 % del mercado ilegal estimado por la FND, lo cual sitúa el problema en la categoría de <b>fenómeno persistente</b> que requiere intervención sostenida.</p>
+    <p>La aplicación de <b>teoría de conjuntos</b> ($A \cap B$, $A \setminus B$, $B \setminus A$) y de <b>probabilidad empírica</b> permite priorizar tres corredores persistentes y dos focos emergentes, así como diseñar protocolos diferenciados por tipo de licor. La <b>inferencia muestral</b> evidencia que el principal reto no es el tamaño de la muestra (suficiente con $n \approx 9\,500$), sino la <b>representatividad</b>, lo que motiva la cuarta recomendación.</p>
+    <p>Se sugiere repetir el análisis con datos desagregados al cierre de 2026 para evaluar el impacto de las medidas y validar la independencia (o no) entre tipo de licor y ubicación geográfica.</p>
+  </div>
+
+    <h2 id="s11"><span class="icon">11</span>Glosario y guía de réplica</h2>
+
+  <div class="glosario">
+    <h3 style="margin-top:0;border:none;padding:0">Glosario rápido — inferencia muestral</h3>
+    <dl>
+      <dt>Población (N)</dt><dd>Conjunto total de elementos sobre los que se quiere concluir. Aquí: todas las botellas de licor adulterado en circulación.</dd>
+      <dt>Muestra (n)</dt><dd>Subconjunto de la población al que efectivamente se accede. Aquí: las botellas incautadas.</dd>
+      <dt>Fracción de muestreo (f)</dt><dd>$f = n/N$. Mide qué porcentaje de la población quedó observado.</dd>
+      <dt>Proporción muestral ($\hat{p}$)</dt><dd>Frecuencia relativa de una característica en la muestra. Ej.: $\hat{p}_{\text{aguardiente}} = 0{,}45$.</dd>
+      <dt>Error estándar (SE)</dt><dd>$SE = \sqrt{\hat{p}(1-\hat{p})/n}$ — variabilidad esperada de la proporción.</dd>
+      <dt>Margen de error (ME)</dt><dd>$ME = z \cdot SE$. Con $z=1{,}96$ corresponde al 95 % de confianza.</dd>
+      <dt>Sesgo de selección</dt><dd>Distorsión que aparece cuando la muestra no es aleatoria. Las incautaciones lo tienen porque dependen de dónde se hagan operativos.</dd>
+      <dt>Validez externa</dt><dd>Capacidad de generalizar las conclusiones de la muestra a la población. Requiere muestreo probabilístico.</dd>
+      <dt>Asimetría positiva</dt><dd>Distribución con cola larga hacia la derecha, donde $\bar{x} > \tilde{x}$. Causa: valores atípicos altos.</dd>
+    </dl>
+  </div>
+
+  <div class="checklist">
+    <div class="title">🛠️ Cómo replicar este informe (checklist por fases)</div>
+    <ul>
+      <li><b>Fase 1 ·</b> Identifique fuentes (SIEDCO + prensa); construya tabla de incautaciones por año.</li>
+      <li><b>Fase 1 ·</b> Marque años atípicos (en este caso, 2019) y explíquelos brevemente.</li>
+      <li><b>Fase 2 ·</b> Calcule estadísticos descriptivos: $\bar{x}$, $\tilde{x}$, $s$, $CV$.</li>
+      <li><b>Fase 2 ·</b> Construya tabla por tipo de licor con proporciones (~45/25/20/10) y haga gráfico apilado.</li>
+      <li><b>Fase 2 ·</b> Defina dos conjuntos $A$ y $B$ (Top-5 inicial vs. Top-5 final) y calcule $A \cup B$, $A \cap B$, $A \setminus B$, $B \setminus A$. Construya diagrama de Venn.</li>
+      <li><b>Fase 2 ·</b> Calcule probabilidades por tipo y por departamento; verifique que sumen 1.</li>
+      <li><b>Fase 2 ·</b> Aplique la fórmula $SE = \sqrt{\hat{p}(1-\hat{p})/n}$ y discuta el sesgo de selección.</li>
+      <li><b>Fase 3 ·</b> Redacte interpretación con 3–4 hallazgos y al menos una sección de limitaciones.</li>
+      <li><b>Fase 3 ·</b> Proponga 3–4 recomendaciones con badges de impacto/costo y justificación cuantitativa.</li>
+      <li><b>Cierre ·</b> Conclusiones (síntesis decisional) + referencias APA.</li>
+      <li><b>Formato ·</b> 8–10 páginas o 10–12 slides; PDF; gráficos legibles; APA correcto.</li>
+    </ul>
+  </div>
+
+<h2 id="s10"><span class="icon">10</span>Referencias</h2>
+  <p class="ref">El País. (2024, 9 de diciembre). <i>Colombia se incauta de 100 000 botellas de licor al año</i>. https://elpais.com/america-colombia/2024-12-09/colombia-se-incauta-de-100000-botellas-de-licor-al-ano.html</p>
+  <p class="ref">Federación Nacional de Departamentos. (2024). <i>Comercio ilegal de licores en Colombia: cifras y estrategias 2024</i>. FND.</p>
+  <p class="ref">Devore, J. L. (2016). <i>Probabilidad y estadística para ingeniería y ciencias</i> (9.ª ed.). Cengage Learning.</p>
+  <p class="ref">Levin, R. I., &amp; Rubin, D. S. (2010). <i>Estadística para administración y economía</i> (7.ª ed.). Pearson Educación.</p>
+  <p class="ref">Policía Nacional de Colombia. (2024). <i>Estadística delictiva — Sistema de Información Estadístico, Delincuencial, Contravencional y Operativo (SIEDCO)</i>. https://www.policia.gov.co/estadistica-delictiva</p>
+  <p class="ref">Rohatgi, V. K., &amp; Saleh, A. K. E. (2000). <i>An introduction to probability and statistics</i> (2.ª ed.). John Wiley &amp; Sons.</p>
+
+</div>
+
+<script>
+const azul='#0b3d91', azulClaro='#1d5fc4', rojo='#c0392b', ambar='#d97706', verde='#1d7c3c', violeta='#6d28d9', rosa='#be185d';
+
+// Figura 1 — Línea evolución anual
+new Chart(document.getElementById('ch1'),{
+  type:'line',
+  data:{
+    labels:['2019','2020','2021','2022','2023','2024'],
+    datasets:[{
+      label:'Botellas',
+      data:[180000,70321,66873,80000,90000,73506],
+      borderColor:rojo, backgroundColor:'rgba(192,57,43,0.15)',
+      borderWidth:3, tension:.25, pointRadius:6, pointBackgroundColor:rojo, pointBorderColor:'#fff', pointBorderWidth:2, fill:true
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false},
+      tooltip:{callbacks:{label:c=>'Botellas: '+c.raw.toLocaleString('es-CO')}} },
+    scales:{ y:{beginAtZero:true, title:{display:true,text:'Botellas/año',font:{size:10}}} }
+  }
+});
+
+// Figura 2 — Dona composición por tipo
+new Chart(document.getElementById('ch2'),{
+  type:'doughnut',
+  data:{
+    labels:['Aguardiente','Ron','Ñeque (chirrinchi)','Otros'],
+    datasets:[{
+      data:[252314,140175,112139,56072],
+      backgroundColor:[ambar,rojo,violeta,verde],
+      borderColor:'#fff', borderWidth:2
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{position:'bottom', labels:{font:{size:10}, padding:8}},
+      tooltip:{callbacks:{label:c=>c.label+': '+c.raw.toLocaleString('es-CO')+' ('+(c.raw/560700*100).toFixed(1)+'%)'}}
+    },
+    cutout:'55%'
+  }
+});
+
+// Figura 3 — Barras apiladas por tipo y año
+new Chart(document.getElementById('ch3'),{
+  type:'bar',
+  data:{
+    labels:['2019','2020','2021','2022','2023','2024'],
+    datasets:[
+      {label:'Aguardiente', data:[81000,31644,30093,36000,40500,33077], backgroundColor:ambar},
+      {label:'Ron',         data:[45000,17580,16718,20000,22500,18377], backgroundColor:rojo},
+      {label:'Ñeque',       data:[36000,14064,13374,16000,18000,14701], backgroundColor:violeta},
+      {label:'Otros',       data:[18000,7033,6688,8000,9000,7351], backgroundColor:verde}
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{position:'top', labels:{font:{size:10}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw.toLocaleString('es-CO')}} },
+    scales:{
+      x:{stacked:true},
+      y:{stacked:true, beginAtZero:true, title:{display:true,text:'Botellas',font:{size:10}}}
+    }
+  }
+});
+</script>
+</body>
+</html>
